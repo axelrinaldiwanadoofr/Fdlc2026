@@ -1,0 +1,7 @@
+{
+  "name": "Fdlc2026",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
