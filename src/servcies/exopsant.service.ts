@@ -21,6 +21,11 @@ export class ExposantService
         return this.http.get<Exposant[]>( "php/exposant/tous-les-exposants.php" ) ;
     }
 
+    getExposantParId( id: number ): Observable<Exposant|null>
+    {
+        return this.http.get<Exposant|null>( "php/exposant/exposant-id.php?id" + id ) ;
+    }
+
     /*
     rechercheParTitre( titre: string ): Observable<Film[]>
     {

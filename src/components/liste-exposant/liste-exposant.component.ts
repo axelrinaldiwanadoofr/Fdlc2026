@@ -3,6 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
+import {ExposantCardComponent} from "../exposant-card/exposant-card.component" ;
 import { 
   IonList,
   IonItem,
@@ -15,7 +16,8 @@ import {
   imports: [
     IonList,
     IonItem,
-    AsyncPipe
+    AsyncPipe,
+    ExposantCardComponent,
   ],
 })
 export class ListeExposantComponent  implements OnInit 

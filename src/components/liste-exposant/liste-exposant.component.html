@@ -2,6 +2,7 @@
   @for( exposant of listeExposants | async;  track exposant.id )
   {
     <ion-item>
+      <app-exposant-card [id]="{{exposant.id.toString()}}"></app-exposant-card>
       {{exposant.id}} {{exposant.nom}} {{exposant.numStand}}
     </ion-item>
   }
