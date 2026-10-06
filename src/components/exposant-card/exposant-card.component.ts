@@ -25,11 +25,9 @@ import { Observable } from 'rxjs';
 })
 export class ExposantCardComponent  implements OnInit 
 {
-  public id = input( -1, { transform: numberAttribute } ) ;
-  public nom: InputSignal<string> = input( "nom") ;
-  public numStand = input( 999, { transform: numberAttribute } ) ;
+  public exposant = input<Exposant>( {} as Exposant ) ;
 
-  public exposant: Observable<Exposant> | null = null ;
+  //public exposant: Observable<Exposant> | null = null ;
   protected serviceExposant: ExposantService ;
 
 
