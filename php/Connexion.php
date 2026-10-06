@@ -10,12 +10,12 @@
 
         // Liste des alias de tables utilisée
         public static $tables = array(
-            "stand" => "stand",
-            "exposant" => "exposant",
-            "exposer" => "exposer",
-            "auteur" => "auteur",
-            "hall" => "hall",
-            "import" => "import"
+            "stand" => "fdlc_stand",
+            "exposant" => "fdlc_exposant",
+            "exposer" => "fdlc_exposer",
+            "auteur" => "fdlc_auteur",
+            "hall" => "fdlc_hall",
+            "import" => "fdlc_import"
          ) ;
 
         /**
@@ -24,9 +24,9 @@
         public static function getInstance()
         {
             $serveur = 'mysql:host=localhost:3306;';
-            $bdd = 'dbname=fdlc';   		
-            $user = 'root' ; 
-            $mdp = 'root' ;
+            $bdd = 'dbname=lyceecam_1';   		
+            $user = 'lyceecam' ; 
+            $mdp = 'hGMK5w7fvW77k4' ;
 
             if(!self::$connexion){
                 try {

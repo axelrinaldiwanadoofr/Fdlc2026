@@ -1,9 +1,10 @@
 <?php
 
 require_once "../Connexion.php" ;
+
 require_once "Importation.php" ;
 
-class ImportStand extends Importation
+class ImportExposant extends Importation
 {
     public function __construct( string $nomTable, bool $afficheErreurBd = false )
     {
@@ -20,31 +21,37 @@ class ImportStand extends Importation
 
             $this->resetNbInsert() ;
 
-            $sql = "SELECT distinct `COL 4` from " . Connexion::$tables["import"] ;
+            $sql = "SELECT distinct `COL 3`,`COL 4` from " . Connexion::$tables["import"] ;
 
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(num) values( :num )" ;
+            $sqlId = "select max(id) as nid from " . $this->nomTable ;
+            $cursorId = $bd->prepare( $sqlId ) ;
+            $cursorId->execute() ;
+            $id = $cursorId->fetchAll(PDO::FETCH_ASSOC)[0]["nid"] ;
+            $id++ ;
+
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, nom, numStand) values(:id, :nom, :numStand )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
             {
-                $valeurs = explode( "|", $row["COL 4"] ) ;
-                foreach( $valeurs as $valeur )
+                $noms = explode( "|", $row["COL 3"] ) ;
+                $numStands = explode( "|", $row["COL 4"] ) ;
+                for( $i=0 ; $i < count($noms) ; $i++ )
                 {
-                    if( is_numeric($valeur) )
+                    $cursorInsert->bindValue( ":id", $id++, PDO::PARAM_INT ) ;
+                    $cursorInsert->bindValue( ":nom", $noms[$i], PDO::PARAM_STR ) ;
+                    $cursorInsert->bindValue( ":numStand", intval($numStands[$i]), PDO::PARAM_INT ) ;
+                    try
                     {
-                        $cursorInsert->bindValue( ":num", intval($valeur), PDO::PARAM_INT ) ;
-                        try
-                        {
-                            $cursorInsert->execute() ;
-                            $this->incrementeInsertCompteur() ;
-                        }
-                        catch( PDOException $erreur )
-                        {
-                            $this->afficheErreurDb( $valeur, $erreur ) ;
-                        }
+                        $cursorInsert->execute() ;
+                        $this->incrementeInsertCompteur() ;
+                    }
+                    catch( PDOException $erreur )
+                    {
+                        $this->afficheErreurDb( $noms[$i], $erreur ) ;
                     }
                 }
             }
@@ -66,13 +73,13 @@ class ImportStand extends Importation
 
             $this->resetNbDelete() ;
 
-            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 4` like :strnum" ;
+            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 3` like :nom" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE num = :num" ;
+            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
-            $sql = "SELECT num from " . $this->nomTable ;
+            $sql = "SELECT nom from " . $this->nomTable ;
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
             
@@ -80,20 +87,20 @@ class ImportStand extends Importation
             {
                 try
                 {
-                    $cursorCherche->bindValue( ":strnum", "%" . $row["num"] . "%" ) ;
+                    $cursorCherche->bindValue( ":nom", "%" . $row["nom"] . "%" ) ;
                     $cursorCherche->execute() ;
 
                     if( !$cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
                     {
                         // Supprime le stand
-                        $cursorDelete->bindValue( ":num", $row["num"], PDO::PARAM_INT ) ;
+                        $cursorDelete->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
                         $cursorDelete->execute() ;
                         $this->incrementeDeleteCompteur() ;
                     }    
                 }
                 catch( PDOException $erreur )
                 {
-                    $this->afficheErreurDb( $row["num"], $erreur ) ;
+                    $this->afficheErreurDb( $row["nom"], $erreur ) ;
                 }
             }
             $this->afficheSuppressionFin() ;
@@ -102,10 +109,7 @@ class ImportStand extends Importation
         {
             $this->afficheErreurConnexionDb( $erreur ) ;
         }
-
     }
-
-
 }
 
 ?>
