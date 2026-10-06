@@ -4,13 +4,12 @@ import { FormsModule } from '@angular/forms';
 import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
+import {ListeExposantComponent} from "../../components/liste-exposant/liste-exposant.component" ;
 import { 
   IonContent, 
   IonHeader, 
   IonTitle, 
   IonToolbar,
-  IonList,
-  IonItem,
   IonButtons,
   IonMenuButton,
   IonBackButton
@@ -25,28 +24,27 @@ import {
     IonHeader, 
     IonTitle, 
     IonToolbar, 
-    IonList,
-    IonItem,
     IonButtons,
     IonMenuButton,
     IonBackButton,
+    ListeExposantComponent,
     CommonModule, 
     FormsModule]
 })
 export class ListeExposantsPagePage implements OnInit 
 {
-  protected listeExposants: Observable<Array<Exposant>> | null = null ;
-  protected serviceExposant: ExposantService ;
+  //protected listeExposants: Observable<Array<Exposant>> | null = null ;
+  //protected serviceExposant: ExposantService ;
 
 
-  constructor( serviceExposant: ExposantService ) 
+  constructor() 
   { 
-    this.serviceExposant = serviceExposant ;
+    //this.serviceExposant = serviceExposant ;
   }
 
   ngOnInit() 
   {
-    this.listeExposants = this.serviceExposant.getTousLesExposants() ;
+    //this.listeExposants = this.serviceExposant.getTousLesExposants() ;
   }
 
 }

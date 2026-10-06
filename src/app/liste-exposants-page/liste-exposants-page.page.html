@@ -16,12 +16,5 @@
       <ion-title size="large">liste-exposants-page</ion-title>
     </ion-toolbar>
     </ion-header>
-      <ion-list>
-      @for( exposant of listeExposants | async;  track exposant.id )
-      {
-        <ion-item>
-          {{exposant.id}} {{exposant.nom}} {{exposant.numStand}}
-        </ion-item>
-      }
-    </ion-list>
+    <app-liste-exposant></app-liste-exposant>
 </ion-content>

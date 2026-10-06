@@ -1,0 +1,8 @@
+<ion-list>
+  @for( exposant of listeExposants | async;  track exposant.id )
+  {
+    <ion-item>
+      {{exposant.id}} {{exposant.nom}} {{exposant.numStand}}
+    </ion-item>
+  }
+</ion-list>
