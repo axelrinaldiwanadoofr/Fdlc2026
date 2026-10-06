@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, input, InputSignal, numberAttribute } from '@angular/core';
 import {Exposant} from "../../modeles/Exposant" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import { 
@@ -13,19 +13,22 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-exposant-card',
+  standalone: true,
   templateUrl: './exposant-card.component.html',
   styleUrls: ['./exposant-card.component.scss'],
   imports: [
     IonCard,
     IonCardHeader,
-    IonCardSubtitle,
     IonCardTitle,
     IonCardContent,
   ],
 })
 export class ExposantCardComponent  implements OnInit 
 {
-  @Input() id: number = -1 ;
+  public id = input( -1, { transform: numberAttribute } ) ;
+  public nom: InputSignal<string> = input( "nom") ;
+  public numStand = input( 999, { transform: numberAttribute } ) ;
+
   public exposant: Observable<Exposant> | null = null ;
   protected serviceExposant: ExposantService ;
 
@@ -37,9 +40,10 @@ export class ExposantCardComponent  implements OnInit
 
   ngOnInit()
   {
+    /*
     if( this.id != -1 && this.serviceExposant )
     {
       this.exposant = this.serviceExposant.getExposantParId( this.id ) ;
-    }
+    }*/
   }
 }
