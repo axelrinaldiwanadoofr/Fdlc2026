@@ -21,9 +21,9 @@ export class ExposantService
         return this.http.get<Exposant[]>( "php/exposant/tous-les-exposants.php" ) ;
     }
 
-    getExposantParId( id: number ): Observable<Exposant|null>
+    getExposantParId( id: number ): Observable<Exposant[]>
     {
-        return this.http.get<Exposant|null>( "php/exposant/exposant-id.php?id" + id ) ;
+        return this.http.get<Exposant[]>( "php/exposant/exposant-id.php?id=" + id ) ;
     }
 
     /*

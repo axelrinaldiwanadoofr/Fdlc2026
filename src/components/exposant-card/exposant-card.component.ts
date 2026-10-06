@@ -9,6 +9,7 @@ import {
   IonCardContent,
  } from '@ionic/angular';
 import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 
 @Component({
@@ -21,13 +22,14 @@ import { Observable } from 'rxjs';
     IonCardHeader,
     IonCardTitle,
     IonCardContent,
+    AsyncPipe
   ],
 })
 export class ExposantCardComponent  implements OnInit 
 {
-  public exposant = input<Exposant>( {} as Exposant ) ;
+  public id = input( -1, {transform: numberAttribute } ) ;
 
-  //public exposant: Observable<Exposant> | null = null ;
+  public exposants: Observable<Exposant[]> = new Observable<Exposant[]>() ;
   protected serviceExposant: ExposantService ;
 
 
@@ -38,10 +40,10 @@ export class ExposantCardComponent  implements OnInit
 
   ngOnInit()
   {
-    /*
-    if( this.id != -1 && this.serviceExposant )
+    if( this.id() != -1 && this.serviceExposant )
     {
-      this.exposant = this.serviceExposant.getExposantParId( this.id ) ;
-    }*/
+      this.exposants = this.serviceExposant.getExposantParId( this.id() ) ;
+      this.exposants = this.serviceExposant.getExposantParId( this.id() ) ;
+    }
   }
 }
