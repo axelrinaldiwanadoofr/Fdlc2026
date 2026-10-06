@@ -21,7 +21,7 @@ class ImportExposant extends Importation
 
             $this->resetNbInsert() ;
 
-            $sql = "SELECT distinct `COL 3`,`COL 4` from import" ;
+            $sql = "SELECT distinct `COL 3`,`COL 4` from " . Connexion::$tables["import"] ;
 
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
@@ -73,7 +73,7 @@ class ImportExposant extends Importation
 
             $this->resetNbDelete() ;
 
-            $sqlCherche = "SELECT * from import where `COL 3` like :nom" ;
+            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 3` like :nom" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
             $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom" ;

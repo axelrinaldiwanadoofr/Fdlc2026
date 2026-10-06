@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { 
   IonApp, 
   IonMenu,
@@ -8,6 +9,7 @@ import {
   IonContent,
   IonList,
   IonItem,
+  IonMenuToggle,
   IonRouterOutlet } from '@ionic/angular';
 
 @Component({
@@ -22,10 +24,17 @@ import {
     IonContent,
     IonList,
     IonItem,
-    IonRouterOutlet
+    IonMenuToggle,
+    IonRouterOutlet,
+    RouterLink
   ],
 })
 export class AppComponent 
 {
   constructor() {}
+
+  goToPage( page: string )
+  {
+    alert( page ) ;
+  }
 }

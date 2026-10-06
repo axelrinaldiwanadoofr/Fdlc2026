@@ -12,7 +12,8 @@ import {
   IonList,
   IonItem,
   IonButtons,
-  IonMenuButton
+  IonMenuButton,
+  IonBackButton
  } from '@ionic/angular';
 
 @Component({
@@ -28,6 +29,7 @@ import {
     IonItem,
     IonButtons,
     IonMenuButton,
+    IonBackButton,
     CommonModule, 
     FormsModule]
 })

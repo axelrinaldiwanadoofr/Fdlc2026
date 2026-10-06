@@ -18,7 +18,7 @@ export class ExposantService
 
     getTousLesExposants(): Observable<Exposant[]>
     {
-        return this.http.get<Exposant[]>( window.location.href + "../php/exposant/tous-les-exposants.php" ) ;
+        return this.http.get<Exposant[]>( "php/exposant/tous-les-exposants.php" ) ;
     }
 
     /*

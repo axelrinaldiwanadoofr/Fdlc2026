@@ -20,7 +20,7 @@ class ImportStand extends Importation
 
             $this->resetNbInsert() ;
 
-            $sql = "SELECT distinct `COL 4` from import" ;
+            $sql = "SELECT distinct `COL 4` from " . Connexion::$tables["import"] ;
 
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
@@ -66,7 +66,7 @@ class ImportStand extends Importation
 
             $this->resetNbDelete() ;
 
-            $sqlCherche = "SELECT * from import where `COL 4` like :strnum" ;
+            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 4` like :strnum" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
             $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE num = :num" ;
