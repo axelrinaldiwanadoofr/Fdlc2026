@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AsyncPipe } from '@angular/common';
 import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
@@ -30,8 +31,10 @@ import {
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    CommonModule, 
-    FormsModule]
+    AsyncPipe,
+    //CommonModule, 
+    //FormsModule
+  ]
 })
 export class ListeExposantsPagePage implements OnInit 
 {
