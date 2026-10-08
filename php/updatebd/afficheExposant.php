@@ -3,7 +3,7 @@
 require_once "../Connexion.php" ;
 require_once "Importation.php" ;
 
-$importation = new Importation( Connexion::$tables["stand"] ) ;
+$importation = new Importation( Connexion::$tables["exposant"] ) ;
 $importation->afficheContenuTable() ;
 ?>
 

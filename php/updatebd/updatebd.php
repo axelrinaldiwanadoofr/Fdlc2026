@@ -7,7 +7,19 @@
 </p>
 
 <p>
+    <form action="afficheImport.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Affiche la table import</button>
+    </form>
+</p>
+
+<p>
     <form action="afficheStand.php" method="POST">
         <button type="submit" name="mon_bouton" value="valider">Affiche la table stand</button>
+    </form>
+</p>
+
+<p>
+    <form action="afficheExposant.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Affiche la table exposant</button>
     </form>
 </p>
