@@ -16,5 +16,11 @@
       <ion-title size="large">liste-exposants-page</ion-title>
     </ion-toolbar>
     </ion-header>
-    <app-liste-exposant></app-liste-exposant>
+    <app-liste-exposant>
+      <app-exposant-card 
+        [nom]="exposant.nom"
+        [id]="exposant.id"
+        [numStand]="exposant.numStand">
+      </app-exposant-card>
+    </app-liste-exposant>
 </ion-content>

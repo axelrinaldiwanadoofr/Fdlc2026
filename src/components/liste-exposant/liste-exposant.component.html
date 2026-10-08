@@ -2,11 +2,7 @@
   @for( exposant of listeExposants | async;  track exposant.id )
   {
     <ion-item>
-      <app-exposant-card 
-        [nom]="exposant.nom"
-        [id]="exposant.id"
-        [numStand]="exposant.numStand">
-      </app-exposant-card>
+      <ng-template let-id="exposant.id" let-nom="exposant.nom" let-numStand="exposant.numStand"></ng-template>
     </ion-item>
   }
 </ion-list>

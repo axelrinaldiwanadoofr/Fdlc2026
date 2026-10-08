@@ -5,6 +5,7 @@ import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
 import {ListeExposantComponent} from "../../components/liste-exposant/liste-exposant.component" ;
+import { ExposantCardComponent } from '../../components/exposant-card/exposant-card.component';
 import { 
   IonContent, 
   IonHeader, 
@@ -28,6 +29,7 @@ import {
     IonMenuButton,
     IonBackButton,
     ListeExposantComponent,
+    ExposantCardComponent,
     CommonModule, 
     FormsModule]
 })
@@ -35,6 +37,7 @@ export class ListeExposantsPagePage implements OnInit
 {
   //protected listeExposants: Observable<Array<Exposant>> | null = null ;
   //protected serviceExposant: ExposantService ;
+  protected exposant = new Exposant( 0, "toto", 0 ) ;
 
 
   constructor() 
