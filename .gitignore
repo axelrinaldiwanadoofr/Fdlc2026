@@ -2,6 +2,7 @@
 # http://git-scm.com/docs/gitignore
 
 php/Connexion.php
+index.html
 
 *~
 *.sw[mnpcod]
