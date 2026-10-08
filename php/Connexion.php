@@ -26,7 +26,7 @@
             $serveur = 'mysql:host=localhost:3306;';
             $bdd = 'dbname=fdlc';   		
             $user = 'root' ; 
-            $mdp = '' ;
+            $mdp = 'root' ;
 
             if(!self::$connexion){
                 try {

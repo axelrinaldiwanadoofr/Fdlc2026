@@ -171,6 +171,8 @@ class Importation
             $cursor = $bd->prepare( $sql ) ;
             $numRecord = 0 ;
 
+            echo "<h1> Table " . $this->nomTable . "</h1>" ;
+
             try
             {
                 $cursor->execute() ;
@@ -181,7 +183,7 @@ class Importation
                 {
                     if( !$numRecord )
                     {
-                        echo "<th>" ;
+                        echo "<tr>" ;
                         foreach( $record as $field => $value )
                         {
                             echo "<th scope='col'>" ;
