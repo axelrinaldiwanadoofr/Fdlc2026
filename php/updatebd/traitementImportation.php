@@ -2,18 +2,18 @@
 
 require_once "../Connexion.php" ;
 require_once "ImportStand.php" ;
+require_once "ImportExposant.php" ;
 
-$importStand = new ImportStand( "stand ") ;
+$importStand = new ImportStand( Connexion::$tables["stand"]) ;
+$importExposant = new ImportExposant( Connexion::$tables["exposant"]) ;
 
-$importStand->executeSql( "delete from stand" ) ;
+$importStand->ajouteDonnees() ;
+$importExposant->ajouteDonnees() ;
 
-$importStand->importeDonnees() ;
+$importExposant->modifieDonnees() ;
+$importStand->modifieDonnees() ;
 
-$importStand->executeSql( "insert into stand(num) values( 606 )" ) ;
-
-$importStand->importeDonnees() ;
-
-$data = $importStand->executeSql( "select count(*) from stand" ) ;
-$importStand->afficheDonnes( $data ) ;
+$importExposant->supprimeDonnees() ;
+$importStand->supprimeDonnees() ;
 
 ?>
