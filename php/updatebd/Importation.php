@@ -104,7 +104,7 @@ class Importation
     
     public function afficheAjoutFin()
     {
-        echo ">     " . $this->nbInsert . " occurences ajoutées dans la table " . $this->nomTable . "<br>" ;
+        echo ">     " . $this->nbInsert . " occurences ajoutées dans la table " . $this->nomTable . "<br><br>" ;
     }
 
     public function afficheSuppressionDebut()
@@ -114,7 +114,7 @@ class Importation
     
     public function afficheSuppressionFin()
     {
-        echo ">     " . $this->nbDelete . " occurences supprimées dans la table " . $this->nomTable . "<br>" ;
+        echo ">     " . $this->nbDelete . " occurences supprimées dans la table " . $this->nomTable . "<br><br>" ;
     }
 
     public function afficheDonnes( $data )
@@ -145,6 +145,63 @@ class Importation
                 $this->afficheExecSQL( $sql, $data ) ;
 
                 return $data ;
+            }
+            catch( PDOException $erreur )
+            {
+                $this->afficheExecSQL( $sql, null ) ;
+                $this->afficheErreurDb( $sql, $erreur ) ;
+            }
+            $this->restoreAfficheErreurDb() ;
+        }
+        catch( PDOException $erreur )
+        {
+            $this->afficheErreurConnexionDb( $erreur ) ;
+        }
+        return null ;
+    }
+
+    public function afficheContenuTable()
+    {
+        try
+        {
+            $bd = Connexion::getInstance() ;
+
+            $sql = "select * from " . $this->nomTable ;
+
+            $cursor = $bd->prepare( $sql ) ;
+            $numRecord = 0 ;
+
+            try
+            {
+                $cursor->execute() ;
+                $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
+
+                echo "<table>" ;
+                foreach( $data as $record )
+                {
+                    if( !$numRecord )
+                    {
+                        echo "<th>" ;
+                        foreach( $record as $field => $value )
+                        {
+                            echo "<th scope='col'>" ;
+                            echo $field ;
+                            echo "</th>" ;
+                        }
+                        echo "</tr>" ;                        
+                    }
+
+                    echo "<tr>" ;
+                    foreach( $record as $field => $value )
+                    {
+                        echo "<td scope='row'>" ;
+                        echo $value ;
+                        echo "</td>" ;
+                    }
+                    echo "</tr>" ;
+                    $numRecord++ ;
+                }
+                echo "</table><br>" . $numRecord . " lignes <br>" ;
             }
             catch( PDOException $erreur )
             {
