@@ -1,5 +1,5 @@
 import { Component, OnInit, contentChild, effect, signal } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
 import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
@@ -17,7 +17,7 @@ import {
     IonList,
     IonItem,
     AsyncPipe,
-    ExposantCardComponent,
+    NgTemplateOutlet
   ],
 })
 export class ListeExposantComponent  implements OnInit 

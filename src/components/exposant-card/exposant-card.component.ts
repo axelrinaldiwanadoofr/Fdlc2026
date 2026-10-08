@@ -46,4 +46,11 @@ export class ExposantCardComponent  implements OnInit
       this.exposant = this.serviceExposant.getExposantParId( this.id ) ;
     }*/
   }
+
+  setArgs( id: number, nom: string, numStand: number )
+  {
+    this.id.bind( id ) ;
+    this.nom.bind( nom ) ;
+    this.numStand.bind( numStand ) ;
+  }
 }
