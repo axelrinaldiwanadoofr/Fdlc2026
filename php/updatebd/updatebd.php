@@ -3,13 +3,13 @@
 
 <p>
     <form action="import_fichier_general_auteurs.php" method="POST">
-        <button type="submit" name="mon_bouton" value="valider">Importer le fichier "fichier général auteurs" dans la table export</button>
+        <button type="submit" name="mon_bouton" value="valider">Importer le fichier "fichier général auteurs" dans la table import</button>
     </form>
 </p>
 
 <p>
     <form action="traitementImportation.php" method="POST">
-        <button type="submit" name="mon_bouton" value="valider">Mettre à jour la base de données à partir de la table export</button>
+        <button type="submit" name="mon_bouton" value="valider">Mettre à jour la base de données à partir de la table import</button>
     </form>
 </p>
 
