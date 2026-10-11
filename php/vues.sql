@@ -14,3 +14,4 @@ from exposer as ser
     inner join auteur as au on ser.idAuteur = au.id
     inner join exposant as ex on ser.idExposant = ex.id
 
+alter table auteur add type varchar(10) null ;

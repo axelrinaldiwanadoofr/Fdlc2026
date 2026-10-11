@@ -14,8 +14,8 @@
 </p>
 
 <p>
-    <form action="test-Importation.php" method="POST">
-        <button type="submit" name="mon_bouton" value="valider">Test importation de données à partir de la table import</button>
+    <form action="import_fichier_general_auteurs_Alexis_et_libraires.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Importer le fichier "fichier général auteurs Alexis et libraires"</button>
     </form>
 </p>
 
@@ -49,3 +49,8 @@
     </form>
 </p>
 
+<p>
+    <form action="test-Importation.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Test importation de données à partir de la table import</button>
+    </form>
+</p>
