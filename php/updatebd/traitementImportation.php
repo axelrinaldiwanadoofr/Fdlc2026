@@ -11,18 +11,21 @@ $importExposant = new ImportExposant( Connexion::$tables["exposant"]) ;
 $importAuteur = new ImportAuteur( Connexion::$tables["auteur"]) ;
 $importExposer = new ImportExposer( Connexion::$tables["exposer"]) ;
 
-$importStand->ajouteDonnees() ;
-$importExposant->ajouteDonnees() ;
-$importAuteur->ajouteDonnees() ;
-$importExposer->ajouteDonnees() ;
+$importExposer->supprimeDonnees() ;
+$importExposant->supprimeDonnees() ;
+$importAuteur->supprimeDonnees() ;
+$importStand->supprimeDonnees() ;
 
 $importAuteur->modifieDonnees() ;
 $importExposant->modifieDonnees() ;
 $importStand->modifieDonnees() ;
 
-$importAuteur->supprimeDonnees() ;
-$importExposant->supprimeDonnees() ;
-$importStand->supprimeDonnees() ;
+$importStand->ajouteDonnees() ;
+$importExposant->ajouteDonnees() ;
+$importAuteur->ajouteDonnees() ;
+$importExposer->ajouteDonnees() ;
+
+
 
 ?>
 

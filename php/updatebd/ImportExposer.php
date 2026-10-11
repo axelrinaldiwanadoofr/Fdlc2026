@@ -106,7 +106,6 @@ class ImportExposer extends Importation
 
     public function supprimeDonnees()
     {
-        /*
         try
         {
             $bd = Connexion::getInstance() ;
@@ -115,34 +114,58 @@ class ImportExposer extends Importation
 
             $this->resetNbDelete() ;
 
-            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 3` like :nom" ;
+            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] ;
+            $sqlCherche .= " where `COL 1` = :prenom" ;
+            $sqlCherche .= " and `COL 2` = :nom" ;
+            $sqlCherche .= " and `COL 3` like :nomExposant" ;
+            $sqlCherche .= " and `COL 5` = :samedi_am" ;
+            $sqlCherche .= " and `COL 6` = :samedi_pm" ;
+            $sqlCherche .= " and `COL 7` = :dimanche_am" ;
+            $sqlCherche .= " and `COL 8` = :dimanche_pm" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom" ;
+            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE idExposant = :idExposant and idAuteur = :idAuteur" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
-            $sql = "SELECT nom from " . $this->nomTable ;
+            $sql = "SELECT * from " . Connexion::$tables["AuteurExposantExposer"] ;
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
             
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
             {
+                $samedi_am = "X" ;
+                $samedi_pm = "X" ;
+                $dimanche_am = "X" ;
+                $dimanche_pm = "X" ;
+
                 try
                 {
-                    $cursorCherche->bindValue( ":nom", "%" . $row["nom"] . "%" ) ;
+                    if( !$row["samedi_am"] ) $samedi_am = " " ;
+                    if( !$row["samedi_pm"] ) $samedi_pm = " " ;
+                    if( !$row["dimanche_am"] ) $dimanche_am = " " ;
+                    if( !$row["dimanche_am"] ) $dimanche_pm = " " ;
+
+                    $cursorCherche->bindValue( ":prenom", $row["prenom"], PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":nomExposant", "%" . $row["nomExposant"] . "%", PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":samedi_am", $samedi_am, PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":samedi_pm", $samedi_pm, PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":dimanche_am", $dimanche_am, PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":dimanche_pm", $dimanche_pm, PDO::PARAM_STR ) ;
                     $cursorCherche->execute() ;
 
                     if( !$cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
                     {
                         // Supprime le stand
-                        $cursorDelete->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                        $cursorDelete->bindValue( ":idAuteur", $row["idAuteur"], PDO::PARAM_INT ) ;
+                        $cursorDelete->bindValue( ":idExposant", $row["idExposant"], PDO::PARAM_INT ) ;
                         $cursorDelete->execute() ;
                         $this->incrementeDeleteCompteur() ;
                     }    
                 }
                 catch( PDOException $erreur )
                 {
-                    $this->afficheErreurDb( $row["nom"], $erreur ) ;
+                    $this->afficheErreurDb( "idExposant: " . $row["idExposant"] . " idAuteur: " . $row["idAuteur"], $erreur ) ;
                 }
             }
             $this->afficheSuppressionFin() ;
@@ -151,8 +174,59 @@ class ImportExposer extends Importation
         {
             $this->afficheErreurConnexionDb( $erreur ) ;
         }
-            */
     }
+
+    public function modifieDonnees()
+    {
+        /*
+        try
+        {
+            $bd = Connexion::getInstance() ;
+
+            $this->afficheModificationDebut() ;
+
+            $this->resetNbUpdate() ;
+
+            $sqlUpdate = "UPDATE " . $this->nomTable . " set numStand = :numStand WHERE nom = :nom" ;
+            $cursorUpdate = $bd->prepare( $sqlUpdate ) ;
+
+            $sqlCherche = "SELECT nom, numStand from " . $this->nomTable . " where nom = :nom and numStand = :numStand" ;
+            $cursorCherche = $bd->prepare( $sqlCherche ) ;
+
+            $sql = "SELECT `COL 3` as nom, `COL 4` as numStand from " . Connexion::$tables["import"] ;
+            $cursor = $bd->prepare( $sql ) ;
+            $cursor->execute() ;
+            
+            while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
+            {
+                try
+                {
+                    $cursorCherche->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":numStand", $row["numStand"], PDO::PARAM_INT ) ;
+                    $cursorCherche->execute() ;
+
+                    if( !$rowCherche = $cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
+                    {
+                        // Supprime le stand
+                        $cursorUpdate->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                        $cursorUpdate->bindValue( ":numStand", $row["numStand"], PDO::PARAM_INT ) ;
+                        $cursorUpdate->execute() ;
+                        $this->incrementeUpdateCompteur() ;
+                    }    
+                }
+                catch( PDOException $erreur )
+                {
+                    $this->afficheErreurDb( $row["nom"], $erreur ) ;
+                }
+            }
+            $this->afficheModificationFin() ;
+        }
+        catch( PDOException $erreur )
+        {
+            $this->afficheErreurConnexionDb( $erreur ) ;
+        }*/
+    }
+
 }
 
 ?>

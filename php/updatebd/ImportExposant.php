@@ -110,6 +110,56 @@ class ImportExposant extends Importation
             $this->afficheErreurConnexionDb( $erreur ) ;
         }
     }
+
+    public function modifieDonnees()
+    {
+        try
+        {
+            $bd = Connexion::getInstance() ;
+
+            $this->afficheModificationDebut() ;
+
+            $this->resetNbUpdate() ;
+
+            $sqlUpdate = "UPDATE " . $this->nomTable . " set numStand = :numStand WHERE nom = :nom" ;
+            $cursorUpdate = $bd->prepare( $sqlUpdate ) ;
+
+            $sqlCherche = "SELECT nom, numStand from " . $this->nomTable . " where nom = :nom and numStand = :numStand" ;
+            $cursorCherche = $bd->prepare( $sqlCherche ) ;
+
+            $sql = "SELECT `COL 3` as nom, `COL 4` as numStand from " . Connexion::$tables["import"] ;
+            $cursor = $bd->prepare( $sql ) ;
+            $cursor->execute() ;
+            
+            while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
+            {
+                try
+                {
+                    $cursorCherche->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                    $cursorCherche->bindValue( ":numStand", $row["numStand"], PDO::PARAM_INT ) ;
+                    $cursorCherche->execute() ;
+
+                    if( !$rowCherche = $cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
+                    {
+                        // Supprime le stand
+                        $cursorUpdate->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                        $cursorUpdate->bindValue( ":numStand", $row["numStand"], PDO::PARAM_INT ) ;
+                        $cursorUpdate->execute() ;
+                        $this->incrementeUpdateCompteur() ;
+                    }    
+                }
+                catch( PDOException $erreur )
+                {
+                    $this->afficheErreurDb( $row["nom"], $erreur ) ;
+                }
+            }
+            $this->afficheModificationFin() ;
+        }
+        catch( PDOException $erreur )
+        {
+            $this->afficheErreurConnexionDb( $erreur ) ;
+        }
+    }
 }
 
 ?>
