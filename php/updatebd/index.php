@@ -36,3 +36,9 @@
         <button type="submit" name="mon_bouton" value="valider">Affiche la table auteur</button>
     </form>
 </p>
+
+<p>
+    <form action="afficheExposer.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Affiche la table exposer</button>
+    </form>
+</p>

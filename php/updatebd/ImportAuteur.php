@@ -37,18 +37,21 @@ class ImportAuteur extends Importation
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
             {
-                $cursorInsert->bindValue( ":id", $id++, PDO::PARAM_INT ) ;
-                $cursorInsert->bindValue( ":nom", $row["COL 2"], PDO::PARAM_STR ) ;
-                $cursorInsert->bindValue( ":prenom", $row["COL 1"], PDO::PARAM_STR ) ;
+                if( $row["COL 2"] != "")
+                {
+                    $cursorInsert->bindValue( ":id", $id++, PDO::PARAM_INT ) ;
+                    $cursorInsert->bindValue( ":nom", $row["COL 2"], PDO::PARAM_STR ) ;
+                    $cursorInsert->bindValue( ":prenom", $row["COL 1"], PDO::PARAM_STR ) ;
 
-                try
-                {
-                    $cursorInsert->execute() ;
-                    $this->incrementeInsertCompteur() ;
-                }
-                catch( PDOException $erreur )
-                {
-                    $this->afficheErreurDb( $row["COL 1"] . " " . $row["COL 2"], $erreur ) ;
+                    try
+                    {
+                        $cursorInsert->execute() ;
+                        $this->incrementeInsertCompteur() ;
+                    }
+                    catch( PDOException $erreur )
+                    {
+                        $this->afficheErreurDb( $row["COL 1"] . " " . $row["COL 2"], $erreur ) ;
+                    }
                 }
             }
             $this->afficheAjoutFin() ;
