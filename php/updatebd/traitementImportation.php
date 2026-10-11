@@ -3,16 +3,21 @@
 require_once "../Connexion.php" ;
 require_once "ImportStand.php" ;
 require_once "ImportExposant.php" ;
+require_once "ImportAuteur.php" ;
 
 $importStand = new ImportStand( Connexion::$tables["stand"]) ;
 $importExposant = new ImportExposant( Connexion::$tables["exposant"]) ;
+$importAuteur = new ImportAuteur( Connexion::$tables["auteur"]) ;
 
 $importStand->ajouteDonnees() ;
 $importExposant->ajouteDonnees() ;
+$importAuteur->ajouteDonnees() ;
 
+$importAuteur->modifieDonnees() ;
 $importExposant->modifieDonnees() ;
 $importStand->modifieDonnees() ;
 
+$importAuteur->supprimeDonnees() ;
 $importExposant->supprimeDonnees() ;
 $importStand->supprimeDonnees() ;
 

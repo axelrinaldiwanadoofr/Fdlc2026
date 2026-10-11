@@ -21,7 +21,7 @@ class ImportAuteur extends Importation
 
             $this->resetNbInsert() ;
 
-            $sql = "SELECT distinct `COL 3`,`COL 4` from " . Connexion::$tables["import"] ;
+            $sql = "SELECT distinct `COL 1`,`COL 2` from " . Connexion::$tables["import"] ;
 
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
@@ -32,27 +32,23 @@ class ImportAuteur extends Importation
             $id = $cursorId->fetchAll(PDO::FETCH_ASSOC)[0]["nid"] ;
             $id++ ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, nom, numStand) values(:id, :nom, :numStand )" ;
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, prenom, nom) values(:id, :prenom, :nom )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
             {
-                $noms = explode( "|", $row["COL 3"] ) ;
-                $numStands = explode( "|", $row["COL 4"] ) ;
-                for( $i=0 ; $i < count($noms) ; $i++ )
+                $cursorInsert->bindValue( ":id", $id++, PDO::PARAM_INT ) ;
+                $cursorInsert->bindValue( ":nom", $row["COL 2"], PDO::PARAM_STR ) ;
+                $cursorInsert->bindValue( ":prenom", $row["COL 1"], PDO::PARAM_STR ) ;
+
+                try
                 {
-                    $cursorInsert->bindValue( ":id", $id++, PDO::PARAM_INT ) ;
-                    $cursorInsert->bindValue( ":nom", $noms[$i], PDO::PARAM_STR ) ;
-                    $cursorInsert->bindValue( ":numStand", intval($numStands[$i]), PDO::PARAM_INT ) ;
-                    try
-                    {
-                        $cursorInsert->execute() ;
-                        $this->incrementeInsertCompteur() ;
-                    }
-                    catch( PDOException $erreur )
-                    {
-                        $this->afficheErreurDb( $noms[$i], $erreur ) ;
-                    }
+                    $cursorInsert->execute() ;
+                    $this->incrementeInsertCompteur() ;
+                }
+                catch( PDOException $erreur )
+                {
+                    $this->afficheErreurDb( $row["COL 1"] . " " . $row["COL 2"], $erreur ) ;
                 }
             }
             $this->afficheAjoutFin() ;
@@ -73,13 +69,13 @@ class ImportAuteur extends Importation
 
             $this->resetNbDelete() ;
 
-            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 3` like :nom" ;
+            $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 1` = :prenom and `COL 2` = :nom" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom" ;
+            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom and prenom = :prenom" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
-            $sql = "SELECT nom from " . $this->nomTable ;
+            $sql = "SELECT prenom, nom from " . $this->nomTable ;
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
             
@@ -87,12 +83,14 @@ class ImportAuteur extends Importation
             {
                 try
                 {
-                    $cursorCherche->bindValue( ":nom", "%" . $row["nom"] . "%" ) ;
+                    $cursorCherche->bindValue( ":prenom", $row["prenom"] ) ;
+                    $cursorCherche->bindValue( ":nom", $row["nom"] ) ;
                     $cursorCherche->execute() ;
 
                     if( !$cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
                     {
                         // Supprime le stand
+                        $cursorDelete->bindValue( ":prenom", $row["prenom"], PDO::PARAM_STR ) ;
                         $cursorDelete->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
                         $cursorDelete->execute() ;
                         $this->incrementeDeleteCompteur() ;
@@ -100,7 +98,7 @@ class ImportAuteur extends Importation
                 }
                 catch( PDOException $erreur )
                 {
-                    $this->afficheErreurDb( $row["nom"], $erreur ) ;
+                    $this->afficheErreurDb( $row["nom"] . " " . $row["nom"], $erreur ) ;
                 }
             }
             $this->afficheSuppressionFin() ;
