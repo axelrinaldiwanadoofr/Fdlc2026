@@ -1,6 +1,6 @@
 import { Component, OnInit, input, InputSignal, numberAttribute } from '@angular/core';
 import {Exposant} from "../../modeles/Exposant" ;
-import { ExposantService } from '../../servcies/exopsant.service';
+import { ExposantService } from '../../servcies/exposant.service';
 import { 
   IonCard,
   IonCardHeader,
@@ -42,7 +42,6 @@ export class ExposantCardComponent  implements OnInit
   {
     if( this.id() != -1 && this.serviceExposant )
     {
-      this.exposants = this.serviceExposant.getExposantParId( this.id() ) ;
       this.exposants = this.serviceExposant.getExposantParId( this.id() ) ;
     }
   }
