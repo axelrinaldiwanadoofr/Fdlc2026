@@ -137,7 +137,24 @@ class Importation
         echo ">     Exécute requete SQL <b> " . $sql . "</b> resultat: " . json_encode($result) . "<br><br>" ;
     }
 
-    public function executeSql( string $sql )
+    public function unitTest( string $test, string $sql, bool $hasData=true )
+    {
+        echo "<br>Unit Test: " . $test ;
+
+        if( $hasData )
+        {
+            if( count( $this->executeSql( $sql, false ) ) ) echo " OK<br>" ;
+            else echo " FALSE<br>" ;
+        }
+        else
+        {
+            if( !count( $this->executeSql( $sql, false ) ) ) echo " OK<br>" ;
+            else echo " FALSE<br>" ;
+        }
+
+    }
+
+    public function executeSql( string $sql, bool $afficheResult = true )
     {
         try
         {
@@ -152,7 +169,7 @@ class Importation
                 $data = $cursor->fetchAll() ;
                 $this->restoreAfficheErreurDb() ;
 
-                $this->afficheExecSQL( $sql, $data ) ;
+                if( $afficheResult ) $this->afficheExecSQL( $sql, $data ) ;
 
                 return $data ;
             }
