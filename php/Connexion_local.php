@@ -15,7 +15,8 @@
             "exposer" => "exposer",
             "auteur" => "auteur",
             "hall" => "hall",
-            "import" => "import"
+            "import" => "import",
+            "AuteurExposantExposer" => "AuteurExposantExposer"
          ) ;
 
         /**
@@ -34,7 +35,7 @@
                     self::$connexion = new PDO($serveur.$bdd, $user, $mdp); 
                     self::$connexion->query("SET CHARACTER SET utf8");
                 } catch (PDOException $e) {
-                        echo " Error connexion: " . $serveur . " " . $bdd . " " . $user . " " . $mdp . " " . $e->getMessage() ;
+                        echo " Error connexion: " . $serveur . " " . $bdd . " " . $e->getMessage() ;
                         throw new Exception("Erreur à  la connexion \n" . $e->getMessage());
                 }
             }

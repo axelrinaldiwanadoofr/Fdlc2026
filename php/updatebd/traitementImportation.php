@@ -3,16 +3,32 @@
 require_once "../Connexion.php" ;
 require_once "ImportStand.php" ;
 require_once "ImportExposant.php" ;
+require_once "ImportAuteur.php" ;
+require_once "ImportExposer.php" ;
 
 $importStand = new ImportStand( Connexion::$tables["stand"]) ;
-$importExposant = new ImportExposant( Connexion::$tables["exposant"] ) ;
+$importExposant = new ImportExposant( Connexion::$tables["exposant"]) ;
+$importAuteur = new ImportAuteur( Connexion::$tables["auteur"]) ;
+$importExposer = new ImportExposer( Connexion::$tables["exposer"]) ;
 
-$importStand->importeDonnees() ;
+$importExposer->supprimeDonnees() ;
+$importExposant->supprimeDonnees() ;
+$importAuteur->supprimeDonnees() ;
+$importStand->supprimeDonnees() ;
 
-$importExposant->importeDonnees() ;
+$importAuteur->modifieDonnees() ;
+$importExposant->modifieDonnees() ;
+$importStand->modifieDonnees() ;
 
-$importStand->executeSql( "select count(*) from " . Connexion::$tables["stand"] ) ;
-$data = $importStand->executeSql( "select count(*) from " . Connexion::$tables["exposant"] ) ;
-//$data = $importStand->executeSql( "select distinct `COL 3` from " . Connexion::$tables["import"] ) ;
+$importStand->ajouteDonnees() ;
+$importExposant->ajouteDonnees() ;
+$importAuteur->ajouteDonnees() ;
+$importExposer->ajouteDonnees() ;
+
+
 
 ?>
+
+<form action="index.php" method="POST">
+    <button type="submit" name="mon_bouton" value="valider">Revenir au menu</button>
+</form>

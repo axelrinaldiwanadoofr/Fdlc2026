@@ -104,7 +104,7 @@ class Importation
     
     public function afficheAjoutFin()
     {
-        echo ">     " . $this->nbInsert . " occurences ajoutées dans la table " . $this->nomTable . "<br>" ;
+        echo ">     " . $this->nbInsert . " occurences ajoutées dans la table " . $this->nomTable . "<br><br>" ;
     }
 
     public function afficheSuppressionDebut()
@@ -114,7 +114,17 @@ class Importation
     
     public function afficheSuppressionFin()
     {
-        echo ">     " . $this->nbDelete . " occurences supprimées dans la table " . $this->nomTable . "<br>" ;
+        echo ">     " . $this->nbDelete . " occurences supprimées dans la table " . $this->nomTable . "<br><br>" ;
+    }
+
+    public function afficheModificationDebut()
+    {
+        echo ">     Modifie dans la table " . $this->nomTable . " les occurences dont le numStand a changé dans la table import <br>" ;
+    }
+    
+    public function afficheModificationFin()
+    {
+        echo ">     " . $this->nbUpdate . " occurences modifiées dans la table " . $this->nomTable . "<br><br>" ;
     }
 
     public function afficheDonnes( $data )
@@ -127,7 +137,24 @@ class Importation
         echo ">     Exécute requete SQL <b> " . $sql . "</b> resultat: " . json_encode($result) . "<br><br>" ;
     }
 
-    public function executeSql( string $sql )
+    public function unitTest( string $test, string $sql, bool $hasData=true )
+    {
+        echo "<br>Unit Test: " . $test ;
+
+        if( $hasData )
+        {
+            if( count( $this->executeSql( $sql, false ) ) ) echo " OK<br>" ;
+            else echo " FALSE<br>" ;
+        }
+        else
+        {
+            if( !count( $this->executeSql( $sql, false ) ) ) echo " OK<br>" ;
+            else echo " FALSE<br>" ;
+        }
+
+    }
+
+    public function executeSql( string $sql, bool $afficheResult = true )
     {
         try
         {
@@ -142,9 +169,114 @@ class Importation
                 $data = $cursor->fetchAll() ;
                 $this->restoreAfficheErreurDb() ;
 
-                $this->afficheExecSQL( $sql, $data ) ;
+                if( $afficheResult ) $this->afficheExecSQL( $sql, $data ) ;
 
                 return $data ;
+            }
+            catch( PDOException $erreur )
+            {
+                $this->afficheExecSQL( $sql, null ) ;
+                $this->afficheErreurDb( $sql, $erreur ) ;
+            }
+            $this->restoreAfficheErreurDb() ;
+        }
+        catch( PDOException $erreur )
+        {
+            $this->afficheErreurConnexionDb( $erreur ) ;
+        }
+        return null ;
+    }
+
+    public function afficheContenuTable()
+    {
+        echo "<head>
+                <style>
+                    table {
+                        border-collapse: collapse;
+                        border: 2px solid rgb(140 140 140);
+                        font-family: sans-serif;
+                        font-size: 0.8rem;
+                        letter-spacing: 1px;
+                    }
+
+                    caption {
+                        caption-side: bottom;
+                        padding: 10px;
+                        font-weight: bold;
+                    }
+
+                    thead,
+                    tfoot {
+                        background-color: rgb(228 240 245);
+                    }
+
+                    th,
+                    td {
+                        border: 1px solid rgb(160 160 160);
+                        padding: 8px 10px;
+                    }
+
+                    td:last-of-type {
+                        text-align: center;
+                    }
+
+                    tbody > tr:nth-of-type(even) {
+                        background-color: rgb(237 238 242);
+                    }
+
+                    tfoot th {
+                        text-align: right;
+                    }
+
+                    tfoot td {
+                        font-weight: bold;
+                    }
+                </style>
+            </head>
+            <body>" ;
+
+        try
+        {
+            $bd = Connexion::getInstance() ;
+
+            $sql = "select * from " . $this->nomTable ;
+
+            $cursor = $bd->prepare( $sql ) ;
+            $numRecord = 0 ;
+
+            echo "<h1> Table " . $this->nomTable . "</h1>" ;
+
+            try
+            {
+                $cursor->execute() ;
+                $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
+
+                echo "<table>" ;
+                foreach( $data as $record )
+                {
+                    if( !$numRecord )
+                    {
+                        echo "<tr>" ;
+                        foreach( $record as $field => $value )
+                        {
+                            echo "<th scope='col'>" ;
+                            echo $field ;
+                            echo "</th>" ;
+                        }
+                        echo "</tr>" ;                        
+                    }
+
+                    echo "<tr>" ;
+                    foreach( $record as $field => $value )
+                    {
+                        echo "<td scope='row'>" ;
+                        echo $value ;
+                        echo "</td>" ;
+                    }
+                    echo "</tr>" ;
+                    $numRecord++ ;
+                }
+                echo "</table><br>" . $numRecord . " lignes <br></body>" ;
             }
             catch( PDOException $erreur )
             {
