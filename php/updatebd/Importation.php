@@ -117,6 +117,16 @@ class Importation
         echo ">     " . $this->nbDelete . " occurences supprimées dans la table " . $this->nomTable . "<br><br>" ;
     }
 
+    public function afficheModificationDebut()
+    {
+        echo ">     Modifie dans la table " . $this->nomTable . " les occurences dont le numStand a changé dans la table import <br>" ;
+    }
+    
+    public function afficheModificationFin()
+    {
+        echo ">     " . $this->nbUpdate . " occurences modifiées dans la table " . $this->nomTable . "<br><br>" ;
+    }
+
     public function afficheDonnes( $data )
     {
         echo ">     Données:" . json_encode( $data ) . "<br>" ;
@@ -127,7 +137,24 @@ class Importation
         echo ">     Exécute requete SQL <b> " . $sql . "</b> resultat: " . json_encode($result) . "<br><br>" ;
     }
 
-    public function executeSql( string $sql )
+    public function unitTest( string $test, string $sql, bool $hasData=true )
+    {
+        echo "<br>Unit Test: " . $test ;
+
+        if( $hasData )
+        {
+            if( count( $this->executeSql( $sql, false ) ) ) echo " OK<br>" ;
+            else echo " FALSE<br>" ;
+        }
+        else
+        {
+            if( !count( $this->executeSql( $sql, false ) ) ) echo " OK<br>" ;
+            else echo " FALSE<br>" ;
+        }
+
+    }
+
+    public function executeSql( string $sql, bool $afficheResult = true )
     {
         try
         {
@@ -142,7 +169,7 @@ class Importation
                 $data = $cursor->fetchAll() ;
                 $this->restoreAfficheErreurDb() ;
 
-                $this->afficheExecSQL( $sql, $data ) ;
+                if( $afficheResult ) $this->afficheExecSQL( $sql, $data ) ;
 
                 return $data ;
             }

@@ -15,7 +15,8 @@
             "exposer" => "fdlc_exposer",
             "auteur" => "fdlc_auteur",
             "hall" => "fdlc_hall",
-            "import" => "fdlc_import"
+            "import" => "fdlc_import",
+            "AuteurExposantExposer" => "fdlc_AuteurExposantExposer"
          ) ;
 
         /**

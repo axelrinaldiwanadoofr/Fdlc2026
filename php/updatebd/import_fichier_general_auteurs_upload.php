@@ -85,6 +85,6 @@ echo '</pre>';
 
 ?>
 
-<form action="updatebd.php" method="POST">
+<form action="index.php" method="POST">
     <button type="submit" name="mon_bouton" value="valider">Revenir au menu</button>
 </form>

@@ -3,21 +3,32 @@
 require_once "../Connexion.php" ;
 require_once "ImportStand.php" ;
 require_once "ImportExposant.php" ;
+require_once "ImportAuteur.php" ;
+require_once "ImportExposer.php" ;
 
 $importStand = new ImportStand( Connexion::$tables["stand"]) ;
 $importExposant = new ImportExposant( Connexion::$tables["exposant"]) ;
+$importAuteur = new ImportAuteur( Connexion::$tables["auteur"]) ;
+$importExposer = new ImportExposer( Connexion::$tables["exposer"]) ;
 
-$importStand->ajouteDonnees() ;
-$importExposant->ajouteDonnees() ;
+$importExposer->supprimeDonnees() ;
+$importExposant->supprimeDonnees() ;
+$importAuteur->supprimeDonnees() ;
+$importStand->supprimeDonnees() ;
 
+$importAuteur->modifieDonnees() ;
 $importExposant->modifieDonnees() ;
 $importStand->modifieDonnees() ;
 
-$importExposant->supprimeDonnees() ;
-$importStand->supprimeDonnees() ;
+$importStand->ajouteDonnees() ;
+$importExposant->ajouteDonnees() ;
+$importAuteur->ajouteDonnees() ;
+$importExposer->ajouteDonnees() ;
+
+
 
 ?>
 
-<form action="updatebd.php" method="POST">
+<form action="index.php" method="POST">
     <button type="submit" name="mon_bouton" value="valider">Revenir au menu</button>
 </form>

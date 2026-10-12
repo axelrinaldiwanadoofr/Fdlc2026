@@ -36,6 +36,11 @@
                 "glob": "**/*",
                 "input": "php",
                 "output": "php"
+              },
+              {
+                "glob": "**/*",
+                "input": ".htaccess",
+                "output": "/"
               }
             ],
             "styles": ["src/global.scss", "src/theme/variables.scss"],

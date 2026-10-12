@@ -15,7 +15,8 @@
             "exposer" => "exposer",
             "auteur" => "auteur",
             "hall" => "hall",
-            "import" => "import"
+            "import" => "import",
+            "AuteurExposantExposer" => "AuteurExposantExposer"
          ) ;
 
         /**
