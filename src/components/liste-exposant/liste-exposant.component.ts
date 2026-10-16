@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, input } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {Observable} from "rxjs" ;
@@ -22,6 +22,7 @@ import {
 })
 export class ListeExposantComponent  implements OnInit 
 {
+  childHtml = input<string>( "$id $nom stand n° $numStand ") ;
 
   protected listeExposants: Observable<Array<Exposant>> | null = null ;
   protected serviceExposant: ExposantService ;
@@ -34,6 +35,15 @@ export class ListeExposantComponent  implements OnInit
   ngOnInit() 
   {
     this.listeExposants = this.serviceExposant.getTousLesExposants() ;
+  }
+
+  itemText( exposant: Exposant) : string
+  {
+    let childHtml = this.childHtml() ;
+    childHtml = childHtml.replace("$id", exposant.id.toString() ) ;
+    childHtml = childHtml.replace("$nom", exposant.nom ) ;
+    childHtml = childHtml.replace("$numStand", exposant.numStand.toString() ) ;
+    return childHtml ;
   }
 
 }

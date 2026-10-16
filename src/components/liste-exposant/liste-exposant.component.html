@@ -2,7 +2,7 @@
   @for( exposant of listeExposants | async;  track exposant.id )
   {
     <ion-item>
-      {{exposant.id}} {{exposant.nom}} {{exposant.numStand}}
+      {{itemText(exposant)}}
     </ion-item>
   }
 </ion-list>
