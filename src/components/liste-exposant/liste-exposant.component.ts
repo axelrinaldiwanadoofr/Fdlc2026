@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
@@ -15,7 +16,8 @@ import {
   imports: [
     IonList,
     IonItem,
-    AsyncPipe
+    AsyncPipe,
+    RouterLink
   ],
 })
 export class ListeExposantComponent  implements OnInit 
