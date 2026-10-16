@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-//import { RouterLink } from '@angular/router';
-import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {Observable} from "rxjs" ;
@@ -12,8 +10,6 @@ import {
   IonHeader, 
   IonTitle, 
   IonToolbar,
-  IonList,
-  IonItem,
   IonButtons,
   IonMenuButton,
   IonBackButton,
@@ -28,12 +24,9 @@ import {
     IonHeader, 
     IonTitle, 
     IonToolbar, 
-    IonList,
-    IonItem,
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    RouterLink,
     CommonModule, 
     ListeExposantComponent,
     FormsModule]
