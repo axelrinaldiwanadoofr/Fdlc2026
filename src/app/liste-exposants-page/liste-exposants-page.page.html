@@ -19,7 +19,7 @@
       <ion-list>
       @for( exposant of listeExposants | async;  track exposant.id )
       {
-        <ion-item>
+        <ion-item [routerLink]="['/page-exposant', exposant.id]">
           {{exposant.id}} {{exposant.nom}} {{exposant.numStand}}
         </ion-item>
       }

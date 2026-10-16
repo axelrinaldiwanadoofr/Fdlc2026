@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+//import { RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {Observable} from "rxjs" ;
@@ -13,7 +15,7 @@ import {
   IonItem,
   IonButtons,
   IonMenuButton,
-  IonBackButton
+  IonBackButton,
  } from '@ionic/angular';
 
 @Component({
@@ -30,6 +32,7 @@ import {
     IonButtons,
     IonMenuButton,
     IonBackButton,
+    RouterLink,
     CommonModule, 
     FormsModule]
 })

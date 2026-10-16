@@ -5,7 +5,11 @@ import {
   IonContent, 
   IonHeader, 
   IonTitle, 
-  IonToolbar } from '@ionic/angular';
+  IonToolbar,
+  IonButtons,
+  IonMenuButton,
+  IonBackButton,
+ } from '@ionic/angular';
 
 @Component({
   selector: 'app-page-exposant',
@@ -16,6 +20,9 @@ import {
     IonHeader, 
     IonTitle, 
     IonToolbar, 
+    IonButtons,
+    IonMenuButton,
+    IonBackButton,
     CommonModule, 
     FormsModule]
 })
