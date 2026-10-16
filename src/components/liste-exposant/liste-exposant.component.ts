@@ -23,7 +23,7 @@ import {
 export class ListeExposantComponent  implements OnInit 
 {
   childHtml = input<string>( "$id $nom stand n° $numStand ") ;
-  lienPage = input<string>( "/app-page-exposant" ) ;
+  lienPage = input<string>( "/page-exposant" ) ;
 
   protected listeExposants: Observable<Array<Exposant>> | null = null ;
   protected serviceExposant: ExposantService ;
