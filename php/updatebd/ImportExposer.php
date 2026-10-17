@@ -26,7 +26,7 @@ class ImportExposer extends Importation
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
 
-            $sqlAuteur = "select id from " . Connexion::$tables["auteur"] . " where prenom = :prenom and nom = :nom";
+            $sqlAuteur = "select id from " . Connexion::$tables["personne"] . " where prenom = :prenom and nom = :nom and specialite='auteur'";
             $cursorAuteur = $bd->prepare( $sqlAuteur ) ;
 
             $sqlExposant = "select id from " . Connexion::$tables["exposant"] . " where nom = :exposant";
@@ -127,7 +127,7 @@ class ImportExposer extends Importation
             $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE idExposant = :idExposant and idAuteur = :idAuteur" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
-            $sql = "SELECT * from " . Connexion::$tables["AuteurExposantExposer"] ;
+            $sql = "SELECT * from " . Connexion::$tables["PersonneExposantExposer"] . " where specialite = 'auteur';
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
             

@@ -3,7 +3,7 @@
 require_once "../Connexion.php" ;
 require_once "Importation.php" ;
 
-class ImportStand extends Importation
+class ImportLieu extends Importation
 {
     public function __construct( string $nomTable, bool $afficheErreurBd = false )
     {
@@ -25,7 +25,7 @@ class ImportStand extends Importation
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(num) values( :num )" ;
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(num,type) values( :num,'stand' )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
@@ -69,7 +69,7 @@ class ImportStand extends Importation
             $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 4` like :strnum" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE num = :num" ;
+            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE num = :num and type = 'stand'" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
             $sql = "SELECT num from " . $this->nomTable ;

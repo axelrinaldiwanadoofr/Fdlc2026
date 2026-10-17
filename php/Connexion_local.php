@@ -13,10 +13,19 @@
             "stand" => "stand",
             "exposant" => "exposant",
             "exposer" => "exposer",
-            "auteur" => "auteur",
+            "personne" => "personne",
             "hall" => "hall",
             "import" => "import",
-            "AuteurExposantExposer" => "AuteurExposantExposer"
+            "ecrire" => "ecrire",
+            "editeur" => "editeur",
+            "evenement" => "evenement",
+            "lieu" => "lieu",
+            "livre" => "livre",
+            "presenter" => "presenter",
+            "specialite" => "specialite",
+            "typelieu" => "typelieu",
+            "typeevenement" => "typeevenement",
+            "PersonneExposantExposer" => "PersonneExposantExposer"
          ) ;
 
         /**

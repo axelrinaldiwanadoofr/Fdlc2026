@@ -4,7 +4,7 @@ require_once "../Connexion.php" ;
 
 require_once "Importation.php" ;
 
-class ImportAuteur extends Importation
+class ImportPersonne extends Importation
 {
     public function __construct( string $nomTable, bool $afficheErreurBd = false )
     {
@@ -32,7 +32,7 @@ class ImportAuteur extends Importation
             $id = $cursorId->fetchAll(PDO::FETCH_ASSOC)[0]["nid"] ;
             $id++ ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, prenom, nom) values(:id, :prenom, :nom )" ;
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, prenom, nom, specialite) values(:id, :prenom, :nom, 'auteur' )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
@@ -75,7 +75,7 @@ class ImportAuteur extends Importation
             $sqlCherche = "SELECT * from " . Connexion::$tables["import"] . " where `COL 1` = :prenom and `COL 2` = :nom" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom and prenom = :prenom" ;
+            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE nom = :nom and prenom = :prenom and specialite='auteur'" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
             $sql = "SELECT prenom, nom from " . $this->nomTable ;
