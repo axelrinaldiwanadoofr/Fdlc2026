@@ -4,16 +4,15 @@ import { FormsModule } from '@angular/forms';
 import {Observable} from "rxjs" ;
 import { ExposantService } from '../../servcies/exopsant.service';
 import {Exposant} from "../../modeles/Exposant" ;
+import {ListeExposantComponent} from "../../components/liste-exposant/liste-exposant.component"
 import { 
   IonContent, 
   IonHeader, 
   IonTitle, 
   IonToolbar,
-  IonList,
-  IonItem,
   IonButtons,
   IonMenuButton,
-  IonBackButton
+  IonBackButton,
  } from '@ionic/angular';
 
 @Component({
@@ -25,12 +24,11 @@ import {
     IonHeader, 
     IonTitle, 
     IonToolbar, 
-    IonList,
-    IonItem,
     IonButtons,
     IonMenuButton,
     IonBackButton,
     CommonModule, 
+    ListeExposantComponent,
     FormsModule]
 })
 export class ListeExposantsPagePage implements OnInit 

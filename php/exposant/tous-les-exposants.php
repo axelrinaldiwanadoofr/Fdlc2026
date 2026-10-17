@@ -6,7 +6,7 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select id, nom, numStand from " . Connexion::$tables["exposant"] . " order by nom";
+    $sql = "select distinct id, nom, numStand from " . Connexion::$tables["exposant"] . " order by nom";
 
     $cursor = $bd->prepare( $sql ) ;
     $cursor->execute() ;
