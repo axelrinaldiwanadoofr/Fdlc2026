@@ -9,27 +9,38 @@ import {
   IonContent, 
   IonHeader, 
   IonTitle, 
-  IonToolbar,
-  IonButtons,
-  IonMenuButton,
-  IonBackButton,
- } from '@ionic/angular';
+  IonToolbar, 
+  IonButtons, 
+  IonMenuButton, 
+  IonBackButton, 
+  IonAccordion, 
+  IonList,
+  IonItem, 
+  IonLabel, 
+  IonAccordionGroup 
+} from '@ionic/angular';
 
 @Component({
   selector: 'app-liste-exposants-page',
   templateUrl: './liste-exposants-page.page.html',
   styleUrls: ['./liste-exposants-page.page.scss'],
   imports: [
-    IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    CommonModule, 
+    IonAccordion,
+    IonList,
+    IonItem,
+    IonLabel,
+    CommonModule,
     ListeExposantComponent,
-    FormsModule]
+    FormsModule,
+    IonAccordionGroup
+]
 })
 export class ListeExposantsPagePage implements OnInit 
 {

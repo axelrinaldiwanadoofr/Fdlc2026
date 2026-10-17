@@ -8,6 +8,21 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>    
   </ion-toolbar>
+  <ion-accordion-group>
+    <ion-accordion value="first">
+      <ion-item slot="header" color="light">
+        <ion-label>Rechercher / filtrer</ion-label>
+      </ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-list>
+          <ion-item>
+            <ion-label>Nom de lieu:</ion-label>
+
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>  
+  </ion-accordion-group>
 </ion-header>
 
 <ion-content [fullscreen]="true">
