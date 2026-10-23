@@ -1,4 +1,8 @@
 <ion-select>
-  <ion-select-option value="1">option 1</ion-select-option>
-  <ion-select-option value="2">option 2</ion-select-option>
+  @for( personne of listePersonnes | async;  track personne.id )
+  {
+    <ion-ion-select-option value="personne.nom">
+      {{personne.nom}} {{personne.prenom}}
+    </ion-select-option>
+  }
 </ion-select>
