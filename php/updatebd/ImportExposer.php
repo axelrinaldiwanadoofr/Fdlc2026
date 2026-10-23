@@ -43,8 +43,8 @@ class ImportExposer extends Importation
                     $cursorPersonne->bindValue( ":prenom", $row["prenom"], PDO::PARAM_STR ) ;
                     $cursorPersonne->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
                     $cursorPersonne->execute() ;
-                    $rowsPersonne = $cursorAuteur->fetchAll( PDO::FETCH_ASSOC ) ;
-                    $idPersonne = $rowsAuteur[0]["id"] ; 
+                    $rowsPersonne = $cursorPersonne->fetchAll( PDO::FETCH_ASSOC ) ;
+                    $idPersonne = $rowsPersonne[0]["id"] ; 
                 }
                 catch( PDOException $erreur )
                 {
