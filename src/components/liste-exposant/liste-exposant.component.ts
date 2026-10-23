@@ -22,7 +22,7 @@ import {
 })
 export class ListeExposantComponent  implements OnInit 
 {
-  childHtml = input<string>( "$id $nom stand n° $numStand ") ;
+  childHtml = input<string>( "$id $nom stand n° $numLieu ") ;
   lienPage = input<string>( "/page-exposant" ) ;
 
   protected listeExposants: Observable<Array<Exposant>> | null = null ;
@@ -43,7 +43,7 @@ export class ListeExposantComponent  implements OnInit
     let childHtml = this.childHtml() ;
     childHtml = childHtml.replace("$id", exposant.id.toString() ) ;
     childHtml = childHtml.replace("$nom", exposant.nom ) ;
-    childHtml = childHtml.replace("$numStand", exposant.numStand.toString() ) ;
+    childHtml = childHtml.replace("$numLieu", exposant.numLieu.toString() ) ;
     return childHtml ;
   }
 
