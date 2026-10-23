@@ -18,7 +18,7 @@ export class PersonneService
 
     getToutesLesPersonnes(): Observable<Personne[]>
     {
-        return this.http.get<Personne[]>( "php/exposant/toutes-les-personnes.php" ) ;
+        return this.http.get<Personne[]>( "php/personne/toutes-les-personnes.php" ) ;
     }
 
     /*

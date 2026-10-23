@@ -21,6 +21,7 @@ import {
 } from '@ionic/angular';
 
 import {NomLieuComboComponent} from "../../components/nom-lieu-combo/nom-lieu-combo.component" ;
+import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
 
 @Component({
   selector: 'app-liste-exposants-page',
@@ -42,7 +43,8 @@ import {NomLieuComboComponent} from "../../components/nom-lieu-combo/nom-lieu-co
     ListeExposantComponent,
     FormsModule,
     IonAccordionGroup,
-    NomLieuComboComponent
+    NomLieuComboComponent,
+    NomPersonneComboComponent
 ]
 })
 export class ListeExposantsPagePage implements OnInit 

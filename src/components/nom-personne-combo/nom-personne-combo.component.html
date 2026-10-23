@@ -1,7 +1,7 @@
 <ion-select>
   @for( personne of listePersonnes | async;  track personne.id )
   {
-    <ion-ion-select-option value="personne.nom">
+    <ion-select-option value="personne.nom">
       {{personne.nom}} {{personne.prenom}}
     </ion-select-option>
   }
