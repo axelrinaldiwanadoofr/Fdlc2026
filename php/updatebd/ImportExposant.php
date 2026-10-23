@@ -32,18 +32,18 @@ class ImportExposant extends Importation
             $id = $cursorId->fetchAll(PDO::FETCH_ASSOC)[0]["nid"] ;
             $id++ ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, nom, numStand) values(:id, :nom, :numStand )" ;
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(id, nom, numLieu) values(:id, :nom, :numLieu )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
             {
                 $noms = explode( "|", $row["COL 3"] ) ;
-                $numStands = explode( "|", $row["COL 4"] ) ;
+                $numLieux = explode( "|", $row["COL 4"] ) ;
                 for( $i=0 ; $i < count($noms) ; $i++ )
                 {
                     $cursorInsert->bindValue( ":id", $id++, PDO::PARAM_INT ) ;
                     $cursorInsert->bindValue( ":nom", $noms[$i], PDO::PARAM_STR ) ;
-                    $cursorInsert->bindValue( ":numStand", intval($numStands[$i]), PDO::PARAM_INT ) ;
+                    $cursorInsert->bindValue( ":numLieu", intval($numLieux[$i]), PDO::PARAM_INT ) ;
                     try
                     {
                         $cursorInsert->execute() ;
@@ -121,13 +121,13 @@ class ImportExposant extends Importation
 
             $this->resetNbUpdate() ;
 
-            $sqlUpdate = "UPDATE " . $this->nomTable . " set numStand = :numStand WHERE nom = :nom" ;
+            $sqlUpdate = "UPDATE " . $this->nomTable . " set numLieu = :numLieu WHERE nom = :nom" ;
             $cursorUpdate = $bd->prepare( $sqlUpdate ) ;
 
-            $sqlCherche = "SELECT nom, numStand from " . $this->nomTable . " where nom = :nom and numStand = :numStand" ;
+            $sqlCherche = "SELECT nom, numLieu from " . $this->nomTable . " where nom = :nom and numLieu = :numLieu" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sql = "SELECT `COL 3` as nom, `COL 4` as numStand from " . Connexion::$tables["import"] ;
+            $sql = "SELECT `COL 3` as nom, `COL 4` as numLieu from " . Connexion::$tables["import"] ;
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
             
@@ -136,14 +136,14 @@ class ImportExposant extends Importation
                 try
                 {
                     $cursorCherche->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
-                    $cursorCherche->bindValue( ":numStand", $row["numStand"], PDO::PARAM_INT ) ;
+                    $cursorCherche->bindValue( ":numLieu", $row["numLieu"], PDO::PARAM_INT ) ;
                     $cursorCherche->execute() ;
 
                     if( !$rowCherche = $cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
                     {
                         // Supprime le stand
                         $cursorUpdate->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
-                        $cursorUpdate->bindValue( ":numStand", $row["numStand"], PDO::PARAM_INT ) ;
+                        $cursorUpdate->bindValue( ":numLieu", $row["numLieu"], PDO::PARAM_INT ) ;
                         $cursorUpdate->execute() ;
                         $this->incrementeUpdateCompteur() ;
                     }    

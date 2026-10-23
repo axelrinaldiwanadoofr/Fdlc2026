@@ -25,7 +25,7 @@ class ImportLieu extends Importation
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(num,type) values( :num,'stand' )" ;
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(num,nom,type) values( :num,:nom,'stand' )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
@@ -36,6 +36,7 @@ class ImportLieu extends Importation
                     if( is_numeric($valeur) )
                     {
                         $cursorInsert->bindValue( ":num", intval($valeur), PDO::PARAM_INT ) ;
+                        $cursorInsert->bindValue( ":nom", $valeur, PDO::PARAM_STR ) ;
                         try
                         {
                             $cursorInsert->execute() ;

@@ -18,30 +18,44 @@ if (is_uploaded_file($_FILES['userfile']['tmp_name']))
   {
     $db = Connexion::getInstance() ;
 
-    $nbinsert = 0 ;
+    $nbupdate = 0 ;
     $nblignes = 0 ;
 
     try
     {
-      // Insere les nouvelles données
-      //$sql = "insert into " . Connexion::$tables["import"] . "( `COL 1`, `COL 2`, `COL 3`, `COL 4`, `COL 5`, `COL 6`, `COL 7`, `COL 8`) values( :c1, :c2, :c3, :c4, :c5, :c6, :c7, :c8 )" ;
-      //$cursor = $db->prepare( $sql ) ;
+      // Cherche les auteurs concernés par la mise à jour
+      $sql = "select id, nom, prenom from " . Connexion::$tables["personne"] 
+      . " where specialite='auteur' and concat( prenom, ' ', upper(nom)) = :nomprenom" ;
+      $cursor = $db->prepare( $sql ) ;
+
+      // Mise à jour de la biographie
+      $sqlUpdate = "update personne set biographie = :biographie where id=:id" ;
+      $cursorUpdate = $db->prepare( $sqlUpdate ) ;
 
       foreach( $lignes as $ligne )
       {
         $values = explode( $separateur, $ligne ) ;
-        $nblignes++ ;
         if( count($values) > 1 && $values[0] != "''" )
         {
-          for( $i = 0; $i < 8; $i++ )
+          $nblignes++ ;
+          $cursor->bindValue( ":nomprenom", $values[0] ) ;
+          $cursor->execute() ;
+          $row = $cursor->fetch() ;
+          
+          if( $row )
           {
-            //$cursor->bindValue( ":c" . $i+1, $values[$i], PDO::PARAM_STR) ;
+            $cursorUpdate->bindValue( ":biographie", $values[1] ) ;
+            $cursorUpdate->bindValue( ":id", $row["id"] ) ;
+            $cursorUpdate->execute() ;
+            $nbupdate++ ;
           }
-          //$cursor->execute() ;
-          $nbinsert++ ;
+          else
+          {
+            echo "<br>Auteur " . $values[0] . " non trouvé dans la table personne<br>" ; 
+          }
         }
       }
-      echo $nbinsert . " lignes ajouées dans la table " . Connexion::$tables["import"] . "<br>";
+      echo $nbupdate . " lignes modifiées dans la table " . Connexion::$tables["personne"] . "<br>";
     }
     catch( PDOException $error )
     {

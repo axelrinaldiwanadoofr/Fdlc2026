@@ -25,7 +25,12 @@
     </form>
 </p>
 
-import_biographie_auteurs_jeunesse.php
+<p>
+    <form action="import_planning_samedi.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Importer le planning du samedi"</button>
+    </form>
+</p>
+
 <p>
     <form action="afficheImport.php" method="POST">
         <button type="submit" name="mon_bouton" value="valider">Affiche la table import</button>

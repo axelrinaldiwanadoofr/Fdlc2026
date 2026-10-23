@@ -1,6 +1,31 @@
 
+create table exposant( 
+    id int,
+    numLieu int,
+    nom varchar(50)
+);
 
+alter table exposant add constraint pk_exposant primary key(id) ;
 
+create table exposer( 
+    idExposant int,
+    idPersonne int,
+    samedi_am boolean,
+    samedi_pm boolean,
+    dimanche_am boolean,
+    dimanche_pm boolean
+);
+
+alter table exposer add constraint pk_exposer primary key(idExposant,idPersonne) ;
+
+alter table exposant add constraint `fk_exposant_lieu` foreign key( numLieu ) 
+references lieu( num ) ;
+
+alter table exposer add constraint `fk_exposer_exposant` foreign key( idExposant ) 
+references exposant( id ) ;
+
+alter table exposer add constraint `fk_exposer_personne` foreign key( idPersonne ) 
+references personne( id ) ;
 
 rename table stand to lieu ;
 rename table auteur to personne ;
@@ -12,6 +37,26 @@ update lieu set nom = num where type = "stand" ;
 alter table lieu add nom varchar(50) null ;
 alter table lieu add type varchar(20) null ;
 
+create table personne( 
+    id int,
+    civilite varchar(20), 
+    prenom varchar(50), 
+    nom varchar(50), 
+    biographie varchar(1000), 
+    specialite varchar(20), 
+    photo varchar(100)) ;
+alter table personne add constraint pk_personne primary key(id) ;
+
+create table lieu( 
+    num int,
+    nom varchar(50), 
+    `type` varchar(20),
+    x1 int,
+    y1 int,
+    x2 int,
+    y2 int ) ;
+alter table lieu add constraint pk_lieu primary key(num) ;
+
 create table typelieu( type varchar(20) not null) ;
 alter table typelieu add constraint pk_typelieu primary key(type) ;
 
@@ -20,7 +65,6 @@ insert into typelieu( type ) values( 'toilettes' ) ;
 insert into typelieu( type ) values( 'restaurant' ) ;
 insert into typelieu( type ) values( 'théatre' ) ;
 
-update lieu set type = 'stand' ;
 
 alter table `lieu` add constraint `fk_lieu_typelieu` foreign key( `type` ) 
 references `typelieu`( `type` ) ;
@@ -78,11 +122,13 @@ create table evenement(
     id int not null, 
     typeevenement varchar(30),
     titre varchar(80),
-    theme varchar(40),
+    stitre varchar(80),
+    public varchar(80,)
     commentaire varchar(1000),
     debut datetime,
     fin datetime,
-    idAnimateur int ) ;
+    idAnimateur int,
+    numLieu int ) ;
 alter table evenement add constraint pk_evenement primary key(id) ;
 
 create table presenter( 
@@ -92,6 +138,7 @@ create table presenter(
 alter table presenter add constraint pk_presenter primary key(idEvenement, idLivre) ;
 
 ALTER TABLE `evenement` ADD CONSTRAINT `fk_evenement_typeevenment` FOREIGN KEY (`typeevenement`) REFERENCES `typeevenement`(`type`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `evenement` ADD CONSTRAINT `fk_evenement_lieu` FOREIGN KEY (`numlieu`) REFERENCES `lieu`(`num`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 ALTER TABLE `presenter` ADD CONSTRAINT `fk_presenter_livre` FOREIGN KEY (`idLivre`) REFERENCES `livre`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `presenter` ADD CONSTRAINT `fk_presenter_evenement` FOREIGN KEY (`idEvenement`) REFERENCES `evenement`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

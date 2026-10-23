@@ -26,25 +26,25 @@ class ImportExposer extends Importation
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
 
-            $sqlAuteur = "select id from " . Connexion::$tables["personne"] . " where prenom = :prenom and nom = :nom and specialite='auteur'";
-            $cursorAuteur = $bd->prepare( $sqlAuteur ) ;
+            $sqlPersonne = "select id from " . Connexion::$tables["personne"] . " where prenom = :prenom and nom = :nom and specialite='auteur'";
+            $cursorPersonne = $bd->prepare( $sqlPersonne ) ;
 
             $sqlExposant = "select id from " . Connexion::$tables["exposant"] . " where nom = :exposant";
             $cursorExposant = $bd->prepare( $sqlExposant ) ;
 
-            $sqlInsert = "INSERT INTO " . $this->nomTable . "(idExposant, idAuteur, samedi_am, samedi_pm, dimanche_am, dimanche_pm) values(:idExposant, :idAuteur, :samedi_am, :samedi_pm, :dimanche_am, :dimanche_pm )" ;
+            $sqlInsert = "INSERT INTO " . $this->nomTable . "(idExposant, idPersonne, samedi_am, samedi_pm, dimanche_am, dimanche_pm) values(:idExposant, :idPersonne, :samedi_am, :samedi_pm, :dimanche_am, :dimanche_pm )" ;
             $cursorInsert = $bd->prepare( $sqlInsert ) ;
 
             while( $row = $cursor->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT)) 
             {
-                $idAuteur = -1 ;
+                $idPersonne = -1 ;
                 try
                 {
-                    $cursorAuteur->bindValue( ":prenom", $row["prenom"], PDO::PARAM_STR ) ;
-                    $cursorAuteur->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
-                    $cursorAuteur->execute() ;
-                    $rowsAuteur = $cursorAuteur->fetchAll( PDO::FETCH_ASSOC ) ;
-                    $idAuteur = $rowsAuteur[0]["id"] ; 
+                    $cursorPersonne->bindValue( ":prenom", $row["prenom"], PDO::PARAM_STR ) ;
+                    $cursorPersonne->bindValue( ":nom", $row["nom"], PDO::PARAM_STR ) ;
+                    $cursorPersonne->execute() ;
+                    $rowsPersonne = $cursorAuteur->fetchAll( PDO::FETCH_ASSOC ) ;
+                    $idPersonne = $rowsAuteur[0]["id"] ; 
                 }
                 catch( PDOException $erreur )
                 {
@@ -73,7 +73,7 @@ class ImportExposer extends Importation
                     }
 
                     $cursorInsert->bindValue( ":idExposant", $idExposant, PDO::PARAM_INT ) ;
-                    $cursorInsert->bindValue( ":idAuteur", $idAuteur, PDO::PARAM_INT ) ;
+                    $cursorInsert->bindValue( ":idPersonne", $idPersonne, PDO::PARAM_INT ) ;
 
                     if( $row["sam"] == "X" ) $samedi_am = 1 ;
                     if( $row["spm"] == "X" ) $samedi_pm = 1 ;
@@ -124,10 +124,10 @@ class ImportExposer extends Importation
             $sqlCherche .= " and `COL 8` = :dimanche_pm" ;
             $cursorCherche = $bd->prepare( $sqlCherche ) ;
 
-            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE idExposant = :idExposant and idAuteur = :idAuteur" ;
+            $sqlDelete = "DELETE FROM " . $this->nomTable . " WHERE idExposant = :idExposant and idPersonne = :idPersonne" ;
             $cursorDelete = $bd->prepare( $sqlDelete ) ;
 
-            $sql = "SELECT * from " . Connexion::$tables["PersonneExposantExposer"] . " where specialite = 'auteur';
+            $sql = "SELECT * from " . Connexion::$tables["PersonneExposantExposer"] . " where specialite = 'auteur'" ;
             $cursor = $bd->prepare( $sql ) ;
             $cursor->execute() ;
             
@@ -157,7 +157,7 @@ class ImportExposer extends Importation
                     if( !$cursorCherche->fetch(PDO::FETCH_ASSOC, PDO::FETCH_ORI_NEXT) )
                     {
                         // Supprime le stand
-                        $cursorDelete->bindValue( ":idAuteur", $row["idAuteur"], PDO::PARAM_INT ) ;
+                        $cursorDelete->bindValue( ":idPersonne", $row["idPersonne"], PDO::PARAM_INT ) ;
                         $cursorDelete->bindValue( ":idExposant", $row["idExposant"], PDO::PARAM_INT ) ;
                         $cursorDelete->execute() ;
                         $this->incrementeDeleteCompteur() ;
@@ -165,7 +165,7 @@ class ImportExposer extends Importation
                 }
                 catch( PDOException $erreur )
                 {
-                    $this->afficheErreurDb( "idExposant: " . $row["idExposant"] . " idAuteur: " . $row["idAuteur"], $erreur ) ;
+                    $this->afficheErreurDb( "idExposant: " . $row["idExposant"] . " idPersonne: " . $row["idPersonne"], $erreur ) ;
                 }
             }
             $this->afficheSuppressionFin() ;
