@@ -1,3 +1,4 @@
+<ion-input placeholder="Taper une partie du nom" [(ngModel)]="nom" (ionInput)="nomChanged($event)"></ion-input>
 <ion-select>
   @for( personne of listePersonnes | async;  track personne.id )
   {
