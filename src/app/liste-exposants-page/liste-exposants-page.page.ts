@@ -63,4 +63,9 @@ export class ListeExposantsPagePage implements OnInit
     this.listeExposants = this.serviceExposant.getTousLesExposants() ;
   }
 
+  onAuteurSelected( nomPrenom: string )
+  {
+    alert( nomPrenom ) ;
+  }
+
 }

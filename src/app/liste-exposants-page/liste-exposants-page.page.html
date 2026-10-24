@@ -20,7 +20,9 @@
             <app-nom-lieu-combo></app-nom-lieu-combo>
           </ion-item>
           <ion-item>
-            <app-nom-personne-combo label="Auteur:"></app-nom-personne-combo>
+            <app-nom-personne-combo 
+              label="Auteur:"
+              (onPersonneSelected)="onAuteurSelected( $event )"></app-nom-personne-combo>
           </ion-item>
         </ion-list>
       </div>

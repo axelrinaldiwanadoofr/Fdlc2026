@@ -44,7 +44,7 @@ export class NomPersonneComboComponent  implements OnInit
   protected nom: string = "" ;
   protected showList = false ;
   public    label = input("Personne") ;
-  public    onPersonneSelected = output<number>() ;
+  public    onPersonneSelected = output<string>() ;
 
   constructor( servicePersonne: PersonneService ) 
   { 
@@ -59,11 +59,14 @@ export class NomPersonneComboComponent  implements OnInit
   nomChanged( event: any )
   {
     this.listePersonnes = this.servicePersonne.getToutesLesPersonnes( this.nom ) ;
+    this.showList = true ;
   }
 
   personneSelected( event: MouseEvent )
   {
-    alert( (event.target as HTMLElement).innerText ) ;
+    this.showList = false ;
+    this.nom = (event.target as HTMLElement).innerText ;
+    //this.onPersonneSelected.emit( (event.target as HTMLElement).innerText ) ;
   }
 
   onInputClick( event: MouseEvent )
