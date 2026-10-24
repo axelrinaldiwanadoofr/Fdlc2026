@@ -45,6 +45,6 @@ export class NomPersonneComboComponent  implements OnInit
 
   nomChanged( event: any )
   {
-    console.log( this.nom ) ;
+    this.listePersonnes = this.servicePersonne.getToutesLesPersonnes( this.nom ) ;
   }
 }

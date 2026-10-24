@@ -16,9 +16,19 @@ export class PersonneService
         this.http = http ;
     }
 
-    getToutesLesPersonnes(): Observable<Personne[]>
+    getToutesLesPersonnes( nom: string="" ): Observable<Personne[]>
     {
-        return this.http.get<Personne[]>( "php/personne/toutes-les-personnes.php" ) ;
+        let first = true ;
+        let url: string = "php/personne/toutes-les-personnes.php" ;
+
+        if( nom != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "nom=" + nom ;
+            first = false ;
+        }
+
+        return this.http.get<Personne[]>( url ) ;
     }
 
     /*
