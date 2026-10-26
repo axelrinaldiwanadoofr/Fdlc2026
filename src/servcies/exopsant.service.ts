@@ -16,14 +16,23 @@ export class ExposantService
         this.http = http ;
     }
 
-    getTousLesExposants(): Observable<Exposant[]>
+    getTousLesExposants( nom: string = "", nomLieu: string = "" ): Observable<Exposant[]>
     {
-        return this.http.get<Exposant[]>( "php/exposant/tous-les-exposants.php" ) ;
-    }
+        let first = true ;
+        let url = "php/exposant/tous-les-exposants.php" ;
 
-    /*
-    rechercheParTitre( titre: string ): Observable<Film[]>
-    {
-        return this.http.get<Film[]>( "http://localhost/myApp/php/films/rechercheParTitre.php?r-titre=" + titre ) ;
-    }*/
+        if( nom != "" ) 
+        {
+            url += (first)? "?" : "&"  
+            url += "nom=" + nom ;
+        }
+
+        if( nomLieu != "" ) 
+        {
+            url += (first)? "?" : "&"  
+            url += "nomLieu=" + nomLieu ;
+        }
+
+        return this.http.get<Exposant[]>( url ) ;
+    }
 }

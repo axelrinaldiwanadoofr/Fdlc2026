@@ -25,7 +25,8 @@
             "specialite" => "specialite",
             "typelieu" => "typelieu",
             "typeevenement" => "typeevenement",
-            "PersonneExposantExposer" => "PersonneExposantExposer"
+            "PersonneExposantExposer" => "PersonneExposantExposer",
+            "PersonneExposantExposerLieu" => "PersonneExposantExposerLieu"
          ) ;
 
         /**

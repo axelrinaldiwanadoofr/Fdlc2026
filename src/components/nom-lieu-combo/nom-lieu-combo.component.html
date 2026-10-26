@@ -1,4 +1,23 @@
-<ion-select>
-  <ion-select-option value="1">option 1</ion-select-option>
-  <ion-select-option value="2">option 2</ion-select-option>
-</ion-select>
+<ion-input 
+  [label]="label()" 
+  placeholder="Taper une partie du nom" 
+  [(ngModel)]="nom" 
+  (ionInput)="onNomChanged($event)"
+  (click)="onInputClick($event)">
+</ion-input>
+@if(showList())
+{
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        @for( lieu of listeLieux | async;  track lieu.num )
+        {
+          <ion-item (click)="onClickLieuSelected( lieu.nom )" >
+            {{lieu.nom}}
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+}
+

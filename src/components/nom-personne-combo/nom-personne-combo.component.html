@@ -2,17 +2,17 @@
   [label]="label()" 
   placeholder="Taper une partie du nom" 
   [(ngModel)]="nom" 
-  (ionInput)="nomChanged($event)"
+  (ionInput)="onNomChanged($event)"
   (click)="onInputClick($event)">
 </ion-input>
-@if(showList)
+@if(showList())
 {
   <ion-card>
     <ion-card-content>
       <ion-list>
         @for( personne of listePersonnes | async;  track personne.id )
         {
-          <ion-item (click)="personneSelected( $event )">
+          <ion-item (click)="onClickPersonneSelected( personne.nom, personne.prenom )" >
             {{personne.nom}} {{personne.prenom}}
           </ion-item>
         }

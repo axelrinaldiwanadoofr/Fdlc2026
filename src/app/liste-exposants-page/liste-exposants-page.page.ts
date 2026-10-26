@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {Observable} from "rxjs" ;
@@ -17,7 +17,8 @@ import {
   IonList,
   IonItem, 
   IonLabel, 
-  IonAccordionGroup 
+  IonButton,
+  IonAccordionGroup,
 } from '@ionic/angular';
 
 import {NomLieuComboComponent} from "../../components/nom-lieu-combo/nom-lieu-combo.component" ;
@@ -39,6 +40,7 @@ import { NomPersonneComboComponent } from '../../components/nom-personne-combo/n
     IonList,
     IonItem,
     IonLabel,
+    IonButton,
     CommonModule,
     ListeExposantComponent,
     FormsModule,
@@ -49,23 +51,51 @@ import { NomPersonneComboComponent } from '../../components/nom-personne-combo/n
 })
 export class ListeExposantsPagePage implements OnInit 
 {
-  protected listeExposants: Observable<Array<Exposant>> | null = null ;
-  protected serviceExposant: ExposantService ;
+  // Recupère les références de web component fils
+  protected listeExposant = viewChild(ListeExposantComponent);
+  protected nomLieuCombo = viewChild(NomLieuComboComponent);
+  protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
 
+  // Valeurs récupérées des web component de filtration
+  public flt_nomAuteur: string = "" ;
+  public flt_nomLieu: string = "" ;
 
-  constructor( serviceExposant: ExposantService ) 
+  // Critères de rechercher d'un ensemble d'exposant
+  public nomAuteur: string = "" ;
+  public nomLieu: string = "" ;
+
+  constructor() 
   { 
-    this.serviceExposant = serviceExposant ;
   }
 
   ngOnInit() 
   {
-    this.listeExposants = this.serviceExposant.getTousLesExposants() ;
   }
 
-  onAuteurSelected( nomPrenom: string )
+  onAuteurSelected( nom: string )
   {
-    alert( nomPrenom ) ;
+    this.flt_nomAuteur = nom ;
   }
 
+  onLieuSelected( nom: string )
+  {
+    this.flt_nomLieu = nom ;
+  }
+
+  fermeRechercherFiltrer()
+  {
+    // Referme l'accordion group
+    let accordionGroup = document.getElementById( "liste-exposants-page-accordion" ) ;
+    if( accordionGroup ) (accordionGroup as HTMLInputElement).value = "" ;
+  }
+
+  onFiltrer()
+  {
+    this.nomAuteur = this.flt_nomAuteur ;
+    this.nomLieu = this.flt_nomLieu ;
+
+    // Masque les listes de recherche 
+    this.nomLieuCombo()?.masqueListe() ;
+    this.nomPersonneCombo()?.masqueListe() ;
+  }
 }
