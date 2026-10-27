@@ -13,4 +13,11 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./accueil/accueil.page').then( m => m.AccueilPage)
   },
+  {
+    // Affiche les détails de la personne correspondant à l'identifiant
+    path: 'page-personne/:id',
+    loadComponent: () => import('./page-personne/page-personne.page')
+      .then(m => m.PagePersonnePage)
+  },
+
 ];
