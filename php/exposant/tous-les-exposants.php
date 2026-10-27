@@ -1,12 +1,15 @@
 <?php
 
+header("Access-Control-Allow-Origin: http://localhost:8101");
+header("Content-Type: application/json; charset=UTF-8");
+
 require_once "../Connexion.php" ;
 
 try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select id, nom, numStand from " . Connexion::$tables["exposant"] . " order by nom";
+    $sql = "select id, nom, numLieu as numStand from " . Connexion::$tables["exposant"] . " order by nom";
 
     $cursor = $bd->prepare( $sql ) ;
     $cursor->execute() ;

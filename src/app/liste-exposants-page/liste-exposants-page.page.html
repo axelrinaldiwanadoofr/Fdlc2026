@@ -1,12 +1,13 @@
+
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Liste des exposants</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>    
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>    
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -15,13 +16,8 @@
     <ion-toolbar>
       <ion-title size="large">liste-exposants-page</ion-title>
     </ion-toolbar>
-    </ion-header>
-      <ion-list>
-      @for( exposant of listeExposants | async;  track exposant.id )
-      {
-        <ion-item>
-          {{exposant.id}} {{exposant.nom}} {{exposant.numStand}}
-        </ion-item>
-      }
-    </ion-list>
+  </ion-header>
+
+  <app-liste-exposant></app-liste-exposant>
+
 </ion-content>

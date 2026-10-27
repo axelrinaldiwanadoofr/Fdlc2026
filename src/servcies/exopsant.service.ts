@@ -16,9 +16,20 @@ export class ExposantService
         this.http = http ;
     }
 
+    
     getTousLesExposants(): Observable<Exposant[]>
     {
-        return this.http.get<Exposant[]>( "php/exposant/tous-les-exposants.php" ) ;
+        return this.http.get<Exposant[]>(
+            "http://localhost/Fdlc2026/php/exposant/tous-les-exposants.php"
+        );
+    }
+
+    /*permet de récupérer un exposant précis grâce à son identifiant.*/
+    getExposantParId(id: number): Observable<Exposant[]>
+    {
+        return this.http.get<Exposant[]>(
+            "http://localhost/Fdlc2026/php/exposant/exposant-id.php?id=" + id
+        );
     }
 
     /*

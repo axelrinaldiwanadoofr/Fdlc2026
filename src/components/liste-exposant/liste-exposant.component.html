@@ -1,0 +1,7 @@
+
+<ion-list>
+  @for (exposant of listeExposants | async; track exposant.id)
+  {
+    <app-exposant-card [id]="exposant.id"></app-exposant-card>
+  }
+</ion-list>
