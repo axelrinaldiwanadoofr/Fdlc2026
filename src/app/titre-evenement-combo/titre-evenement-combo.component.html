@@ -1,0 +1,23 @@
+
+<ion-searchbar
+  placeholder="Rechercher un événement"
+  [value]="recherche"
+  (ionInput)="onRechercheChange($event.detail.value)">
+</ion-searchbar>
+
+<ion-item>
+  <ion-select
+    label="Titre de l'événement"
+    labelPlacement="stacked"
+    placeholder="Sélectionner un événement"
+    [value]="titre"
+    (ionChange)="onTitreChange($event.detail.value)">
+
+    @for (evenement of titresFiltres; track evenement) {
+      <ion-select-option [value]="evenement">
+        {{ evenement }}
+      </ion-select-option>
+    }
+
+  </ion-select>
+</ion-item>
