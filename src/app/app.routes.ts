@@ -13,4 +13,13 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./accueil/accueil.page').then( m => m.AccueilPage)
   },
+  
+  //on en ajoute 1 pour le kiff
+  {
+    path: 'page-evenement',
+    loadComponent: () =>
+      import('./page-evenement/page-evenement.component')
+        .then(m => m.PageEvenementComponent)
+  },
+
 ];

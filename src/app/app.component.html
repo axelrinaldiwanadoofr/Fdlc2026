@@ -7,12 +7,21 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
+
       <ion-list>
-        <ion-item (click)="goToPage( 'liste-exposants-page')">Liste des exposants</ion-item>
-        <ion-menu-toggle auto-hide="false">
-          <ion-item [routerLink]="['/liste-exposants-page']">Liste des exposants</ion-item>
+        <ion-menu-toggle auto-hide="true">
+          <ion-item [routerLink]="['/liste-exposants-page']">
+            Liste des exposants
+          </ion-item>
+        </ion-menu-toggle>
+        
+        <ion-menu-toggle auto-hide="true">
+          <ion-item [routerLink]="['/page-evenement']">
+            Événements
+          </ion-item>
         </ion-menu-toggle>        
       </ion-list>
+
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="main"></ion-router-outlet>

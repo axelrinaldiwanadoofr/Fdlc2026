@@ -1,0 +1,30 @@
+
+<ion-input
+  label="Titre du livre"
+  placeholder="Taper une partie du titre"
+  [(ngModel)]="recherche"
+  (ionInput)="onRechercheChange($event)"
+  (click)="onInputClick()">
+</ion-input>
+
+@if (showList()) {
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+
+        @for (titre of titresFiltres; track titre) {
+          <ion-item
+            button="true"
+            (click)="onTitreSelected(titre)">
+            {{ titre }}
+          </ion-item>
+        } @empty {
+          <ion-item>
+            Aucun livre trouvé
+          </ion-item>
+        }
+
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+}
