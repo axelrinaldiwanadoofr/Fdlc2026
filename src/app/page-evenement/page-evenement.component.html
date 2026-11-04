@@ -1,25 +1,36 @@
-
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
-
     <ion-title>Détail de l'événement</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
+  @if (evenement(); as e) {
+    <ion-list>
+      <ion-item>
+        <ion-label>
+          <h2>{{ e.titre }}</h2>
+          <p>Type : {{ e.type }}</p>
+          <p>Début : {{ e.debut }}</p>
+          <p>Fin : {{ e.fin }}</p>
+          <p>Lieu : {{ e.lieu || 'Non précisé' }}</p>
+          <p>Animateur : {{ e.animateur || 'Non précisé' }}</p>
+          @if (e.commentaire) {
+            <p>Commentaire : {{ e.commentaire }}</p>
+          }
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  } @else {
     <ion-item>
-      <ion-label>
-        <h2>Événement</h2>
-        <p>Les informations de l'événement apparaîtront ici.</p>
-      </ion-label>
+      <ion-label>{{ message() }}</ion-label>
     </ion-item>
-  </ion-list>
+  }
 
-
+  <!-- Combobox conservée pour le test tant que le service livre n'est pas disponible -->
   <app-titre-livre-combo
     [titres]="['Livre de test 1', 'Livre de test 2']"
     (titreSelectionne)="titreChoisi = $event">
@@ -28,6 +39,4 @@
   @if (titreChoisi) {
     <p>Vous avez sélectionné : {{ titreChoisi }}</p>
   }
-
-
 </ion-content>

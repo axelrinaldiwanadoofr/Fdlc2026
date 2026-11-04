@@ -14,7 +14,14 @@ export const routes: Routes = [
     loadComponent: () => import('./accueil/accueil.page').then( m => m.AccueilPage)
   },
   
-  //on en ajoute 1 pour le kiff
+  // Page de détail accessible avec l'identifiant d'un événement
+  {
+    path: 'page-evenement/:id',
+    loadComponent: () =>
+      import('./page-evenement/page-evenement.component')
+        .then(m => m.PageEvenementComponent)
+  },
+  // Accès depuis le menu : un message demande de choisir un événement
   {
     path: 'page-evenement',
     loadComponent: () =>
