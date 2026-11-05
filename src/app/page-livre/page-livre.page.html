@@ -1,0 +1,41 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Fiche livre</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @for( livre of livres | async; track livre.id )
+  {
+    <ion-list>
+      <ion-item>
+        <ion-label>
+          <h1>{{ livre.titre }}</h1>
+          <p>{{ livre.genre }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          <h2>Éditeur</h2>
+          <p>{{ livre.editeur || 'Non renseigné' }}</p>
+        </ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label class="ion-text-wrap">
+          <h2>Résumé</h2>
+          <p>{{ livre.resume || 'Aucun résumé disponible.' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  }
+  @empty
+  {
+    <p class="ion-padding">Livre introuvable ou en cours de chargement.</p>
+  }
+</ion-content>
