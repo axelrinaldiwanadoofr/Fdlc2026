@@ -1,6 +1,8 @@
 
-import { Component, input, output, signal } from '@angular/core';
+import { Component, output, signal } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Observable, of, catchError } from 'rxjs';
 
 import {
   IonInput,
@@ -9,6 +11,9 @@ import {
   IonCard,
   IonCardContent
 } from '@ionic/angular';
+
+import { Livre } from '../../modeles/Livre';
+import { LivreService } from '../../servcies/livre.service';
 
 @Component({
   selector: 'app-titre-livre-combo',
@@ -20,47 +25,47 @@ import {
     IonItem,
     IonCard,
     IonCardContent,
-    FormsModule
-  ],
+    FormsModule,
+    AsyncPipe
+  ]
 })
 export class TitreLivreComboComponent {
 
-  // Liste des titres reçue depuis la page parent
-  public titres = input<string[]>([]);
+  protected recherche = '';
+  protected showList = signal(false);
+  protected erreur = signal(false);
+  protected listeLivres: Observable<Livre[]> = of([]);
 
-  // Envoie le titre choisi à la page parent
   public titreSelectionne = output<string>();
 
-  // Texte saisi par l'utilisateur
-  protected recherche: string = '';
+  constructor(private serviceLivre: LivreService) {}
 
-  // Affichage des propositions
-  protected showList = signal(false);
-
-  // Filtre les titres selon le texte saisi
-  protected get titresFiltres(): string[] {
-    const texte = this.recherche.trim().toLowerCase();
-
-    return this.titres().filter(titre =>
-      titre.toLowerCase().includes(texte)
-    );
-  }
-
-  // À chaque frappe au clavier
   onRechercheChange(event: CustomEvent) {
     this.recherche = event.detail.value ?? '';
-    this.showList.set(true);
+    this.chargerLivres();
   }
 
-  // Quand l'utilisateur choisit un livre
+  onInputClick() {
+    this.chargerLivres();
+  }
+
+  private chargerLivres() {
+    this.showList.set(true);
+    this.erreur.set(false);
+
+    this.listeLivres = this.serviceLivre
+      .getTousLesLivres(this.recherche)
+      .pipe(
+        catchError(() => {
+          this.erreur.set(true);
+          return of([]);
+        })
+      );
+  }
+
   onTitreSelected(titre: string) {
     this.recherche = titre;
     this.showList.set(false);
     this.titreSelectionne.emit(titre);
-  }
-
-  // Quand l'utilisateur clique dans le champ
-  onInputClick() {
-    this.showList.set(true);
   }
 }

@@ -30,11 +30,11 @@
     </ion-item>
   }
 
-  <!-- Combobox conservée pour le test tant que le service livre n'est pas disponible -->
+
   <app-titre-livre-combo
-    [titres]="['Livre de test 1', 'Livre de test 2']"
     (titreSelectionne)="titreChoisi = $event">
   </app-titre-livre-combo>
+
 
   @if (titreChoisi) {
     <p>Vous avez sélectionné : {{ titreChoisi }}</p>

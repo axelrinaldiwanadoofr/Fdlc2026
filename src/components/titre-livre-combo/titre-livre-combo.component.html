@@ -11,19 +11,20 @@
   <ion-card>
     <ion-card-content>
       <ion-list>
-
-        @for (titre of titresFiltres; track titre) {
-          <ion-item
-            button="true"
-            (click)="onTitreSelected(titre)">
-            {{ titre }}
+        @for (livre of listeLivres | async; track livre.id) {
+          <ion-item button="true"
+                    (click)="onTitreSelected(livre.titre)">
+            {{ livre.titre }}
           </ion-item>
         } @empty {
           <ion-item>
-            Aucun livre trouvé
+            @if (erreur()) {
+              Service des livres indisponible
+            } @else {
+              Aucun livre trouvé
+            }
           </ion-item>
         }
-
       </ion-list>
     </ion-card-content>
   </ion-card>
