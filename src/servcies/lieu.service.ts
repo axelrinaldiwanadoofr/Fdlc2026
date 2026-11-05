@@ -37,4 +37,18 @@ export class LieuService
 
         return this.http.get<Lieu[]>( url ) ;
     }
+
+    // Renvoie la liste des types de lieu (table typelieu)
+    // type : début du type recherché (optionnel)
+    getTousLesTypesLieu( type: string = "" ): Observable<{type: string}[]>
+    {
+        let url: string = "php/lieu/tous-les-types-lieu.php" ;
+
+        if( type != "" )
+        {
+            url += "?type=" + type ;
+        }
+
+        return this.http.get<{type: string}[]>( url ) ;
+    }
 }
