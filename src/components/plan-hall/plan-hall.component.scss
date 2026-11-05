@@ -72,25 +72,25 @@
     pointer-events: none;
 }
 
-.repere path
+.repere rect, .repere .pointe
 {
     fill: #e53935;
+    // contour blanc pour que la bulle se voie sur les stands bleus
     stroke: white;
-    stroke-width: 1;
+    stroke-width: 3;
+    stroke-linejoin: round;
 }
 
 .repere text
 {
     font-size: 22px;
     font-weight: bold;
-    fill: #e53935;
-    // contour blanc pour que le texte reste lisible sur le plan
-    stroke: white;
-    stroke-width: 4;
-    paint-order: stroke;
+    fill: white;
+    text-anchor: middle;
+    dominant-baseline: central;
 }
 
-// le repère saute un peu pour attirer l'oeil
+// la bulle saute un peu pour attirer l'oeil
 .saut
 {
     animation: saut 0.8s ease-in-out infinite alternate;
