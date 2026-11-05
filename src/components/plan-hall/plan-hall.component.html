@@ -29,13 +29,17 @@
           </rect>
         }
 
-        <!-- repère au dessus du lieu recherché -->
-        @if( lieuSelectionne(); as lieu )
+        <!-- repère GPS au dessus du lieu recherché -->
+        @if( repere(); as r )
         {
-          <circle class="repere"
-            [attr.cx]="(lieu.x1 + lieu.x2) / 2"
-            [attr.cy]="lieu.y1 > 34 ? lieu.y1 - 20 : lieu.y2 + 20"
-            r="14" />
+          <g class="repere" [attr.transform]="'translate(' + r.x + ',' + r.y + ')'">
+            <g class="saut">
+              <!-- icone "place" de material (24 x 24), la pointe est en 12, 22 -->
+              <path transform="translate(-19,-35) scale(1.6)"
+                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+              <text x="16" y="-14">ICI</text>
+            </g>
+          </g>
         }
       </svg>
     }
