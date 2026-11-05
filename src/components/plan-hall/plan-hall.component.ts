@@ -76,6 +76,17 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
   protected lieuSelectionne = computed( () => this.zones().find( l => l.num == this.numLieu() ) ) ;
 
+  // Pointe du repère GPS : en haut au milieu du lieu, ou plus bas s'il n'y a pas
+  // la place au dessus (le repère fait environ 45 px de haut)
+  protected repere = computed( () =>
+  {
+    let lieu = this.lieuSelectionne() ;
+    if( !lieu ) return null ;
+
+    let y = lieu.y1 > 45 ? lieu.y1 : Math.max( ( lieu.y1 + lieu.y2 ) / 2, 45 ) ;
+    return { x: ( lieu.x1 + lieu.x2 ) / 2, y: y } ;
+  }) ;
+
   constructor( serviceLieu: LieuService, router: Router, cdr: ChangeDetectorRef )
   {
     this.serviceLieu = serviceLieu ;
