@@ -6,7 +6,7 @@ import { IonBadge, IonButton, IonSpinner } from '@ionic/angular';
 import { LivreAuteur } from '../../modeles/LivreAuteur';
 import { LivresAuteurService } from '../../services/livres-auteur.service';
 
-// Grille des livres d'un auteur avec leur couverture
+// Livres d'un auteur avec leur couverture
 @Component({
   selector: 'app-livres-auteur',
   templateUrl: './livres-auteur.component.html',
@@ -24,13 +24,12 @@ export class LivresAuteurComponent implements OnChanges
   public prenom = input<string>( "" ) ;
   public nom = input<string>( "" ) ;
 
-  // on cherche a la BnF seulement si c'est un auteur
+  // recherche à la BnF seulement pour un auteur
   public auteur = input<boolean>( true ) ;
 
   protected livres = signal<LivreAuteur[]>( [] ) ;
   protected chargement = signal( false ) ;
 
-  // 12 livres au debut, le bouton affiche les autres
   protected nbAffiches = signal( 12 ) ;
   protected livresAffiches = computed( () => this.livres().slice( 0, this.nbAffiches() ) ) ;
 
@@ -52,7 +51,7 @@ export class LivresAuteurComponent implements OnChanges
     }) ;
   }
 
-  // Image introuvable : on passe a la suivante, s'il n'y en a plus on affiche l'icone
+  // Image en erreur : on essaie la suivante
   imageSuivante( livre: LivreAuteur )
   {
     livre.couvertures = livre.couvertures.slice( 1 ) ;

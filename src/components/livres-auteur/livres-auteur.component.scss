@@ -1,4 +1,3 @@
-// toutes les fiches ont la meme largeur
 .grille
 {
     display: grid;
@@ -11,7 +10,6 @@
     cursor: pointer;
 }
 
-// format d'un livre meme sans image
 .couverture
 {
     position: relative;
@@ -31,7 +29,7 @@
     object-fit: cover;
 }
 
-// l'icone est blanche, avec le masque on la met en gris
+// icône en gris
 .sans-image
 {
     width: 45%;
@@ -48,7 +46,7 @@
     left: 6px;
 }
 
-// titre sur 2 lignes max
+// 2 lignes max
 .titre
 {
     margin: 6px 0 2px;

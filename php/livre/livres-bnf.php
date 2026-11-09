@@ -1,8 +1,6 @@
 <?php
 
-// Notices de la BnF pour un auteur
-// La reponse est gardee 7 jours dans un fichier car la BnF bloque
-// les adresses qui font trop de requetes (ex : tout le salon sur le meme wifi)
+// Notices de la BnF pour un auteur (gardées 7 jours en cache)
 
 header( "Content-Type: text/xml; charset=utf-8" ) ;
 
@@ -25,7 +23,6 @@ if( is_file( $fichier ) && time() - filemtime( $fichier ) < 7 * 24 * 3600 )
     exit ;
 }
 
-// livres imprimes de l'auteur (doctype a)
 $requete = 'bib.author all "' . str_replace( '"', '', $nom . " " . $prenom ) . '" and bib.doctype any "a"' ;
 $url = "https://catalogue.bnf.fr/api/SRU?version=1.2&operation=searchRetrieve&recordSchema=dublincore"
      . "&maximumRecords=200&query=" . rawurlencode( $requete ) ;
@@ -40,7 +37,7 @@ if( $xml !== false && str_contains( $xml, "searchRetrieveResponse" ) )
 }
 else if( is_file( $fichier ) )
 {
-    // la BnF ne repond pas, on renvoie l'ancienne reponse
+    // BnF hors service : ancienne réponse
     readfile( $fichier ) ;
 }
 else
