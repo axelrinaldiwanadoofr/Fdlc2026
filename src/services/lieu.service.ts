@@ -57,7 +57,7 @@ export class LieuService
             y2: lieu.y2
         } ) ;
     }
-}
+
     // Renvoie la liste des types de lieu (table typelieu)
     // type : début du type recherché (optionnel)
     getTousLesTypesLieu( type: string = "" ): Observable<{type: string}[]>
