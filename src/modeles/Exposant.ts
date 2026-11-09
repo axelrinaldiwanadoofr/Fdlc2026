@@ -5,6 +5,7 @@ export class Exposant
     public nom: string = "" ;
     public numLieu: number = -1 ;
     public nomLieu: string = "" ;
+    public hall: number = -1 ;
 
     constructor( id: number = -1, nom: string = "", numLieu: number = -1, nomLieu: string = "" )
     {
