@@ -3,7 +3,7 @@
 require_once "../Connexion.php" ;
 require_once "Importation.php" ;
 
-$importation = new Importation( Connexion::$tables["AuteurExposantExposer"] ) ;
+$importation = new Importation( Connexion::$tables["PersonneExposantExposer"] ) ;
 $importation->afficheContenuTable() ;
 ?>
 

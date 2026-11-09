@@ -23,8 +23,8 @@ if (is_uploaded_file($_FILES['userfile']['tmp_name']))
 
     try
     {
-      // Met à jour le champ type de la table auteur
-      $sql = "update " . Connexion::$tables["auteur"] . " set type = :type where prenom = :prenom and nom = :nom" ;
+      // Met à jour le champ type de la table personne
+      $sql = "update " . Connexion::$tables["personne"] . " set type = :type where prenom = :prenom and nom = :nom" ;
       $cursor = $db->prepare( $sql ) ;
 
       foreach( $lignes as $ligne )

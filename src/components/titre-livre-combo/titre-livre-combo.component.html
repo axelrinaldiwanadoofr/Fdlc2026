@@ -1,6 +1,5 @@
-
 <ion-input
-  label="Titre du livre"
+  [label]="label()"
   placeholder="Taper une partie du titre"
   [(ngModel)]="recherche"
   (ionInput)="onRechercheChange($event)"
@@ -12,8 +11,7 @@
     <ion-card-content>
       <ion-list>
         @for (livre of listeLivres | async; track livre.id) {
-          <ion-item button="true"
-                    (click)="onTitreSelected(livre.titre)">
+          <ion-item button="true" (click)="onClickTitreSelected(livre.titre)">
             {{ livre.titre }}
           </ion-item>
         } @empty {

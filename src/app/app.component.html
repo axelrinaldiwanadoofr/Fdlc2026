@@ -1,27 +1,25 @@
 <ion-app>
-  <!--<ion-router-outlet></ion-router-outlet>-->
   <ion-menu side="end" menuId="first" contentId="main">
     <ion-header>
       <ion-toolbar color="primary">
-        <ion-title>Start Menu</ion-title>
+        <ion-title>Menu</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content>
-
       <ion-list>
-        <ion-menu-toggle auto-hide="true">
-          <ion-item [routerLink]="['/liste-exposants-page']">
-            Liste des exposants
-          </ion-item>
+        <ion-menu-toggle auto-hide="false">
+          <ion-item [routerLink]="['/']">Accueil</ion-item>
         </ion-menu-toggle>
-        
-        <ion-menu-toggle auto-hide="true">
-          <ion-item [routerLink]="['/page-evenement']">
-            Événements
-          </ion-item>
-        </ion-menu-toggle>        
+        <ion-menu-toggle auto-hide="false">
+          <ion-item [routerLink]="['/page-liste-evenements']">Liste des événements</ion-item>
+          <ion-item [routerLink]="['/liste-exposants-page']">Liste des exposants</ion-item>
+          <ion-item [routerLink]="['/page-liste-personnes']">Liste des personnes</ion-item>
+          <ion-item [routerLink]="['/liste-livres-page']">Liste des livres</ion-item>
+          <ion-item [routerLink]="['/page-planning-personnel']">Mon planning</ion-item>
+          <ion-item [routerLink]="['/plans']">Plan du salon</ion-item>
+          <ion-item [routerLink]="['/config']">Config</ion-item>
+        </ion-menu-toggle>
       </ion-list>
-
     </ion-content>
   </ion-menu>
   <ion-router-outlet id="main"></ion-router-outlet>
