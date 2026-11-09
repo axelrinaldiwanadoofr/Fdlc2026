@@ -1,110 +1,197 @@
+
 <?php
 
-require_once "../Connexion.php" ;
-
 /*
-try
-{
-    $bd = Connexion::getInstance() ;
+ * Fichier : toutes-les-personnes.php
+ *
+ * Objectif :
+ * Récupérer la liste des personnes depuis la vue SQL
+ * PersonneComplete, en appliquant les filtres demandés.
+ *
+ * Les informations liées aux livres, aux exposants et aux
+ * événements sont déjà regroupées dans cette vue.
+ *
+ * Ce fichier ne contient donc plus de AND EXISTS.
+ */
 
-
-    $sql = "select distinct id, civilite, prenom, nom, specialite, biographie, photo from " . Connexion::$tables["personne"] . " where 1 ";
-
-    if( isset($_GET["nom"])) $sql .= " and nom like :nom " ;
-
-    $cursor = $bd->prepare( $sql ) ;
-
-    if( isset($_GET["nom"])) $cursor->bindValue( ":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
-
-    $cursor->execute() ;
-
-    $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
-
-    echo json_encode( $data ) ;
-
-}
-catch( PDOException $erreur )
-{
-    echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
-}
-*/
+// Importation de la classe qui gère la connexion à MySQL.
+require_once "../Connexion.php";
 
 try
 {
-    $bd = Connexion::getInstance() ;
+    // Récupération de la connexion à la base de données.
+    $bd = Connexion::getInstance();
 
-    // Les critères renseignés s'ajoutent avec l'opérateur AND.
-    // Les critères portant sur les tables liées utilisent "exists" pour ne pas dupliquer les personnes.
-    $sql = "select p.id, p.civilite, p.prenom, p.nom, p.specialite, p.biographie, p.photo from " . Connexion::$tables["personne"] . " as p where 1 " ;
+    // Récupération du nom de la vue depuis Connexion.php.
+    $vue = Connexion::$tables["PersonneComplete"];
 
-    if( isset($_GET["id"])) $sql .= " and p.id = :id " ;
+    /*
+     * Construction de la requête principale.
+     *
+     * DISTINCT évite de retourner plusieurs fois la même
+     * personne lorsqu'elle possède plusieurs livres,
+     * exposants ou événements.
+     *
+     * WHERE 1 permet d'ajouter facilement des conditions AND.
+     */
+    $sql = "SELECT DISTINCT
+                p.id,
+                p.civilite,
+                p.prenom,
+                p.nom,
+                p.specialite,
+                p.biographie,
+                p.photo
+            FROM " . $vue . " AS p
+            WHERE 1";
 
-    if( isset($_GET["specialite"])) $sql .= " and p.specialite like :specialite " ;
+    /*
+     * FILTRES SUR LA PERSONNE
+     */
 
-    if( isset($_GET["nom"])) $sql .= " and p.nom like :nom " ;
-
-    // Personne présente chez l'exposant donné
-    if( isset($_GET["idExposant"]))
+    // Recherche d'une personne à partir de son identifiant.
+    if (isset($_GET["id"]))
     {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["exposer"] . " as ser"
-              . " where ser.idPersonne = p.id and ser.idExposant = :idExposant ) " ;
+        $sql .= " AND p.id = :id";
     }
 
-    // Personne présente chez un exposant dont le nom contient la valeur
-    if( isset($_GET["nomExposant"]))
+    // Recherche des personnes ayant une spécialité donnée.
+    if (isset($_GET["specialite"]))
     {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["exposer"] . " as ser"
-              . " inner join " . Connexion::$tables["exposant"] . " as ex on ser.idExposant = ex.id"
-              . " where ser.idPersonne = p.id and ex.nom like :nomExposant ) " ;
+        $sql .= " AND p.specialite LIKE :specialite";
     }
 
-    // Personne présente chez un exposant situé sur le lieu donné
-    if( isset($_GET["numLieu"]))
+    // Recherche des personnes dont le nom contient une valeur.
+    if (isset($_GET["nom"]))
     {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["exposer"] . " as ser"
-              . " inner join " . Connexion::$tables["exposant"] . " as ex on ser.idExposant = ex.id"
-              . " where ser.idPersonne = p.id and ex.numLieu = :numLieu ) " ;
+        $sql .= " AND p.nom LIKE :nom";
     }
 
-    // Personne ayant écrit un livre dont le titre contient la valeur
-    if( isset($_GET["titreLivre"]))
+    /*
+     * FILTRES SUR LES EXPOSANTS
+     *
+     * Les sous-requêtes IN recherchent les identifiants
+     * des personnes correspondant à chaque critère.
+     *
+     * Cela permet de conserver le fonctionnement des
+     * anciens filtres sans utiliser AND EXISTS.
+     */
+
+    // Personnes associées à un exposant précis.
+    if (isset($_GET["idExposant"]))
     {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["ecrire"] . " as ec"
-              . " inner join " . Connexion::$tables["livre"] . " as li on ec.idLivre = li.id"
-              . " where ec.idPersonne = p.id and li.titre like :titreLivre ) " ;
+        $sql .= " AND p.id IN (
+            SELECT id
+            FROM " . $vue . "
+            WHERE idExposant = :idExposant
+        )";
     }
 
-    // Personne animant un événement dont le titre contient la valeur
-    if( isset($_GET["titreEvenement"]))
+    // Personnes associées à un exposant dont le nom correspond.
+    if (isset($_GET["nomExposant"]))
     {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["evenement"] . " as ev"
-              . " where ev.idAnimateur = p.id and ev.titre like :titreEvenement ) " ;
+        $sql .= " AND p.id IN (
+            SELECT id
+            FROM " . $vue . "
+            WHERE nomExposant LIKE :nomExposant
+        )";
     }
 
-    $sql .= " order by p.nom, p.prenom" ;
+    // Personnes présentes chez un exposant situé au lieu demandé.
+    if (isset($_GET["numLieu"]))
+    {
+        $sql .= " AND p.id IN (
+            SELECT id
+            FROM " . $vue . "
+            WHERE numLieu = :numLieu
+        )";
+    }
 
-    $cursor = $bd->prepare( $sql ) ;
+    /*
+     * FILTRE SUR LES LIVRES
+     */
 
-    if( isset($_GET["id"])) $cursor->bindValue( ":id", $_GET["id"], PDO::PARAM_INT ) ;
-    if( isset($_GET["specialite"])) $cursor->bindValue( ":specialite", "%" . $_GET["specialite"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["nom"])) $cursor->bindValue( ":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["idExposant"])) $cursor->bindValue( ":idExposant", $_GET["idExposant"], PDO::PARAM_INT ) ;
-    if( isset($_GET["nomExposant"])) $cursor->bindValue( ":nomExposant", "%" . $_GET["nomExposant"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["numLieu"])) $cursor->bindValue( ":numLieu", $_GET["numLieu"], PDO::PARAM_INT ) ;
-    if( isset($_GET["titreLivre"])) $cursor->bindValue( ":titreLivre", "%" . $_GET["titreLivre"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["titreEvenement"])) $cursor->bindValue( ":titreEvenement", "%" . $_GET["titreEvenement"] . "%", PDO::PARAM_STR ) ;
+    // Personnes ayant écrit un livre dont le titre correspond.
+    if (isset($_GET["titreLivre"]))
+    {
+        $sql .= " AND p.id IN (
+            SELECT id
+            FROM " . $vue . "
+            WHERE titreLivre LIKE :titreLivre
+        )";
+    }
 
-    $cursor->execute() ;
+    /*
+     * FILTRE SUR LES ÉVÉNEMENTS
+     */
 
-    $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
+    // Personnes animant un événement dont le titre correspond.
+    if (isset($_GET["titreEvenement"]))
+    {
+        $sql .= " AND p.id IN (
+            SELECT id
+            FROM " . $vue . "
+            WHERE titreEvenement LIKE :titreEvenement
+        )";
+    }
 
-    echo json_encode( $data ) ;
+    // Classement alphabétique par nom, puis par prénom.
+    $sql .= " ORDER BY p.nom, p.prenom";
 
+    /*
+     * PRÉPARATION DE LA REQUÊTE
+     *
+     * Les paramètres nommés permettent de transmettre
+     * les valeurs sans les insérer directement dans le SQL.
+     */
+    $cursor = $bd->prepare($sql);
+
+    // Association des valeurs aux paramètres SQL.
+    if (isset($_GET["id"]))
+        $cursor->bindValue(":id", $_GET["id"], PDO::PARAM_INT);
+
+    if (isset($_GET["specialite"]))
+        $cursor->bindValue(":specialite", "%" . $_GET["specialite"] . "%", PDO::PARAM_STR);
+
+    if (isset($_GET["nom"]))
+        $cursor->bindValue(":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR);
+
+    if (isset($_GET["idExposant"]))
+        $cursor->bindValue(":idExposant", $_GET["idExposant"], PDO::PARAM_INT);
+
+    if (isset($_GET["nomExposant"]))
+        $cursor->bindValue(":nomExposant", "%" . $_GET["nomExposant"] . "%", PDO::PARAM_STR);
+
+    if (isset($_GET["numLieu"]))
+        $cursor->bindValue(":numLieu", $_GET["numLieu"], PDO::PARAM_INT);
+
+    if (isset($_GET["titreLivre"]))
+        $cursor->bindValue(":titreLivre", "%" . $_GET["titreLivre"] . "%", PDO::PARAM_STR);
+
+    if (isset($_GET["titreEvenement"]))
+        $cursor->bindValue(":titreEvenement", "%" . $_GET["titreEvenement"] . "%", PDO::PARAM_STR);
+
+    /*
+     * EXÉCUTION ET RÉSULTAT
+     */
+
+    // Exécution de la requête SQL.
+    $cursor->execute();
+
+    // Récupération des personnes sous forme de tableau associatif.
+    $data = $cursor->fetchAll(PDO::FETCH_ASSOC);
+
+    // Indication que la réponse contient du JSON.
+    header("Content-Type: application/json; charset=utf-8");
+
+    // Conversion du tableau PHP en JSON.
+    // JSON_UNESCAPED_UNICODE conserve les accents lisibles.
+    echo json_encode($data, JSON_UNESCAPED_UNICODE);
 }
-catch( PDOException $erreur )
+catch (PDOException $erreur)
 {
-    echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
+    // Affichage d'un message en cas d'erreur de base de données.
+    echo "Problème d'accès à la BD : " . $erreur->getMessage();
 }
-
 
 ?>
