@@ -1,0 +1,61 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>À propos</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Le festival</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        Festival du livre de Colmar, les 21 et 22 novembre 2026 au Parc des Expositions de Colmar
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <p class="ion-padding">
+    Ce projet a été créé par les étudiants de la classe de 2ème année de BTS SIO option SLAM
+    du lycée Camille Sée à Colmar.
+  </p>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Professeur encadrant</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label>{{professeur}}</ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Étudiants</ion-label>
+    </ion-list-header>
+    @for( etudiant of etudiants; track etudiant )
+    {
+      <ion-item>
+        <ion-label>{{etudiant}}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Technologies utilisées</ion-label>
+    </ion-list-header>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        Ionic et Angular pour l'application, PHP et MySQL pour la base de données
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
