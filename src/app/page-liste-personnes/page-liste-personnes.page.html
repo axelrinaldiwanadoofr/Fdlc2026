@@ -13,6 +13,16 @@
             <ion-input label="Nom (ou partie du nom)" labelPlacement="stacked" [(ngModel)]="saisieNom" (keyup.enter)="onFiltrer()"></ion-input>
           </ion-item>
           <ion-item>
+            <ion-input label="Spécialité" labelPlacement="stacked" [(ngModel)]="saisieSpecialite" (keyup.enter)="onFiltrer()"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Nom de l'exposant" labelPlacement="stacked" [(ngModel)]="saisieNomExposant" (keyup.enter)="onFiltrer()"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Titre de l'événement" labelPlacement="stacked" [(ngModel)]="saisieTitreEvenement" (keyup.enter)="onFiltrer()"></ion-input>
+          </ion-item>
+          <ion-item>
+
             <ion-button (click)="onFiltrer()">Filtrer</ion-button>
             <ion-button fill="outline" (click)="reinitialiser()">Réinitialiser</ion-button>
           </ion-item>
@@ -22,5 +32,5 @@
   </ion-accordion-group>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <app-liste-personnes childHtml="<strong>$civilite $prenom $nom</strong> — $specialite" lienPage="/page-personne" [nom]="nom"></app-liste-personnes>
+  <app-liste-personnes childHtml="<strong> $prenom $nom</strong> — $specialite" lienPage="/page-personne" [nom]="nom"></app-liste-personnes>
 </ion-content>
