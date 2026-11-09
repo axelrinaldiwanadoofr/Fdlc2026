@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 04/11/2026
+
 require_once "../Connexion.php" ;
 require_once "../config/mot-de-passe.php" ;
 

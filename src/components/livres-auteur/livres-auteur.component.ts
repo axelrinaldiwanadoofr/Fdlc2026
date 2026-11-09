@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 09/11/2026
+
 import { Component, OnChanges, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 

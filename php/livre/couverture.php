@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 09/11/2026
+
 require_once "bnf.php" ;
 
 // Couverture d'un livre : BnF avec l'ark ou Open Library avec l'isbn

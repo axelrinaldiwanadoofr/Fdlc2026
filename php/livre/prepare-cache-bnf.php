@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 09/11/2026
+
 require_once "../Connexion.php" ;
 require_once "bnf.php" ;
 

@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 09/11/2026
+
 require_once "bnf.php" ;
 
 header( "Content-Type: text/xml; charset=utf-8" ) ;

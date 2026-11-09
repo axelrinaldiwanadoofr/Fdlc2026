@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 04/11/2026
+
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 require_once "mot-de-passe.php" ;

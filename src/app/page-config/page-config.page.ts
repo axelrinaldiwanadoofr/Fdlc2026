@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 05/11/2026
+
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
