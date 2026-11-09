@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 09/11/2026
+
 // Livre affiché sur la page d'un auteur
 export class LivreAuteur
 {

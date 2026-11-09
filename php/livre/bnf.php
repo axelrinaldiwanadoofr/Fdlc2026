@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 09/11/2026
+
 // Fonctions pour interroger la BnF
 // Une seule requete a la fois avec une pause d'1 seconde, sinon la BnF bloque l'adresse du serveur
 

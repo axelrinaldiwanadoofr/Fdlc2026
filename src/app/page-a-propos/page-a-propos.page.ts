@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 09/11/2026
+
 import { Component } from '@angular/core';
 import {
   IonContent,
