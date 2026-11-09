@@ -5,7 +5,7 @@ import { catchError, map } from "rxjs/operators" ;
 
 import { LivreAuteur } from "../modeles/LivreAuteur" ;
 
-// Une edition d'un livre dans le catalogue de la BnF
+// Notice de la BnF (une edition d'un livre)
 class Notice
 {
     public ark: string = "" ;
@@ -15,7 +15,7 @@ class Notice
     public isbn: string = "" ;
 }
 
-// Livres d'un auteur : ceux de la base + ceux du catalogue de la BnF
+// Livres d'un auteur : base du festival + catalogue de la BnF
 @Injectable({
     providedIn: "root"
 })
@@ -23,14 +23,13 @@ export class LivresAuteurService
 {
     private http: HttpClient ;
 
-    // espaces de noms des balises du XML de la BnF
     private espaceDc = "http://purl.org/dc/elements/1.1/" ;
     private espaceOaiDc = "http://www.openarchives.org/OAI/2.0/oai_dc/" ;
 
-    // la personne doit etre auteur du livre, pas traducteur ou prefacier
+    // roles acceptés pour l'auteur
     private roles = ["auteur", "scenariste", "dessinateur", "illustrateur"] ;
 
-    // editeurs de reeditions (clubs, gros caracteres)
+    // éditeurs de rééditions (clubs, gros caractères)
     private reeditions = ["grand livre du mois", "france loisirs", "noyelles", "fl editions", "loupe", "feryane", "gabelire", "a vue d oeil", "voir de pres", "libra diffusio"] ;
 
     constructor( http: HttpClient )
@@ -38,7 +37,6 @@ export class LivresAuteurService
         this.http = http ;
     }
 
-    // rechercheBnf = false pour un animateur : seulement les livres de la base
     getLivresAuteur( idPersonne: number, prenom: string, nom: string, rechercheBnf: boolean ): Observable<LivreAuteur[]>
     {
         let livresBd = this.http.get<any[]>( "php/livre/livres-auteur.php?id=" + idPersonne ).pipe( catchError( () => of( [] ) ) ) ;
@@ -49,12 +47,11 @@ export class LivresAuteurService
         ) ;
     }
 
-    // Le PHP interroge la BnF et garde la reponse dans un fichier
+    // XML de la BnF (via le php qui garde la réponse en cache)
     private getXmlBnf( prenom: string, nom: string ): Observable<string>
     {
         let url = "php/livre/livres-bnf.php?prenom=" + encodeURIComponent( prenom.trim() ) + "&nom=" + encodeURIComponent( nom.trim() ) ;
 
-        // si la BnF ne repond pas on a quand meme les livres de la base
         return this.http.get( url, { responseType: "text" } ).pipe( catchError( () => of( "" ) ) ) ;
     }
 
@@ -69,7 +66,7 @@ export class LivresAuteurService
         let titresBd = livres.map( l => l.titre ) ;
         let livresBnf = xml != "" ? this.livresBnf( xml, prenom, nom, titresBd ) : [] ;
 
-        // un livre de la base trouve a la BnF prend sa couverture et son annee
+        // livres de la base trouvés à la BnF
         for( let livre of livres )
         {
             let i = livresBnf.findIndex( l => this.titresProches( l.titre, livre.titre ) ) ;
@@ -81,7 +78,6 @@ export class LivresAuteurService
             livresBnf.splice( i, 1 ) ;
         }
 
-        // livres du festival en premier puis du plus recent au plus ancien
         livresBnf.sort( ( a, b ) => b.annee.localeCompare( a.annee ) ) ;
         return livres.concat( livresBnf ) ;
     }
@@ -91,7 +87,7 @@ export class LivresAuteurService
         let doc = new DOMParser().parseFromString( xml, "text/xml" ) ;
         let elements = doc.getElementsByTagNameNS( this.espaceOaiDc, "dc" ) ;
 
-        // notices rangees par homonyme (meme nom mais pas les memes dates)
+        // notices par homonyme (dates différentes)
         let homonymes = new Map<string, Notice[]>() ;
         for( let i = 0 ; i < elements.length ; i++ )
         {
@@ -107,8 +103,7 @@ export class LivresAuteurService
             homonymes.set( dates, liste ) ;
         }
 
-        // on garde celui qui a ecrit les livres du festival
-        // sinon celui qui a sorti le plus de livres depuis 2000
+        // choix de l'homonyme : livres du festival puis livres depuis 2000
         let notices: Notice[] = [] ;
         let meilleurScore = -1 ;
         for( let liste of homonymes.values() )
@@ -127,13 +122,12 @@ export class LivresAuteurService
             }
         }
 
-        // une seule fiche par livre (grand format, poche...), les notices sans date a la fin
+        // regroupe les éditions d'un même livre
         let livres = new Map<string, LivreAuteur>() ;
         notices.sort( ( a, b ) => ( a.annee || "9999" ).localeCompare( b.annee || "9999" ) ) ;
 
         for( let notice of notices )
         {
-            // il y a des coffrets qui ont le nom de l'auteur comme titre
             let cle = this.normalise( notice.titre ) ;
             if( cle == "" || cle == this.normalise( prenom + " " + nom ) || cle == this.normalise( nom + " " + prenom ) ) continue ;
 
@@ -145,12 +139,10 @@ export class LivresAuteurService
             }
             else if( this.estReedition( livre.editeur ) && !this.estReedition( notice.editeur ) )
             {
-                // la 1ere notice etait une reedition, on prend le vrai editeur
                 livre.annee = notice.annee ;
                 livre.editeur = notice.editeur ;
             }
 
-            // les editions recentes ont plus souvent une couverture donc on les met devant
             livre.couvertures.unshift( "https://catalogue.bnf.fr/couverture?&appName=NE&idArk=" + notice.ark + "&couverture=1" ) ;
             if( notice.isbn != "" ) livre.couvertures.push( "https://covers.openlibrary.org/b/isbn/" + notice.isbn + "-M.jpg?default=false" ) ;
         }
@@ -158,8 +150,7 @@ export class LivresAuteurService
         return Array.from( livres.values() ) ;
     }
 
-    // Auteur de la BnF : "Malzieu, Mathias (1974-....). Auteur du texte"
-    // renvoie les dates si c'est la personne, null sinon
+    // ex : "Malzieu, Mathias (1974-....). Auteur du texte"
     private datesAuteur( auteurs: string[], prenom: string, nom: string ): string | null
     {
         for( let auteur of auteurs )
@@ -189,12 +180,10 @@ export class LivresAuteurService
         notice.titre = this.titreCourt( this.valeurs( element, "title" )[0] ?? "" ) ;
         notice.annee = ( this.valeurs( element, "date" )[0] ?? "" ).substring( 0, 4 ) ;
 
-        // "Flammarion (Paris)" : on enleve la ville
         notice.editeur = ( this.valeurs( element, "publisher" )[0] ?? "" ).replace( / \(.*$/, "" ) ;
         return notice ;
     }
 
-    // Textes des balises dc:xxx d'une notice
     private valeurs( element: Element, balise: string ): string[]
     {
         let liste = element.getElementsByTagNameNS( this.espaceDc, balise ) ;
@@ -212,8 +201,7 @@ export class LivresAuteurService
         return this.reeditions.some( r => e.includes( r ) ) ;
     }
 
-    // Titre sans auteur, sans sous titre et sans ce qui est entre () ou []
-    // ex : "Une sirène à Paris : roman / Mathias Malzieu" donne "Une sirène à Paris"
+    // Titre sans sous-titre ni auteur
     private titreCourt( titre: string ): string
     {
         titre = titre.split( " / " )[0] ;
@@ -221,20 +209,19 @@ export class LivresAuteurService
         return this.nettoie( titre ) ;
     }
 
-    // la base a des espaces insecables et des espaces en trop
     private nettoie( texte: string ): string
     {
         return ( texte ?? "" ).replace( /\u00a0/g, " " ).replace( /\s+/g, " " ).trim() ;
     }
 
-    // pour comparer : minuscules, sans accents et sans ponctuation
+    // minuscules sans accents
     private normalise( texte: string ): string
     {
         texte = ( texte ?? "" ).normalize( "NFD" ).replace( /[\u0300-\u036f]/g, "" ).toLowerCase() ;
         return texte.replace( /[^a-z0-9]+/g, " " ).trim() ;
     }
 
-    // Titres proches : egaux, l'un commence par l'autre ou 60% de mots en commun
+    // Titres égaux ou presque (60% de mots en commun)
     private titresProches( a: string, b: string ): boolean
     {
         a = this.normalise( a ) ;
