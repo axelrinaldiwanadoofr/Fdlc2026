@@ -66,5 +66,9 @@ export const routes: Routes = [
   {
     path: 'page-liste-evenements',
     loadComponent: () => import('./page-liste-evenements/page-liste-evenements.page').then( m => m.PageListeEvenementsPage)  
+  },
+  {
+    path: 'a-propos',
+    loadComponent: () => import('./page-a-propos/page-a-propos.page').then( m => m.PageAProposPage)
   }
 ];
