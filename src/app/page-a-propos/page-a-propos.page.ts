@@ -8,7 +8,8 @@ import {
   IonBackButton,
   IonMenuButton,
   IonList,
-  IonListHeader,
+  IonItemDivider,
+  IonNote,
   IonItem,
   IonLabel,
 } from '@ionic/angular';
@@ -27,7 +28,8 @@ import {
     IonBackButton,
     IonMenuButton,
     IonList,
-    IonListHeader,
+    IonItemDivider,
+  IonNote,
     IonItem,
     IonLabel,
   ]
@@ -36,19 +38,19 @@ export class PageAProposPage
 {
   protected professeur: string = "M. Axel RINALDI" ;
 
-  // Etudiants de la classe
+  // Etudiants de la classe, ranges par ordre alphabetique du prenom
   protected etudiants: Array<string> = [
-    "Kevin MEYER",
     "Don-Divin KISSANGOU MABIALA",
-    "Yannis Benewinde SILGA",
-    "Sidi BENHADJEBA",
-    "Nadir MAHI",
-    "Kenisha HAAS",
     "Élodie VERMOYAL-DESAPHY",
-    "Rabbi DZALAMOU",
+    "Kevin MEYER",
+    "Kenisha HAAS",
     "Liam EHRHARD",
-    "Ricardo PATTA",
     "Mathieu SIMON",
     "Merve YASAR",
+    "Nadir MAHI",
+    "Rabbi DZALAMOU",
+    "Ricardo PATTA",
+    "Sidi BENHADJEBA",
+    "Yannis Benewinde SILGA",
   ] ;
 }
