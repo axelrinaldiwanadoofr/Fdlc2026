@@ -1,14 +1,14 @@
 <?php
 
 require_once "../Connexion.php" ;
-require_once "ImportStand.php" ;
+require_once "ImportLieu.php" ;
 require_once "ImportExposant.php" ;
-require_once "ImportAuteur.php" ;
+require_once "ImportPersonne.php" ;
 require_once "ImportExposer.php" ;
 
-$importStand = new ImportStand( Connexion::$tables["stand"]) ;
+$importStand = new ImportLieu( Connexion::$tables["lieu"]) ;
 $importExposant = new ImportExposant( Connexion::$tables["exposant"]) ;
-$importAuteur = new ImportAuteur( Connexion::$tables["auteur"]) ;
+$importAuteur = new ImportPersonne( Connexion::$tables["personne"]) ;
 $importExposer = new ImportExposer( Connexion::$tables["exposer"]) ;
 
 // 86 Françoise Gardeur exposant: 61 ALL Bourgogne Franche-Comté -> 53 Association des Éditeurs belges 

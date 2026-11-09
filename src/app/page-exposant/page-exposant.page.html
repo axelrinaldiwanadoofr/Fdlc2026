@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+        @for( exposant of exposants | async;  track exposant.id )
+        {
+          {{exposant.nom}}
+        }
+    </ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>    
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>    
+
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+    </ion-toolbar>
+  </ion-header>
+  <ion-list>
+    @for( exposant of exposants | async;  track exposant.id )
+    {
+      <ion-item>
+        <ion-label>
+          <h2>{{exposant.nom}}</h2>
+          <p>Stand n° {{exposant.numLieu}}</p>
+        </ion-label>      
+      </ion-item>
+      <ion-item>
+        <!-- ouvre le plan du hall sur le stand de l'exposant -->
+        <ion-button slot="start" fill="outline" [routerLink]="['/plans']" [queryParams]="{ numLieu: exposant.numLieu }">
+          <ion-icon slot="start" name="location-outline"></ion-icon>
+          Situer
+        </ion-button>
+        <app-ajouter-etape-button slot="end"
+          [nom]="exposant.nom"
+          [idExposant]="exposant.id"
+          [numLieu]="exposant.numLieu"></app-ajouter-etape-button>
+      </ion-item>
+    }
+  </ion-list>
+</ion-content>

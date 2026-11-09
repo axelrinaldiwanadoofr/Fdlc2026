@@ -1,56 +1,48 @@
-import { Component, output, signal } from '@angular/core';
+import { Component, input, output, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable, of, catchError, map, shareReplay } from 'rxjs';
 
-import {
-  IonInput,
-  IonList,
-  IonItem,
-  IonCard,
-  IonCardContent
-} from '@ionic/angular';
-
+import { IonInput, IonList, IonItem, IonCard, IonCardContent } from '@ionic/angular';
+import { LivreService } from '../../services/livre.service';
 import { Livre } from '../../modeles/Livre';
-import { LivreService } from '../../servcies/livre.service';
 
 @Component({
   selector: 'app-titre-livre-combo',
   templateUrl: './titre-livre-combo.component.html',
   styleUrls: ['./titre-livre-combo.component.scss'],
-  imports: [
-    IonInput,
-    IonList,
-    IonItem,
-    IonCard,
-    IonCardContent,
-    FormsModule,
-    AsyncPipe
-  ]
+  imports: [IonInput, IonList, IonItem, IonCard, IonCardContent, FormsModule, AsyncPipe]
 })
 export class TitreLivreComboComponent {
+  // Interface du professeur : conservée pour les pages qui utilisent déjà le composant.
+  public label = input('Titre du livre');
+  public onTitreSelected = output<string>();
+
+  // Interface de notre page de détail : conservée pour ne pas casser sa compilation.
+  public titreSelectionne = output<string>();
+
   protected recherche = '';
   protected showList = signal(false);
   protected erreur = signal(false);
   protected listeLivres: Observable<Livre[]> = of([]);
 
-  public titreSelectionne = output<string>();
-
-  // Les livres sont charges une seule fois, sans filtre PHP.
+  // Une seule requête sans filtre serveur, puis filtrage à chaque saisie dans Angular.
   private tousLesLivres$: Observable<Livre[]> | null = null;
 
   constructor(private serviceLivre: LivreService) {}
 
-  onRechercheChange(event: CustomEvent) {
+  onRechercheChange(event: CustomEvent): void {
     this.recherche = event.detail.value ?? '';
     this.afficherLivres();
+    // Le professeur utilise cet événement pour filtrer pendant la frappe.
+    this.onTitreSelected.emit(this.recherche);
   }
 
-  onInputClick() {
+  onInputClick(): void {
     this.afficherLivres();
   }
 
-  private afficherLivres() {
+  private afficherLivres(): void {
     this.showList.set(true);
 
     if (this.tousLesLivres$ === null) {
@@ -58,8 +50,7 @@ export class TitreLivreComboComponent {
       this.tousLesLivres$ = this.serviceLivre.getTousLesLivres().pipe(
         catchError(() => {
           this.erreur.set(true);
-          // Permet de reessayer lors du prochain clic si le serveur etait indisponible.
-          this.tousLesLivres$ = null;
+          this.tousLesLivres$ = null; // Autorise un nouvel essai après une erreur.
           return of([] as Livre[]);
         }),
         shareReplay({ bufferSize: 1, refCount: false })
@@ -75,16 +66,25 @@ export class TitreLivreComboComponent {
   }
 
   private normaliser(texte: string): string {
-    return texte
-      .normalize('NFD')
+    return texte.normalize('NFD')
       .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .trim();
   }
 
-  onTitreSelected(titre: string) {
+  onClickTitreSelected(titre: string): void {
     this.recherche = titre;
     this.showList.set(false);
+    this.onTitreSelected.emit(titre);
     this.titreSelectionne.emit(titre);
+  }
+
+  masqueListe(): void {
+    this.showList.set(false);
+  }
+
+  reset(): void {
+    this.recherche = '';
+    this.showList.set(false);
   }
 }

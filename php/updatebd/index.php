@@ -25,7 +25,12 @@
     </form>
 </p>
 
-import_biographie_auteurs_jeunesse.php
+<p>
+    <form action="import_planning.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Importer le planning"</button>
+    </form>
+</p>
+
 <p>
     <form action="afficheImport.php" method="POST">
         <button type="submit" name="mon_bouton" value="valider">Affiche la table import</button>
@@ -33,8 +38,8 @@ import_biographie_auteurs_jeunesse.php
 </p>
 
 <p>
-    <form action="afficheStand.php" method="POST">
-        <button type="submit" name="mon_bouton" value="valider">Affiche la table stand</button>
+    <form action="afficheLieu.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Affiche la table lieu</button>
     </form>
 </p>
 
@@ -45,8 +50,8 @@ import_biographie_auteurs_jeunesse.php
 </p>
 
 <p>
-    <form action="afficheAuteur.php" method="POST">
-        <button type="submit" name="mon_bouton" value="valider">Affiche la table auteur</button>
+    <form action="affichePersonne.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Affiche la table personne</button>
     </form>
 </p>
 
