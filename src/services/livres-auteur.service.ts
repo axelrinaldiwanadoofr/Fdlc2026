@@ -143,8 +143,12 @@ export class LivresAuteurService
                 livre.editeur = notice.editeur ;
             }
 
-            livre.couvertures.unshift( "https://catalogue.bnf.fr/couverture?&appName=NE&idArk=" + notice.ark + "&couverture=1" ) ;
-            if( notice.isbn != "" ) livre.couvertures.push( "https://covers.openlibrary.org/b/isbn/" + notice.isbn + "-M.jpg?default=false" ) ;
+            // images en cache sur notre serveur, les 2 editions les plus recentes + 1 isbn
+            let bnf = livre.couvertures.filter( c => c.includes( "ark=" ) ) ;
+            bnf.unshift( "php/livre/couverture.php?ark=" + encodeURIComponent( notice.ark ) ) ;
+            let isbn = livre.couvertures.filter( c => c.includes( "isbn=" ) ) ;
+            if( notice.isbn != "" ) isbn = ["php/livre/couverture.php?isbn=" + notice.isbn] ;
+            livre.couvertures = bnf.slice( 0, 2 ).concat( isbn ) ;
         }
 
         return Array.from( livres.values() ) ;

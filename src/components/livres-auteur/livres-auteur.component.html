@@ -1,6 +1,9 @@
 @if( chargement() )
 {
-  <p class="info"><ion-spinner name="dots"></ion-spinner> Recherche des livres de l'auteur...</p>
+  <div class="chargement">
+    <ion-spinner name="crescent"></ion-spinner>
+    <span>Recherche des livres...</span>
+  </div>
 }
 @else if( livres().length > 0 )
 {
