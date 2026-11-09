@@ -58,5 +58,19 @@ export class LieuService
         } ) ;
     }
 
+    getLieuByNum( num: number ): Observable<Lieu[]>
+    {
+        let first = true ;
+        let url: string = "php/lieu/lieu-num.php" ;
+
+        if( num != -1 )
+        {
+            url += (first)? "?" : "&" ;
+            url += "num=" + num ;
+            first = false ;
+        }
+
+        return this.http.get<Lieu[]>( url ) ;
+    }
     
 }
