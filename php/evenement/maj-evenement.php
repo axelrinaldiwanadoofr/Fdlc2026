@@ -56,13 +56,13 @@ try
         $id = (int)$bd->query( "select coalesce( max( id ), 0 ) + 1 from " . $tableEvenement )->fetchColumn() ;
 
         $sql = "insert into " . $tableEvenement
-             . " ( id, typeevenement, titre, stitre, public, commentaire, debut, fin, idAnimateur, numLieu )"
+             . " ( id, type, titre, stitre, public, commentaire, debut, fin, idAnimateur, numLieu )"
              . " values ( :id, :type, :titre, :stitre, :public, :commentaire, :debut, :fin, :idAnimateur, :numLieu )" ;
     }
     else
     {
         $sql = "update " . $tableEvenement
-             . " set typeevenement = :type, titre = :titre, stitre = :stitre, public = :public, commentaire = :commentaire,"
+             . " set type = :type, titre = :titre, stitre = :stitre, public = :public, commentaire = :commentaire,"
              . " debut = :debut, fin = :fin, idAnimateur = :idAnimateur, numLieu = :numLieu where id = :id" ;
     }
 
