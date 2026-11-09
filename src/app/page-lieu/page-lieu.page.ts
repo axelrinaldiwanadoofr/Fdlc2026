@@ -16,7 +16,7 @@ import {
   IonButton,
 } from '@ionic/angular';
 import { Lieu } from '../../modeles/Lieu';
-import { LieuService } from '../../servcies/lieu.service';
+import { LieuService } from '../../services/lieu.service' ;
 import { ListeExposantComponent } from '../../components/liste-exposant/liste-exposant.component';
 
 @Component({  
