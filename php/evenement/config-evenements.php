@@ -9,7 +9,8 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select id, typeevenement, titre, stitre, public, commentaire, debut, fin, idAnimateur, numLieu from "
+    // dans la nouvelle base le type est dans la colonne type (typeevenement est vide)
+    $sql = "select id, type as typeevenement, titre, stitre, public, commentaire, debut, fin, idAnimateur, numLieu from "
          . Connexion::$tables["evenement"] . " order by debut, titre" ;
 
     $cursor = $bd->prepare( $sql ) ;

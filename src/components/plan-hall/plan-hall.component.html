@@ -29,13 +29,16 @@
           </rect>
         }
 
-        <!-- repère au dessus du lieu recherché -->
-        @if( lieuSelectionne(); as lieu )
+        <!-- bulle ICI au dessus du lieu recherché, la pointe de la bulle est en 0, 0 -->
+        @if( repere(); as r )
         {
-          <circle class="repere"
-            [attr.cx]="(lieu.x1 + lieu.x2) / 2"
-            [attr.cy]="lieu.y1 > 34 ? lieu.y1 - 20 : lieu.y2 + 20"
-            r="14" />
+          <g class="repere" [attr.transform]="'translate(' + r.x + ',' + r.y + ')'">
+            <g class="saut">
+              <path class="pointe" d="M -10 -19 L 10 -19 L 0 -3 Z" />
+              <rect x="-34" y="-54" width="68" height="36" rx="12" />
+              <text x="0" y="-36">ICI</text>
+            </g>
+          </g>
         }
       </svg>
     }
