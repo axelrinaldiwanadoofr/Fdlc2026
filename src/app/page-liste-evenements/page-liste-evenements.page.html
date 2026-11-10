@@ -1,10 +1,22 @@
 <ion-header [translucent]="true">
-  <ion-toolbar color="primary">
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
+  <ion-toolbar>
     <ion-title>Liste des événements</ion-title>
+    <ion-buttons slot="start"><ion-back-button defaultHref="/"></ion-back-button></ion-buttons>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
   </ion-toolbar>
+  <ion-accordion-group>
+    <ion-accordion value="rechercher">
+      <ion-item slot="header" color="light"><ion-label>Rechercher / filtrer</ion-label></ion-item>
+      <div class="ion-padding" slot="content">
+        <ion-list>
+          <ion-item>
+            <ion-button (click)="onFiltrer()">Filtrer</ion-button>
+            <ion-button fill="outline" (click)="onReinitialiser()">Réinitialiser</ion-button>
+          </ion-item>
+        </ion-list>
+      </div>
+    </ion-accordion>
+  </ion-accordion-group>
 </ion-header>
 
 <ion-content [fullscreen]="true">

@@ -7,7 +7,15 @@ import {
   IonTitle, 
   IonToolbar, 
   IonButtons, 
-  IonMenuButton 
+  IonMenuButton, 
+  IonBackButton, 
+  IonAccordion, 
+  IonAccordionGroup, 
+  IonItem, 
+  IonLabel, 
+  IonInput, 
+  IonButton, 
+  IonList 
 } from '@ionic/angular';
 import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
 
@@ -23,6 +31,14 @@ import { ListeEvenementsComponent } from '../../components/liste-evenements/list
     IonToolbar, 
     IonButtons, 
     IonMenuButton, 
+    IonBackButton, 
+    IonAccordion, 
+    IonAccordionGroup, 
+    IonItem, 
+    IonLabel, 
+    IonInput, 
+    IonButton, 
+    IonList, 
     CommonModule, 
     FormsModule,
     ListeEvenementsComponent
@@ -37,4 +53,14 @@ export class PageListeEvenementsPage implements OnInit {
   constructor() {}
 
   ngOnInit() {}
+
+  onFiltrer()
+  {
+
+  }
+
+  onReinitialiser()
+  {
+
+  }
 }

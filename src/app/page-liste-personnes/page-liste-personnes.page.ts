@@ -1,7 +1,22 @@
 import { Component, viewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar, IonButtons, IonMenuButton, IonBackButton, IonAccordion, IonAccordionGroup, IonItem, IonLabel, IonInput, IonButton, IonList } from '@ionic/angular';
+import { 
+  IonContent, 
+  IonHeader, 
+  IonTitle, 
+  IonToolbar, 
+  IonButtons, 
+  IonMenuButton, 
+  IonBackButton, 
+  IonAccordion, 
+  IonAccordionGroup, 
+  IonItem, 
+  IonLabel, 
+  IonInput, 
+  IonButton, 
+  IonList } from '@ionic/angular';
+  
 import { ListePersonnesComponent } from '../../components/liste-personnes/liste-personnes.component';
 
 @Component({
