@@ -2,6 +2,10 @@
 import { Livre } from '../../modeles/Livre';
 // Service permettant de récupérer les livres depuis le PHP
 import { LivreService } from '../../services/livre.service';
+// Modèle représentant les informations d'un exposant
+import { Exposant } from '../../modeles/Exposant';
+// Service permettant de récupérer les exposants associés à une personne
+import { ExposantService } from '../../services/exposant.service';
 import { Component, OnInit, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -27,7 +31,7 @@ import {
 
 // Importation de l'icône utilisée en l'absence de photo
 import { addIcons } from 'ionicons';
-import { personOutline } from 'ionicons/icons';
+import { personOutline, storefrontOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-page-personne',
@@ -60,15 +64,19 @@ export class PagePersonnePage implements OnInit {
   // Liste des livres écrits par la personne
   // Observable permet de récupérer les données de manière asynchrone
   protected livres: Observable<Livre[]> | null = null;
+  // Liste des exposants associés à la personne
+  // Observable permet de récupérer les données de manière asynchrone
+  protected exposants: Observable<Exposant[]> | null = null;
 
-  constructor(
+ constructor(
     private route: ActivatedRoute,
     private personneService: PersonneService,
-    private livreService: LivreService
-  ) {
-    // Enregistrement de l'icône de profil par défaut
-    addIcons({ personOutline });
-  }
+    private livreService: LivreService,
+    private exposantService: ExposantService
+) {
+    // Enregistrer les icônes de profil et d'exposant
+    addIcons({ personOutline, storefrontOutline });
+}
 
   ngOnInit()
   {
@@ -83,6 +91,9 @@ export class PagePersonnePage implements OnInit {
 
       // Récupérer les livres écrits par cette personne
       this.livres = this.livreService.getLivresByPersonne(this.id());
+
+      // Récupérer les exposants et les créneaux associés à cette personne
+      this.exposants = this.exposantService.getExposantsByPersonne(this.id());  
     }
   }
 }
