@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 04/11/2026
+
 // Mot de passe des pages de config (plans, evenements), on garde seulement le hash.
 // Quand on le change, le hash est mis dans mot-de-passe.hash.php
 //
