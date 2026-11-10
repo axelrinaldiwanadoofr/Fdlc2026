@@ -1,38 +1,107 @@
-
+<!-- En-tête de la fiche personne -->
 <ion-header>
   <ion-toolbar>
-    <ion-title>Fiche personne {{id()}}</ion-title>
+
+    <!-- Bouton permettant de revenir à la page précédente -->
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/page-liste-personnes"></ion-back-button>
+    </ion-buttons>
+
+    <!-- Récupération des informations de la personne -->
+    @if (personne | async; as p) {
+
+      <!-- Affichage du prénom et du nom dans la barre de titre -->
+      <ion-title>{{ p.prenom }} {{ p.nom }}</ion-title>
+
+    } @else {
+
+      <!-- Titre temporaire pendant le chargement -->
+      <ion-title>Chargement...</ion-title>
+
+    }
+
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
 
-  @if (personne | async; as p) 
-  {
+  <!-- Récupération des informations de la personne -->
+  @if (personne | async; as p) {
 
-    <h1>{{ p.prenom }} {{ p.nom }}</h1>
+    <!-- En-tête du profil -->
+    <div class="profil-personne">
 
-    @if( p.specialite )
-    {
-      <h2>Spécialité</h2>
-      <p>{{p.specialite}}</p>
-    }
+      <!-- Photo de profil circulaire -->
+      <div class="photo-profil">
 
-    @if( p.biographie )
-    {
-      <h2>Biographie</h2>
-      <p>{{p.biographie}}</p>
-    }
+        @if (p.photo) {
 
-    @if( p.photo )
-    {
-      <ion-img [src]="p.photo"/>
-    }
+          <!-- Affichage de la photo si elle existe -->
+          <img
+            [src]="p.photo"
+            alt="Photo de profil"
+          />
 
-  } @else {
+        } @else {
 
-    <p>Chargement des informations...</p>
+          <!-- Icône par défaut si aucune photo n'est renseignée -->
+          <ion-icon name="person-outline"></ion-icon>
 
-  }
+        }
+
+      </div>
+
+      <!-- Spécialité affichée uniquement si elle existe -->
+      @if (p.specialite) {
+        <p class="specialite">{{ p.specialite }}</p>
+      }
+
+    </div>
+
+    <!-- Affichage de la biographie uniquement si elle est renseignée -->
+      @if (p.biographie) {
+
+        <section class="biographie-personne">
+
+          <!-- Titre de la section -->
+          <h2>Biographie</h2>
+
+          <!-- Description de la personne récupérée depuis la base de données -->
+          <p>{{ p.biographie }}</p>
+
+        </section>
+
+      }
+
+        <!-- Récupération des livres écrits par la personne -->
+    @if (livres | async; as listeLivres) {
+
+      <!-- Afficher la section uniquement si la personne possède des livres -->
+      @if (listeLivres.length > 0) {
+
+        <section class="livres-personne">
+
+          <!-- Titre de la section -->
+          <h2>Livres écrits</h2>
+
+          <!-- Parcourir tous les livres associés à la personne -->
+          @for (livre of listeLivres; track livre.id) {
+
+            <div class="livre-item">
+
+              <!-- Affichage du titre du livre -->
+              <p>{{ livre.titre }}</p>
+
+            </div>
+
+          }
+
+        </section>
+
+      } <!-- Fin de la condition : la personne possède des livres -->
+
+    } <!-- Fin de la récupération des livres -->
+
+  } <!-- Fin de la récupération des informations de la personne -->
 
 </ion-content>

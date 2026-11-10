@@ -7,11 +7,6 @@
  * Objectif :
  * Récupérer la liste des personnes depuis la vue SQL
  * PersonneComplete, en appliquant les filtres demandés.
- *
- * Les informations liées aux livres, aux exposants et aux
- * événements sont déjà regroupées dans cette vue.
- *
- * Ce fichier ne contient donc plus de AND EXISTS.
  */
 
 // Importation de la classe qui gère la connexion à MySQL.
@@ -34,16 +29,34 @@ try
      *
      * WHERE 1 permet d'ajouter facilement des conditions AND.
      */
-    $sql = "SELECT DISTINCT
-                p.id,
-                p.civilite,
-                p.prenom,
-                p.nom,
-                p.specialite,
-                p.biographie,
-                p.photo
-            FROM " . $vue . " AS p
-            WHERE 1";
+    /*
+ * Récupération des personnes depuis la vue PersonneComplete.
+ *
+ * DISTINCT évite les doublons.
+ *
+ * Les personnes sans nom et dont le prénom est vide
+ * ou égal à XX sont masquées dans la liste.
+ *
+ * Les données restent conservées dans la base fdlc.
+ */
+$sql = "SELECT DISTINCT
+            p.id,
+            p.civilite,
+            p.prenom,
+            p.nom,
+            p.specialite,
+            p.biographie,
+            p.photo
+        FROM " . $vue . " AS p
+        WHERE 1
+        AND NOT (
+            (p.nom IS NULL OR TRIM(p.nom) = '')
+            AND (
+                p.prenom IS NULL
+                OR TRIM(p.prenom) = ''
+                OR TRIM(p.prenom) = 'XX'
+            )
+        )";
 
     /*
      * FILTRES SUR LA PERSONNE
