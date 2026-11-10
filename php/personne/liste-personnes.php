@@ -9,19 +9,30 @@ try
     // La recherche utilise la vue SQL PersonneComplete.
     // DISTINCT évite les doublons liés aux livres,
     // aux exposants et aux événements.
+    //
+    // Les fiches incomplètes sont masquées uniquement dans la liste.
+    // Aucune personne n'est supprimée de la base de données.
 
     $vue = Connexion::$tables["PersonneComplete"];
 
     $sql = "SELECT DISTINCT
-                p.id,
-                p.civilite,
-                p.prenom,
-                p.nom,
-                p.specialite,
-                p.biographie,
-                p.photo
-            FROM " . $vue . " AS p
-            WHERE 1";
+            p.id,
+            p.civilite,
+            p.prenom,
+            p.nom,
+            p.specialite,
+            p.biographie,
+            p.photo
+        FROM " . $vue . " AS p
+        WHERE 1
+        AND NOT (
+            (p.nom IS NULL OR TRIM(p.nom) = '')
+            AND (
+                p.prenom IS NULL   
+                OR TRIM(p.prenom) = ''
+                OR TRIM(p.prenom) = 'XX'
+            )
+        )";
 
     // Filtres sur les informations de la personne
     if (isset($_GET["id"]))

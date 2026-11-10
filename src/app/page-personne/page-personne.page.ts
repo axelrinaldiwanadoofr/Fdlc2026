@@ -1,4 +1,7 @@
-
+// Modèle représentant les informations d'un livre
+import { Livre } from '../../modeles/Livre';
+// Service permettant de récupérer les livres depuis le PHP
+import { LivreService } from '../../services/livre.service';
 import { Component, OnInit, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,13 +11,43 @@ import { Observable } from 'rxjs';
 import { Personne } from '../../modeles/Personne';
 import { PersonneService } from '../../services/personne.service';
 
-import {IonContent, IonHeader, IonTitle, IonToolbar, IonImg} from '@ionic/angular';
+// Importation des composants Ionic utilisés dans la page personne
+// IonButtons : conteneur des boutons dans la barre de titre
+// IonBackButton : bouton permettant de revenir à la page précédente
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonImg,
+  IonButtons,
+  IonBackButton,
+  IonIcon
+} from '@ionic/angular';
+
+// Importation de l'icône utilisée en l'absence de photo
+import { addIcons } from 'ionicons';
+import { personOutline } from 'ionicons/icons';
 
 @Component({
   selector: 'app-page-personne',
   templateUrl: './page-personne.page.html',
   styleUrls: ['./page-personne.page.scss'],
-  imports: [ IonContent, IonHeader, IonTitle, IonImg, IonToolbar, CommonModule, FormsModule]
+  // Déclaration des composants et modules utilisés dans le HTML
+// Déclaration des composants Ionic et des modules Angular
+// nécessaires au fonctionnement de la page personne
+imports: [
+  IonContent,
+  IonHeader,
+  IonTitle,
+  IonToolbar,
+  IonButtons,
+  IonBackButton,
+  IonIcon, // Affichage de la silhouette lorsqu'aucune photo n'existe
+  CommonModule, // Utilisation du pipe async et des fonctionnalités Angular
+  FormsModule
+]
+
 })
 export class PagePersonnePage implements OnInit {
 
@@ -24,19 +57,32 @@ export class PagePersonnePage implements OnInit {
   // Informations récupérées depuis le service
   protected personne: Observable<Personne> | null = null;
 
+  // Liste des livres écrits par la personne
+  // Observable permet de récupérer les données de manière asynchrone
+  protected livres: Observable<Livre[]> | null = null;
+
   constructor(
     private route: ActivatedRoute,
-    private personneService: PersonneService
-  ) {}
+    private personneService: PersonneService,
+    private livreService: LivreService
+  ) {
+    // Enregistrement de l'icône de profil par défaut
+    addIcons({ personOutline });
+  }
 
-  ngOnInit() 
+  ngOnInit()
   {
+    // Affichage de l'identifiant dans la console pour faciliter les tests
     console.log('Identifiant de la personne :', this.id());
 
-    // Récupérer les informations de la personne
-    if (this.id() > -1) 
+    // Vérifier qu'un identifiant de personne est disponible
+    if (this.id() > -1)
     {
-      this.personne = this.personneService.getPersonneById(this.id() );
+      // Récupérer les informations personnelles et la biographie
+      this.personne = this.personneService.getPersonneById(this.id());
+
+      // Récupérer les livres écrits par cette personne
+      this.livres = this.livreService.getLivresByPersonne(this.id());
     }
   }
 }
