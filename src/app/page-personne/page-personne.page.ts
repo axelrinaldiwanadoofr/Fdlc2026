@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 
 import { Personne } from '../../modeles/Personne';
 import { PersonneService } from '../../services/personne.service';
+import { LivresAuteurComponent } from '../../components/livres-auteur/livres-auteur.component';
 
 import {IonContent, IonHeader, IonTitle, IonToolbar, IonImg} from '@ionic/angular';
 
@@ -14,7 +15,7 @@ import {IonContent, IonHeader, IonTitle, IonToolbar, IonImg} from '@ionic/angula
   selector: 'app-page-personne',
   templateUrl: './page-personne.page.html',
   styleUrls: ['./page-personne.page.scss'],
-  imports: [ IonContent, IonHeader, IonTitle, IonImg, IonToolbar, CommonModule, FormsModule]
+  imports: [ IonContent, IonHeader, IonTitle, IonImg, IonToolbar, CommonModule, FormsModule, LivresAuteurComponent]
 })
 export class PagePersonnePage implements OnInit {
 

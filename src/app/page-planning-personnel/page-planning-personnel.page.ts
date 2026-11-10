@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 02/11/2026
+
 import { Component, viewChild, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';

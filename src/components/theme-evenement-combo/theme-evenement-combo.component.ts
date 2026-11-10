@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 02/11/2026
+
 import { Component, OnInit, input, output, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import {Observable} from "rxjs" ;

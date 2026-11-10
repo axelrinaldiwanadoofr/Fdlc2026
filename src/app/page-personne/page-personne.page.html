@@ -29,6 +29,8 @@
       <ion-img [src]="p.photo"/>
     }
 
+    <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
+
   } @else {
 
     <p>Chargement des informations...</p>
