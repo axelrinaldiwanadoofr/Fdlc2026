@@ -1,3 +1,4 @@
+
 <!-- En-tête de la fiche personne -->
 <ion-header>
   <ion-toolbar>
@@ -59,49 +60,134 @@
     </div>
 
     <!-- Affichage de la biographie uniquement si elle est renseignée -->
-      @if (p.biographie) {
+    @if (p.biographie) {
 
-        <section class="biographie-personne">
+      <section class="biographie-personne">
 
-          <!-- Titre de la section -->
-          <h2>Biographie</h2>
+        <!-- Titre de la section -->
+        <h2>Biographie</h2>
 
-          <!-- Description de la personne récupérée depuis la base de données -->
-          <p>{{ p.biographie }}</p>
+        <!-- Biographie récupérée depuis la base de données -->
+        <p>{{ p.biographie }}</p>
 
-        </section>
+      </section>
 
-      }
+    }
 
-        <!-- Récupération des livres écrits par la personne -->
+    <!-- Récupération des livres écrits par la personne -->
     @if (livres | async; as listeLivres) {
 
-      <!-- Afficher la section uniquement si la personne possède des livres -->
+      <!-- Afficher la section uniquement si des livres sont associés -->
       @if (listeLivres.length > 0) {
 
         <section class="livres-personne">
 
-          <!-- Titre de la section -->
           <h2>Livres écrits</h2>
 
-          <!-- Parcourir tous les livres associés à la personne -->
+          <!-- Parcourir les livres associés à la personne -->
           @for (livre of listeLivres; track livre.id) {
 
             <div class="livre-item">
-
-              <!-- Affichage du titre du livre -->
               <p>{{ livre.titre }}</p>
-
             </div>
 
           }
 
         </section>
 
-      } <!-- Fin de la condition : la personne possède des livres -->
+      }
 
-    } <!-- Fin de la récupération des livres -->
+    }
 
-  } <!-- Fin de la récupération des informations de la personne -->
+    <!-- Récupération des exposants associés à la personne -->
+    @if (exposants | async; as listeExposants) {
+
+      <!-- Afficher la section uniquement si des exposants sont associés -->
+      @if (listeExposants.length > 0) {
+
+        <section class="exposants-personne">
+
+          <!-- Titre de la section -->
+          <h2>Exposants</h2>
+
+          <!-- Parcourir les exposants associés à la personne -->
+          @for (exposant of listeExposants; track $index) {
+
+            <!-- Carte de l'exposant -->
+            <div class="exposant-item">
+
+              <!-- En-tête contenant l'icône et les informations -->
+              <div class="exposant-entete">
+
+                <!-- Icône représentant l'exposant -->
+                <div class="exposant-icone">
+                  <ion-icon name="storefront-outline"></ion-icon>
+                </div>
+
+                <!-- Nom et numéro de stand -->
+                <div class="exposant-informations">
+
+                  <h3>{{ exposant.nom }}</h3>
+
+                  @if (exposant.numLieu != null) {
+                    <p>Stand {{ exposant.numLieu }}</p>
+                  }
+
+                </div>
+
+              </div>
+
+              <!-- Créneaux de présence de la personne chez l'exposant -->
+              <div class="exposant-creneaux">
+
+                <h4>Créneaux de présence</h4>
+
+                <!-- Grille des quatre créneaux -->
+                <div class="creneaux-grille">
+
+                  <!-- Samedi matin -->
+                  <span [class.inactif]="exposant.samedi_am !== 1">
+                    {{ exposant.samedi_am === 1 ? '✓' : '–' }}
+                    Samedi matin
+                  </span>
+
+                  <!-- Samedi après-midi -->
+                  <span [class.inactif]="exposant.samedi_pm !== 1">
+                    {{ exposant.samedi_pm === 1 ? '✓' : '–' }}
+                    Samedi après-midi
+                  </span>
+
+                  <!-- Dimanche matin -->
+                  <span [class.inactif]="exposant.dimanche_am !== 1">
+                    {{ exposant.dimanche_am === 1 ? '✓' : '–' }}
+                    Dimanche matin
+                  </span>
+
+                  <!-- Dimanche après-midi -->
+                  <span [class.inactif]="exposant.dimanche_pm !== 1">
+                    {{ exposant.dimanche_pm === 1 ? '✓' : '–' }}
+                    Dimanche après-midi
+                  </span>
+
+                </div>
+
+              </div>
+
+            </div>
+            <!-- Fin de la carte de l'exposant -->
+
+          }
+          <!-- Fin de la boucle des exposants -->
+
+        </section>
+
+      }
+      <!-- Fin de la condition : des exposants existent -->
+
+    }
+    <!-- Fin de la récupération des exposants -->
+
+  }
+  <!-- Fin de la récupération des informations de la personne -->
 
 </ion-content>
