@@ -1,7 +1,3 @@
-// Modèle représentant les informations d'un livre
-import { Livre } from '../../modeles/Livre';
-// Service permettant de récupérer les livres depuis le PHP
-import { LivreService } from '../../services/livre.service';
 // Modèle représentant les informations d'un exposant
 import { Exposant } from '../../modeles/Exposant';
 // Service permettant de récupérer les exposants associés à une personne
@@ -50,7 +46,8 @@ imports: [
   IonBackButton,
   IonIcon, // Affichage de la silhouette lorsqu'aucune photo n'existe
   CommonModule, // Utilisation du pipe async et des fonctionnalités Angular
-  FormsModule
+  FormsModule,
+  LivresAuteurComponent
 ]
 
 })
@@ -62,9 +59,6 @@ export class PagePersonnePage implements OnInit {
   // Informations récupérées depuis le service
   protected personne: Observable<Personne> | null = null;
 
-  // Liste des livres écrits par la personne
-  // Observable permet de récupérer les données de manière asynchrone
-  protected livres: Observable<Livre[]> | null = null;
   // Liste des exposants associés à la personne
   // Observable permet de récupérer les données de manière asynchrone
   protected exposants: Observable<Exposant[]> | null = null;
@@ -72,7 +66,6 @@ export class PagePersonnePage implements OnInit {
  constructor(
     private route: ActivatedRoute,
     private personneService: PersonneService,
-    private livreService: LivreService,
     private exposantService: ExposantService
 ) {
     // Enregistrer les icônes de profil et d'exposant
@@ -89,9 +82,6 @@ export class PagePersonnePage implements OnInit {
     {
       // Récupérer les informations personnelles et la biographie
       this.personne = this.personneService.getPersonneById(this.id());
-
-      // Récupérer les livres écrits par cette personne
-      this.livres = this.livreService.getLivresByPersonne(this.id());
 
       // Récupérer les exposants et les créneaux associés à cette personne
       this.exposants = this.exposantService.getExposantsByPersonne(this.id());  

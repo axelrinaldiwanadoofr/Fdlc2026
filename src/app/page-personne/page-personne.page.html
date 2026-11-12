@@ -74,30 +74,8 @@
 
     }
 
-    <!-- Récupération des livres écrits par la personne -->
-    @if (livres | async; as listeLivres) {
-
-      <!-- Afficher la section uniquement si des livres sont associés -->
-      @if (listeLivres.length > 0) {
-
-        <section class="livres-personne">
-
-          <h2>Livres écrits</h2>
-
-          <!-- Parcourir les livres associés à la personne -->
-          @for (livre of listeLivres; track livre.id) {
-
-            <div class="livre-item">
-              <p>{{ livre.titre }}</p>
-            </div>
-
-          }
-
-        </section>
-
-      }
-
-    }
+    <!-- Livres de l'auteur avec leur couverture -->
+    <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
 
     <!-- Récupération des exposants associés à la personne -->
     @if (exposants | async; as listeExposants) {
@@ -185,10 +163,6 @@
       <!-- Fin de la condition : des exposants existent -->
 
     }
-
-    <!--
-    <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
-    -->
 
   } @else {
 
