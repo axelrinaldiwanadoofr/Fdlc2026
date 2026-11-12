@@ -1,17 +1,134 @@
-<ion-list>
-  @for( evenement of listeEvenements | async; track evenement.id )
-  {
-    @if( lienActif() )
+@if( childHtml() != "" )
+{
+  <!-- Affichage compact : une ligne par événement (ex : dans app-liste-lieux) -->
+  <ion-list>
+    @for( evenement of listeEvenements | async; track evenement.id )
     {
-      <ion-item [routerLink]="[lienPage(), evenement.id]" [innerHTML]="itemText(evenement)"></ion-item>
+      @if( lienActif() )
+      {
+        <ion-item [routerLink]="[lienPage(), evenement.id]" [innerHTML]="itemText(evenement)"></ion-item>
+      }
+      @else
+      {
+        <ion-item [innerHTML]="itemText(evenement)"></ion-item>
+      }
+    }
+    @empty
+    {
+      <ion-item lines="none">Aucun événement</ion-item>
+    }
+  </ion-list>
+}
+@else
+{
+  <!-- Affichage programme : un bloc par jour, une ligne par événement -->
+  @if( planning | async; as jours )
+  {
+    @if( jours.length == 0 )
+    {
+      <p class="vide">Aucun événement</p>
     }
     @else
     {
-      <ion-item [innerHTML]="itemText(evenement)"></ion-item>
+      <nav class="onglets-jours">
+        <ion-segment [value]="jourChoisi()" (ionChange)="choisirJour($event)" [scrollable]="true">
+          <ion-segment-button value="tous">
+            <ion-label>Tout</ion-label>
+          </ion-segment-button>
+          @for( jour of jours; track jour.cle )
+          {
+            <ion-segment-button [value]="jour.cle">
+              <ion-label>{{ jour.nomJour }}</ion-label>
+            </ion-segment-button>
+          }
+        </ion-segment>
+      </nav>
+
+      @for( jour of joursAffiches(jours); track jour.cle )
+      {
+        <section class="jour">
+          <h2 class="entete-jour">
+            {{ jour.nomJour }} {{ jour.date }}
+            <span class="nb">{{ jour.total }} événement{{ jour.total > 1 ? "s" : "" }}</span>
+          </h2>
+
+          @if( jour.creneaux.length > 0 )
+          {
+            <ul class="programme">
+              @for( creneau of jour.creneaux; track creneau.heure )
+              {
+                @for( evenement of creneau.evenements; track evenement.id )
+                {
+                  <li class="ligne" [class.cliquable]="lienActif()" [routerLink]="lien(evenement)">
+                    <div class="heure">
+                      {{ creneau.heure }}
+                      @if( heureFin(evenement) )
+                      {
+                        <span class="fin">{{ heureFin(evenement) }}</span>
+                      }
+                    </div>
+                    <div class="contenu">
+                      @if( evenement.typeevenement )
+                      {
+                        <p class="type">{{ evenement.typeevenement }}</p>
+                      }
+                      <h3 class="titre">{{ evenement.titre }}</h3>
+                      @if( evenement.stitre )
+                      {
+                        <p class="sous-titre">{{ evenement.stitre }}</p>
+                      }
+                      <p class="meta">
+                        {{ nomLieu(evenement) || "Lieu non défini" }}
+                        @if( nomAnimateur(evenement) )
+                        {
+                          · {{ nomAnimateur(evenement) }}
+                        }
+                      </p>
+                      @if( evenement.commentaire )
+                      {
+                        <p class="description">{{ evenement.commentaire }}</p>
+                      }
+                    </div>
+                    @if( lienActif() )
+                    {
+                      <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
+                    }
+                  </li>
+                }
+              }
+            </ul>
+          }
+
+          @if( jour.journee.length > 0 )
+          {
+            <h3 class="sous-entete">Toute la journée</h3>
+            <ul class="programme">
+              @for( evenement of jour.journee; track evenement.id )
+              {
+                <li class="ligne" [class.cliquable]="lienActif()" [routerLink]="lien(evenement)">
+                  <div class="heure journee">—</div>
+                  <div class="contenu">
+                    @if( evenement.typeevenement )
+                    {
+                      <p class="type">{{ evenement.typeevenement }}</p>
+                    }
+                    <h3 class="titre">{{ evenement.titre }}</h3>
+                    <p class="meta">{{ nomLieu(evenement) || "Lieu non défini" }}</p>
+                  </div>
+                  @if( lienActif() )
+                  {
+                    <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </section>
+      }
     }
   }
-  @empty
+  @else
   {
-    <ion-item lines="none">Aucun événement</ion-item>
+    <p class="vide">Chargement du programme…</p>
   }
-</ion-list>
+}

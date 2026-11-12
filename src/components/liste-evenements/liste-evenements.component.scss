@@ -1,0 +1,181 @@
+// Programme des événements : onglets par jour, une ligne par événement.
+// Couleurs basées sur les variables Ionic -> fonctionne en clair et en sombre.
+
+:host {
+  display: block;
+
+  --fond: var(--ion-background-color, #fff);
+  --bordure: var(--ion-border-color, var(--ion-background-color-step-150, #d9d9d9));
+  --texte: var(--ion-text-color, #000);
+  --texte-doux: var(--ion-text-color-step-400, var(--ion-color-step-600, #666));
+  --largeur-heure: 64px;
+}
+
+.vide {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--texte-doux);
+}
+
+// ---------- Onglets des jours (collés en haut au défilement) ----------
+
+.onglets-jours {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: 8px 16px;
+  background: var(--fond);
+  border-bottom: 1px solid var(--bordure);
+
+  ion-segment {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  ion-segment-button {
+    min-width: 80px;
+    text-transform: none;
+  }
+}
+
+// ---------- Un jour ----------
+
+.jour {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 16px 24px;
+}
+
+.entete-jour {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 24px 0 0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--texte);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--texte);
+
+  .nb {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--texte-doux);
+    white-space: nowrap;
+  }
+}
+
+.sous-entete {
+  margin: 20px 0 0;
+  padding-bottom: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+  border-bottom: 1px solid var(--bordure);
+}
+
+// ---------- Lignes du programme ----------
+
+.programme {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ligne {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--largeur-heure) 1fr;
+  column-gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bordure);
+
+  &.cliquable {
+    cursor: pointer;
+    padding-right: 28px;
+
+    &:hover .titre { text-decoration: underline; }
+  }
+}
+
+.heure {
+  font-weight: 600;
+  font-size: 1rem;
+  line-height: 1.4;
+  color: var(--texte);
+  font-variant-numeric: tabular-nums;
+
+  .fin {
+    display: block;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--texte-doux);
+  }
+
+  &.journee { color: var(--texte-doux); }
+}
+
+.contenu { min-width: 0; }
+
+.type {
+  margin: 0 0 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--texte-doux);
+}
+
+.titre {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--texte);
+  overflow-wrap: anywhere;
+}
+
+.sous-titre {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--texte-doux);
+}
+
+.meta {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: var(--texte-doux);
+}
+
+.description {
+  margin: 6px 0 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--texte-doux);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.chevron {
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  color: var(--texte-doux);
+}
+
+// ---------- Téléphone ----------
+
+@media (max-width: 480px) {
+  :host { --largeur-heure: 52px; }
+
+  .ligne { column-gap: 12px; }
+}
