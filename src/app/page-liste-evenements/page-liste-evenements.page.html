@@ -25,12 +25,52 @@
       <ion-title size="large">Événements</ion-title>
     </ion-toolbar>
   </ion-header>
-
-  <app-liste-evenements
-    [titrePartie]="titreFiltre"
-    [debut]="debutFiltre"
-    [nomAnimateurPartie]="animateurFiltre"
-    [titreLivrePartie]="livreFiltre"
-    [lienPage]="'/page-evenement'">
-  </app-liste-evenements>
+  <ion-list>
+    <ion-item-divider color="light" sticky>
+      <ion-label>Samedi</ion-label>
+    </ion-item-divider>
+    <app-liste-evenements
+      [titrePartie]="titreFiltre"
+      debut="2026-11-21"
+      [nomAnimateurPartie]="animateurFiltre"
+      [titreLivrePartie]="livreFiltre"
+      lienPage="'/page-evenement'"
+      childHtml="<p><strong>$heureDebut</strong>: $nomLieu</p><p>$titre</p>">
+    </app-liste-evenements>
+    <ion-item-divider color="light" sticky>
+      <ion-label>Dimanche</ion-label>
+    </ion-item-divider>
+    <app-liste-evenements
+      [titrePartie]="titreFiltre"
+      debut="2026-11-22"
+      [nomAnimateurPartie]="animateurFiltre"
+      [titreLivrePartie]="livreFiltre"
+      lienPage="'/page-evenement'"
+      childHtml="<p><strong>$heureDebut</strong>: $nomLieu</p><p>$titre</p>">
+    </app-liste-evenements>
+    <ion-item-divider color="light" sticky>
+      <ion-label>Evénements permanents du samedi</ion-label>
+    </ion-item-divider>
+    <app-liste-evenements
+      [titrePartie]="titreFiltre"
+      debut="2026-11-21"
+      permanent="true"
+      [nomAnimateurPartie]="animateurFiltre"
+      [titreLivrePartie]="livreFiltre"
+      lienPage="'/page-evenement'"
+      childHtml="<p><strong>$heureDebut</strong>: $nomLieu</p><p>$titre</p>">
+    </app-liste-evenements>
+    <ion-item-divider color="light" sticky>
+      <ion-label>Evénements permanents du dimanche</ion-label>
+    </ion-item-divider>
+    <app-liste-evenements
+      [titrePartie]="titreFiltre"
+      debut="2026-11-22"
+      permanent="true"
+      [nomAnimateurPartie]="animateurFiltre"
+      [titreLivrePartie]="livreFiltre"
+      lienPage="'/page-evenement'"
+      childHtml="<p><strong>$heureDebut</strong>: $nomLieu</p><p>$titre</p>">
+    </app-liste-evenements>
+  </ion-list>
 </ion-content>

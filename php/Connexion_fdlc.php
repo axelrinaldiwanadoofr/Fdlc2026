@@ -10,25 +10,26 @@
 
         // Liste des alias de tables utilisée
         public static $tables = array(
-            "stand" => "stand",
-            "exposant" => "exposant",
-            "exposer" => "exposer",
-            "personne" => "personne",
-            "hall" => "hall",
-            "import" => "import",
-            "ecrire" => "ecrire",
-            "editeur" => "editeur",
-            "evenement" => "evenement",
-            "lieu" => "lieu",
-            "livre" => "livre",
-            "presenter" => "presenter",
-            "specialite" => "specialite",
-            "typelieu" => "typelieu",
-            "typeevenement" => "typeevenement",
-            "genre" => "genre",
-            "PersonneExposantExposer" => "PersonneExposantExposer",
-            "PersonneExposantExposerLieu" => "PersonneExposantExposerLieu",
-            "LivreEditeurPersonneExposant" => "LivreEditeurPersonneExposant"
+            "stand" => "fdlc_stand",
+            "exposant" => "fdlc_exposant",
+            "exposer" => "fdlc_exposer",
+            "personne" => "fdlc_personne",
+            "hall" => "fdlc_hall",
+            "import" => "fdlc_import",
+            "ecrire" => "fdlc_ecrire",
+            "editeur" => "fdlc_editeur",
+            "evenement" => "fdlc_evenement",
+            "lieu" => "fdlc_lieu",
+            "livre" => "fdlc_livre",
+            "presenter" => "fdlc_presenter",
+            "specialite" => "fdlc_specialite",
+            "typelieu" => "fdlc_typelieu",
+            "typeevenement" => "fdlc_typeevenement",
+            "genre" => "fdlc_genre",
+            "PersonneExposantExposer" => "fdlc_PersonneExposantExposer",
+            "PersonneExposantExposerLieu" => "fdlc_PersonneExposantExposerLieu",
+            "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant",
+            "LivreEditeurPersonneExposantLieu" => "fdlc_LivreEditeurPersonneExposantLieu"
          ) ;
 
         /**

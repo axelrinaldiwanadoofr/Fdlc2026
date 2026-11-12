@@ -1,3 +1,6 @@
-<ion-list>
-  
-</ion-list>
+@for( evenement of listeEvenements | async;  track evenement.id )
+{
+    <!--<ion-item [routerLink]="[lienPage(), evenement.id]" [innerHTML]="itemText(evenement)">-->
+    <ion-item [innerHTML]="itemText(evenement)">
+    </ion-item>
+}  

@@ -26,7 +26,8 @@ export class EvenementService {
     titre: string = "",
     debut: string = "",
     nomAnimateur: string = "",
-    titreLivre: string = ""
+    titreLivre: string = "",
+    permanent: string = ""
   ): Observable<Evenement[]> {
     let first = true;
     let url = "php/evenement/tous-les-evenements.php";
@@ -53,6 +54,12 @@ export class EvenementService {
       url += first ? "?" : "&";
       first = false;
       url += "titreLivre=" + titreLivre;
+    }
+
+    if( permanent !== "" ) {
+      url += first ? "?" : "&";
+      first = false;
+      url += "permanent=1" ;
     }
 
     return this.http.get<Evenement[]>(url);

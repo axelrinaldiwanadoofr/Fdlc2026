@@ -8,9 +8,11 @@ export class Evenement
     public public: string = "" ;          // public visé
     public commentaire: string = "" ;
     public debut: string = "" ;           // date et heure de début ("AAAA-MM-JJ HH:MM:SS")
+    public heureDebut: string = "" ;      // heure de début ("HH:MM")
     public fin: string = "" ;             // date et heure de fin
     public idAnimateur: number = -1 ;     // id personne qui anime
     public numLieu: number = -1 ;         // num du lieu où se déroule l'événement
+    public nomLieu: string = "" ;         // nom du lieu
 
     constructor( 
         id: number = -1, 
