@@ -90,4 +90,14 @@ export class LivreService
     return this.http.get<Livre[]>("php/livre/titres-livres.php");
   }
 
+  // Récupérer les livres écrits par une personne à partir de son identifiant
+        getLivresByPersonne(idPersonne: number): Observable<Livre[]>
+        {
+            // Appel du fichier PHP existant avec le filtre idPersonne
+            // Le PHP utilise la vue SQL PersonneComplete
+            return this.http.get<Livre[]>(
+                "php/livre/tous-les-livres.php?idPersonne=" + idPersonne
+            );
+        }
+
 }

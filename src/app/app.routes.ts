@@ -68,6 +68,15 @@ export const routes: Routes = [
     loadComponent: () => import('./page-liste-evenements/page-liste-evenements.page').then( m => m.PageListeEvenementsPage)  
   },
   {
+    path: 'page-liste-lieux',
+    loadComponent: () => import('./page-liste-lieux/page-liste-lieux.page').then( m => m.PageListeLieuxPage)
+  },
+  {
+    // Détail d'un lieu, ex : /page-lieu/302 (num => input num de la page)
+    path: 'page-lieu/:num',
+    loadComponent: () => import('./page-lieu/page-lieu.page').then( m => m.PageLieuPage)
+  },
+  {
     path: 'a-propos',
     loadComponent: () => import('./page-a-propos/page-a-propos.page').then( m => m.PageAProposPage)
   }

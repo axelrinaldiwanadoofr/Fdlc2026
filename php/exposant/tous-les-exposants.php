@@ -9,8 +9,19 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct idexposant as id, nomexposant as nom, nomlieu from " . Connexion::$tables["PersonneExposantExposerLieu"] . " where 1 " ;
-
+    // Récupérer les exposants et leurs créneaux de présence
+    $sql = "SELECT DISTINCT
+                idExposant AS id,
+                nomExposant AS nom,
+                nomLieu,
+                numLieu,
+                samedi_am,
+                samedi_pm,
+                dimanche_am,
+                dimanche_pm
+            FROM " . Connexion::$tables["PersonneExposantExposerLieu"] . "
+            WHERE 1 " ;
+            
     if( isset($_GET["nom"])) 
     {
         $sql .= " and nom = :nom " ;
@@ -19,6 +30,12 @@ try
     if( isset($_GET["nomLieu"])) 
     {
         $sql .= " and nomLieu like :nomLieu " ;
+    }
+
+    // Filtrer les exposants associés à une personne
+    if( isset($_GET["idPersonne"]))
+    {
+        $sql .= " and idPersonne = :idPersonne " ;
     }
 
     $sql .= " order by nomexposant" ;
@@ -33,6 +50,12 @@ try
     if( isset($_GET["nomLieu"]))
     {
         $cursor->bindValue( ":nomLieu", $_GET["nomLieu"] . "%", PDO::PARAM_STR ) ;
+    }
+
+    // Associer l'identifiant de la personne au paramètre SQL
+    if( isset($_GET["idPersonne"]))
+    {
+        $cursor->bindValue( ":idPersonne", (int) $_GET["idPersonne"], PDO::PARAM_INT ) ;
     }
 
     $cursor->execute() ;

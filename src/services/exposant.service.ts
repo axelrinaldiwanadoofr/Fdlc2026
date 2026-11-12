@@ -35,6 +35,7 @@ export class ExposantService
         }
 
         return this.http.get<Exposant[]>( url ) ;
+        
     }
 
     getExposantById( id: number = -1 ): Observable<Exposant[]>
@@ -55,5 +56,17 @@ export class ExposantService
     getPersonnesExposant( id: number ): Observable<PersonneStand[]>
     {
         return this.http.get<PersonneStand[]>( "php/exposant/personnes-exposant.php?id=" + id ) ;
+    }
+
+    // Récupérer les exposants associés à une personne
+    // ainsi que ses créneaux de présence chez chaque exposant
+    getExposantsByPersonne(idPersonne: number): Observable<Exposant[]>
+    {
+        // Construire l'URL avec l'identifiant de la personne
+        const url = "php/exposant/tous-les-exposants.php?idPersonne="
+                    + idPersonne;
+
+        // Récupérer les informations depuis le fichier PHP
+        return this.http.get<Exposant[]>(url);
     }
 }

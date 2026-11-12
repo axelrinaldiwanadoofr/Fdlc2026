@@ -28,7 +28,8 @@
             "genre" => "genre",
             "PersonneExposantExposer" => "PersonneExposantExposer",
             "PersonneExposantExposerLieu" => "PersonneExposantExposerLieu",
-            "LivreEditeurPersonneExposant" => "LivreEditeurPersonneExposant"
+            "LivreEditeurPersonneExposant" => "LivreEditeurPersonneExposant",
+            "PersonneComplete" => "PersonneComplete"
          ) ;
 
         /**
