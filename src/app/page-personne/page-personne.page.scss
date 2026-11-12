@@ -1,0 +1,187 @@
+/* Disposition horizontale de l'en-tête du profil */
+.profil-personne {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+/* Conteneur circulaire de la photo */
+.photo-profil {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background-color: #353535;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* La photo remplit le cercle sans être déformée */
+.photo-profil img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Icône affichée en l'absence de photo */
+.photo-profil ion-icon {
+  font-size: 55px;
+  color: #aaa;
+}
+
+/* Affichage de la spécialité */
+.specialite {
+  font-size: 20px;
+  margin: 0;
+}
+
+/* Section contenant la biographie de la personne */
+.biographie-personne {
+  margin-top: 24px;
+  margin-bottom: 30px;
+}
+
+/* Titre de la section biographie */
+.biographie-personne h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Texte de la biographie */
+.biographie-personne p {
+  font-size: 16px;
+  line-height: 1.6;
+  white-space: pre-line; // Conserve les retours à la ligne du texte
+  margin: 0;
+}
+
+/* Section présentant les livres écrits par la personne */
+.livres-personne {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* Titre de la section */
+.livres-personne h2 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* Présentation de chaque livre */
+.livre-item {
+  padding: 12px 0;
+  border-bottom: 1px solid #444;
+}
+
+/* Titre du livre */
+.livre-item p {
+  font-size: 16px;
+  margin: 0;
+}
+
+
+/* Section des exposants associés à une personne */
+.exposants-personne {
+  margin-top: 32px;
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+}
+
+/* Carte d'un exposant */
+.exposant-item {
+  background: var(--ion-card-background, #202024);
+  border: 1px solid var(--ion-color-step-150, #38383e);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+/* En-tête contenant l'icône et les informations */
+.exposant-entete {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Icône de l'exposant */
+.exposant-icone {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: var(--ion-color-step-100, #303036);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  ion-icon {
+    font-size: 24px;
+  }
+}
+
+/* Nom et numéro de stand */
+.exposant-informations {
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0 0 6px;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}
+
+/* Zone des créneaux de présence */
+.exposant-creneaux {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--ion-color-step-150, #38383e);
+
+  h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0 0 14px;
+  }
+}
+
+/* Grille responsive des créneaux */
+.creneaux-grille {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+
+  span {
+    font-size: 14px;
+    color: var(--ion-color-success, #2dd36f);
+  }
+
+  /* Créneau sans présence confirmée */
+  .inactif {
+    color: var(--ion-color-medium);
+  }
+}
+
+/* Adaptation aux petits écrans */
+@media (max-width: 480px) {
+  .creneaux-grille {
+    grid-template-columns: 1fr;
+  }
+
+  .exposant-item {
+    padding: 16px;
+  }
+}
