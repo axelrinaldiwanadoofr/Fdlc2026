@@ -39,20 +39,20 @@ import { personOutline, storefrontOutline } from 'ionicons/icons';
   templateUrl: './page-personne.page.html',
   styleUrls: ['./page-personne.page.scss'],
   // Déclaration des composants et modules utilisés dans le HTML
-// Déclaration des composants Ionic et des modules Angular
-// nécessaires au fonctionnement de la page personne
-imports: [
-  IonContent,
-  IonHeader,
-  IonTitle,
-  IonToolbar,
-  IonButtons,
-  IonBackButton,
-  IonIcon, // Affichage de la silhouette lorsqu'aucune photo n'existe
-  CommonModule, // Utilisation du pipe async et des fonctionnalités Angular
-  FormsModule
-]
-
+  // Déclaration des composants Ionic et des modules Angular
+  // nécessaires au fonctionnement de la page personne
+  imports: [
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
+    IonButtons,
+    IonBackButton,
+    IonIcon, // Affichage de la silhouette lorsqu'aucune photo n'existe
+    CommonModule, // Utilisation du pipe async et des fonctionnalités Angular
+    FormsModule,
+    LivresAuteurComponent
+  ]
 })
 export class PagePersonnePage implements OnInit {
 

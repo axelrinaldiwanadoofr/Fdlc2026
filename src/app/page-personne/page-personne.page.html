@@ -99,8 +99,10 @@
 
     }
 
-    <!-- Récupération des exposants associés à la personne -->
-    @if (exposants | async; as listeExposants) {
+    @if( p.photo )
+    {
+      <ion-img [src]="p.photo"/>
+    }
 
       <!-- Afficher la section uniquement si des exposants sont associés -->
       @if (listeExposants.length > 0) {
