@@ -31,17 +31,30 @@ export interface Creneau {
   evenements: Evenement[];
 }
 
-// Un jour du festival
+// Un jour du festival (événements avec horaire uniquement)
 export interface JourPlanning {
-  cle: string;                   // "2026-11-21" (ou "sans-date")
+  cle: string;                   // "2026-11-21"
   nomJour: string;               // "Samedi"
   date: string;                  // "21 novembre"
-  journee: Evenement[];          // événements sans heure (00:00) : stands, expos...
   creneaux: Creneau[];           // événements avec heure, triés
   total: number;
 }
 
+// Événement présent toute la journée (stands, expositions...) : onglet dédié
+export interface EvenementJournee {
+  nomJour: string;               // "Samedi" (ou "Date à définir")
+  evenement: Evenement;
+}
+
+export interface Planning {
+  jours: JourPlanning[];
+  journee: EvenementJournee[];
+}
+
 const JOURS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+// Le festival se tient le samedi et le dimanche (getDay : 6 = samedi, 0 = dimanche).
+// Les événements datés d'un autre jour (ex : le vendredi) ne sont pas affichés.
+const JOURS_FESTIVAL = [6, 0];
 const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
               "août", "septembre", "octobre", "novembre", "décembre"];
 
@@ -76,9 +89,9 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
   numLieu = input<number>(-1);
 
   protected listeEvenements: Observable<Array<Evenement>> | null = null;
-  protected planning: Observable<Array<JourPlanning>> | null = null;
+  protected planning: Observable<Planning> | null = null;
 
-  // Onglet sélectionné : "tous" ou la clé d'un jour
+  // Onglet sélectionné : "tous", "journee" (toute la journée) ou la clé d'un jour
   protected jourChoisi = signal<string>("tous");
 
   private nomsLieux = new Map<number, string>();
@@ -134,7 +147,7 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
       map(([evenements, lieux, personnes]) => {
         this.nomsLieux = lieux;
         this.nomsPersonnes = personnes;
-        return evenements;
+        return evenements.filter(evenement => this.estPendantLeFestival(evenement));
       }),
       catchError(() => of([] as Evenement[])),
       shareReplay(1)
@@ -145,24 +158,30 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
 
   // ---------- Planning ----------
 
-  // Regroupe les événements par jour, puis par heure de début
-  private grouperParJour(evenements: Evenement[]): JourPlanning[] {
+  // Sépare les événements "toute la journée" (onglet dédié) des événements à horaire,
+  // ces derniers étant regroupés par jour puis par heure de début
+  private grouperParJour(evenements: Evenement[]): Planning {
     const jours = new Map<string, JourPlanning>();
+    const journee: EvenementJournee[] = [];
 
     const tries = [...evenements].sort((a, b) =>
       (a.debut ?? "").localeCompare(b.debut ?? "") || (a.titre ?? "").localeCompare(b.titre ?? ""));
 
     for (const evenement of tries) {
       const date = this.lireDate(evenement.debut);
-      const cle = date ? evenement.debut.substring(0, 10) : "sans-date";
 
+      if (!date || this.estToutLaJournee(evenement)) {
+        journee.push({ nomJour: date ? JOURS[date.getDay()] : "Date à définir", evenement });
+        continue;
+      }
+
+      const cle = evenement.debut.substring(0, 10);
       let jour = jours.get(cle);
       if (!jour) {
         jour = {
           cle,
-          nomJour: date ? JOURS[date.getDay()] : "Date à définir",
-          date: date ? date.getDate() + " " + MOIS[date.getMonth()] : "",
-          journee: [],
+          nomJour: JOURS[date.getDay()],
+          date: date.getDate() + " " + MOIS[date.getMonth()],
           creneaux: [],
           total: 0,
         };
@@ -170,31 +189,46 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
       }
       jour.total++;
 
-      if (!date || this.estToutLaJournee(evenement)) {
-        jour.journee.push(evenement);
-      } else {
-        const heure = this.heure(date);
-        const dernier = jour.creneaux[jour.creneaux.length - 1];
-        if (dernier && dernier.heure === heure) dernier.evenements.push(evenement);
-        else jour.creneaux.push({ heure, evenements: [evenement] });
-      }
+      const heure = this.heure(date);
+      const dernier = jour.creneaux[jour.creneaux.length - 1];
+      if (dernier && dernier.heure === heure) dernier.evenements.push(evenement);
+      else jour.creneaux.push({ heure, evenements: [evenement] });
     }
 
-    // Les jours datés d'abord (ordre chronologique), "Date à définir" à la fin
-    return [...jours.values()].sort((a, b) =>
-      a.cle === "sans-date" ? 1 : b.cle === "sans-date" ? -1 : a.cle.localeCompare(b.cle));
+    return {
+      jours: [...jours.values()].sort((a, b) => a.cle.localeCompare(b.cle)),
+      journee,
+    };
   }
 
   protected choisirJour(event: CustomEvent) {
     this.jourChoisi.set(String(event.detail.value ?? "tous"));
   }
 
-  protected joursAffiches(jours: JourPlanning[]): JourPlanning[] {
+  // Onglet effectivement affiché : si l'onglet choisi n'existe plus
+  // (filtres modifiés), on revient à "tous"
+  protected onglet(planning: Planning): string {
     const choix = this.jourChoisi();
-    if (choix === "tous") return jours;
-    const jour = jours.filter(j => j.cle === choix);
-    // le jour choisi n'existe plus (filtres modifiés) : on revient à "tous"
-    return jour.length ? jour : jours;
+    if (choix === "journee") return planning.journee.length ? choix : "tous";
+    if (choix !== "tous" && !planning.jours.some(j => j.cle === choix)) return "tous";
+    return choix;
+  }
+
+  protected afficherJournee(planning: Planning): boolean {
+    const onglet = this.onglet(planning);
+    return planning.journee.length > 0 && (onglet === "tous" || onglet === "journee");
+  }
+
+  protected joursAffiches(planning: Planning): JourPlanning[] {
+    const onglet = this.onglet(planning);
+    if (onglet === "tous") return planning.jours;
+    return planning.jours.filter(j => j.cle === onglet);
+  }
+
+  // Événement sans date, ou daté d'un jour du festival (samedi / dimanche)
+  private estPendantLeFestival(evenement: Evenement): boolean {
+    const date = this.lireDate(evenement.debut);
+    return date === null || JOURS_FESTIVAL.includes(date.getDay());
   }
 
   // Un événement à 00:00 = présent toute la journée (stands, expositions...)

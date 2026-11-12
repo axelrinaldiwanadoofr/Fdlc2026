@@ -67,11 +67,11 @@
   }
 }
 
-// ---------- Toute la journée : encadré sur fond légèrement teinté, en tête du jour ----------
+// ---------- Toute la journée : encadré sur fond légèrement teinté ----------
 
 .journee {
   margin: 12px 0 8px;
-  padding: 10px 14px 2px;
+  padding: 0 14px;
   border-radius: 8px;
   background: var(--fond-doux);
   border: 1px solid var(--bordure);
@@ -88,25 +88,6 @@
   }
 }
 
-.sous-entete {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding-bottom: 6px;
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--texte);
-  border-bottom: 1px solid var(--bordure);
-
-  .nb {
-    font-weight: 400;
-    letter-spacing: 0;
-    color: var(--texte-doux);
-  }
-}
 
 // ---------- Lignes du programme ----------
 
