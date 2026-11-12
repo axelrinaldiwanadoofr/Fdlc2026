@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 02/11/2026
+
 import { Component, OnInit, input, output, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import {Observable} from "rxjs" ;
@@ -11,7 +13,7 @@ import {
   IonCardContent,
  } from '@ionic/angular';
 
-import {EvenementService } from '../../servcies/evenement.service';
+import {EvenementService } from '../../services/evenement.service';
 
 @Component({
   selector: 'app-theme-evenement-combo',

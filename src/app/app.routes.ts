@@ -2,12 +2,20 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   /*{
-    path: 'tabs',
+    path: '',
     loadChildren: () => import('./tabs/tabs.routes').then((m) => m.routes),
   },*/
   {
     path: 'liste-exposants-page',
     loadComponent: () => import('./liste-exposants-page/liste-exposants-page.page').then( m => m.ListeExposantsPagePage)
+  },
+  {
+    path: 'liste-livres-page',
+    loadComponent: () => import('./liste-livres-page/liste-livres-page.page').then( m => m.ListeLivresPagePage)
+  },
+  {
+    path: 'page-livre/:id',
+    loadComponent: () => import('./page-livre/page-livre.page').then( m => m.PageLivrePage)
   },
   {
     path: '',
@@ -24,10 +32,52 @@ export const routes: Routes = [
       .then(m => m.PagePersonnePage)
   },
   {
+    // Plans des halls, ex : /plans/3?numLieu=302
+    path: 'plans',
+    loadComponent: () => import('./tabs/tabs.page').then( m => m.TabsPage)
+  },
+  {
+    path: 'plans/:numHall',
+    loadComponent: () => import('./tabs/tabs.page').then( m => m.TabsPage)
+  },
+  {
+    // Pages de configuration, pas dans le menu (protégées par mot de passe sur /config)
+    path: 'config',
+    loadComponent: () => import('./page-config/page-config.page').then( m => m.PageConfigPage)
+  },
+  {
+    path: 'config-plan',
+    loadComponent: () => import('./page-config-plan/page-config-plan.page').then( m => m.PageConfigPlanPage)
+  },
+  {
+    path: 'config-evenement',
+    loadComponent: () => import('./page-config-evenement/page-config-evenement.page').then( m => m.PageConfigEvenementPage)
+  },
+  {
     path: 'page-planning-personnel',
     loadComponent: () => import('./page-planning-personnel/page-planning-personnel.page').then( m => m.PagePlanningPersonnelPage)
   },
+
+  {
+    path: 'page-liste-personnes',
+    loadComponent: () => import('./page-liste-personnes/page-liste-personnes.page').then( m => m.PageListePersonnesPage)
+  }
+  ,
   {
     path: 'page-liste-evenements',
-loadComponent: () => import('./page-liste-evenements/page-liste-evenements.page').then( m => m.PageListeEvenementsPage)  }
+    loadComponent: () => import('./page-liste-evenements/page-liste-evenements.page').then( m => m.PageListeEvenementsPage)  
+  },
+  {
+    path: 'page-liste-lieux',
+    loadComponent: () => import('./page-liste-lieux/page-liste-lieux.page').then( m => m.PageListeLieuxPage)
+  },
+  {
+    // Détail d'un lieu, ex : /page-lieu/302 (num => input num de la page)
+    path: 'page-lieu/:num',
+    loadComponent: () => import('./page-lieu/page-lieu.page').then( m => m.PageLieuPage)
+  },
+  {
+    path: 'a-propos',
+    loadComponent: () => import('./page-a-propos/page-a-propos.page').then( m => m.PageAProposPage)
+  }
 ];
