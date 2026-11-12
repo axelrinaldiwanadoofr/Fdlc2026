@@ -8,11 +8,21 @@ try
     // Récupération de la connexion
     $bd = Connexion::getInstance();
 
-    // Requête principale : récupération de tous les livres
-    // On conserve les colonnes utilisées par le reste de l'application
-    $sql = "SELECT DISTINCT l.id, l.titre, l.resume
-            FROM " . Connexion::$tables["livre"] . " AS l
-            WHERE 1";
+    $sql = "select distinct id, titre, resume from " . Connexion::$tables["livre"] . " where 1 " ;
+
+    if( isset($_GET["titre"]))
+    {
+        $sql .= " and titre = :titre" ;
+    }
+
+    if( isset($_GET["resume"]))
+    {
+        $sql .= " and resume like :resume" ;
+    }
+
+    $sql .= " order by titre" ;
+
+    $cursor = $bd->prepare ( $sql ) ;
 
     // Filtre facultatif sur le titre du livre
     if (isset($_GET["titre"]))
@@ -87,11 +97,7 @@ try
 }
 catch (PDOException $erreur)
 {
-    // Gestion des erreurs de connexion ou de requête SQL
-    http_response_code(500);
-
-    header("Content-Type: application/json; charset=utf-8");
-    echo json_encode([
-        "erreur" => "Impossible de récupérer les livres"
-    ]);
+    echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
 }
+
+?>
