@@ -1,7 +1,7 @@
 <ion-list>
   @for( evenement of listeEvenements | async; track evenement.id )
   {
-    @if( lienPage() != "" )
+    @if( lienActif() )
     {
       <ion-item [routerLink]="[lienPage(), evenement.id]" [innerHTML]="itemText(evenement)"></ion-item>
     }
