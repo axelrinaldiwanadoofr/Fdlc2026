@@ -10,7 +10,22 @@
       <div class="ion-padding" slot="content">
         <ion-list>
           <ion-item>
-            <ion-input label="Nom (ou partie du nom)" labelPlacement="stacked" [(ngModel)]="saisieNom" (keyup.enter)="onFiltrer()"></ion-input>
+            <app-nom-personne-combo
+              label="Nom (ou partie du nom)"
+              (onPersonneSelected)="saisieNom = $event">
+            </app-nom-personne-combo>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Spécialité" labelPlacement="stacked" [(ngModel)]="saisieSpecialite" (keyup.enter)="onFiltrer()"></ion-input>
+          </ion-item>
+          <ion-item>
+            <app-nom-exposant-combo
+              label="Nom de l'exposant"
+              (onExposantSelected)="saisieNomExposant = $event">
+            </app-nom-exposant-combo>
+          </ion-item>
+          <ion-item>
+            <ion-input label="Titre de l'événement" labelPlacement="stacked" [(ngModel)]="saisieTitreEvenement" (keyup.enter)="onFiltrer()"></ion-input>
           </ion-item>
           <ion-item>
             <ion-input label="Spécialité" labelPlacement="stacked" [(ngModel)]="saisieSpecialite" (keyup.enter)="onFiltrer()"></ion-input>
@@ -32,5 +47,12 @@
   </ion-accordion-group>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <app-liste-personnes childHtml="<strong> $prenom $nom</strong> — $specialite" lienPage="/page-personne" [nom]="nom"></app-liste-personnes>
+  <app-liste-personnes
+    childHtml="<strong> $prenom $nom</strong> — $specialite"
+    lienPage="/page-personne"
+    [nom]="nom"
+    [specialite]="specialite"
+    [nomExposant]="exposant"
+    [titreEvenement]="evenement">
+  </app-liste-personnes>
 </ion-content>

@@ -88,4 +88,11 @@ export class NomPersonneComboComponent  implements OnInit
   {
     this.showList.set( false ) ;
   }
+
+  // Réinitialise la saisie
+  reset()
+  {
+    this.nom = "" ;
+    this.showList.set( false ) ;
+  }
 }

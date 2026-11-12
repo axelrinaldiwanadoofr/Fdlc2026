@@ -15,16 +15,40 @@ import { Personne } from '../../modeles/Personne';
 export class ListePersonnesComponent implements OnInit, OnChanges {
   childHtml = input<string>("$civilite <strong>$prenom $nom</strong> — $specialite");
   lienPage = input<string>("/page-personne");
+
+  // Critères de filtrage
+  idPersonne = input<number>(-1);
+  specialite = input<string>("");
+  idExposant = input<number>(-1);
   nom = input<string>("");
+  titreLivre = input<string>("");
+  titreEvenement = input<string>("");
+  nomExposant = input<string>("");
+  numLieu = input<number>(-1);
+
   protected listePersonnes: Observable<Personne[]> | null = null;
 
   constructor(private servicePersonne: PersonneService) {}
 
-  ngOnInit() { this.actualiserListe(); }
-  ngOnChanges() { this.actualiserListe(); }
+  ngOnInit() {
+    this.actualiserListe();
+  }
 
-  private actualiserListe() {
-    this.listePersonnes = this.servicePersonne.getToutesLesPersonnes(this.nom());
+  ngOnChanges() {
+    this.actualiserListe();
+  }
+
+  actualiserListe() {
+    this.listePersonnes = this.servicePersonne.getToutesLesPersonnesK(
+      this.idPersonne(),
+      this.specialite(),
+      this.idExposant(),
+      this.nom(),
+      this.titreLivre(),
+      this.titreEvenement(),
+      this.nomExposant(),
+      this.numLieu()
+    );
   }
 
   itemText(personne: Personne): string {
