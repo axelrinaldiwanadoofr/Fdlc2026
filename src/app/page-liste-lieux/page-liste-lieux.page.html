@@ -1,39 +1,9 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Liste des lieux</ion-title>
-    <ion-buttons slot="start"><ion-back-button defaultHref="/"></ion-back-button></ion-buttons>
-    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
   </ion-toolbar>
-  <ion-accordion-group>
-    <ion-accordion value="rechercher">
-      <ion-item slot="header" color="light"><ion-label>Rechercher / filtrer</ion-label></ion-item>
-      <div class="ion-padding" slot="content">
-        <ion-list>
-          <ion-item>
-            <ion-input label="Nom (ou partie du nom)" labelPlacement="stacked" [(ngModel)]="saisieNom" (keyup.enter)="onFiltrer()"></ion-input>
-          </ion-item>
-          <ion-item>
-            @for( cle of [cleCombo]; track cle )
-            {
-              <app-type-lieu-combo label="Type de lieu" (onTypeLieuSelected)="onTypeLieuSelected($event)"></app-type-lieu-combo>
-            }
-          </ion-item>
-          <ion-item>
-            <ion-button (click)="onFiltrer()">Filtrer</ion-button>
-            <ion-button fill="outline" (click)="reinitialiser()">Réinitialiser</ion-button>
-          </ion-item>
-        </ion-list>
-      </div>
-    </ion-accordion>
-  </ion-accordion-group>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <app-liste-lieux
-    childHtml="<strong>$nom</strong> — $type (n° $num)"
-    lienPage="/page-lieu"
-    [nom]="nom"
-    [type]="type"
-    [details]="true">
-  </app-liste-lieux>
+  <app-liste-lieux></app-liste-lieux>
 </ion-content>
