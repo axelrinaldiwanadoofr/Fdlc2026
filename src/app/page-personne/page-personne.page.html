@@ -193,15 +193,13 @@
         <!-- Fin de la boucle des exposants -->
 
       </section>
-    <!--
-    }
-    -->
-    <!-- Fin de la condition : des exposants existent -->
-
-
-    <!--
-    <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
-    -->
+    
+    <app-livres-auteur 
+      [idPersonne]="p.id" 
+      [prenom]="p.prenom" 
+      [nom]="p.nom" 
+      [auteur]="p.specialite == 'auteur'">
+    </app-livres-auteur>
 
   } @else 
   {
