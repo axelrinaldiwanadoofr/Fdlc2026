@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 04/11/2026
+
 import { Component, OnChanges, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, computed, input, output, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
