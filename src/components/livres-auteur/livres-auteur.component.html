@@ -8,7 +8,12 @@
 }
 @else if( livres().length > 0 )
 {
-  <h2>Ses livres</h2>
+  <ion-list>
+    <ion-item-divider color="light">
+      <ion-label>Ses livres</ion-label>
+      <ion-note slot="end">{{livres().length}}</ion-note>
+    </ion-item-divider>
+  </ion-list>
 
   <div class="grille">
     @for( livre of livresAffiches(); track $index )

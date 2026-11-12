@@ -1,175 +1,89 @@
-
-<!-- En-tête de la fiche personne -->
-<ion-header>
+<ion-header [translucent]="true">
   <ion-toolbar>
-
-    <!-- Bouton permettant de revenir à la page précédente -->
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/page-liste-personnes"></ion-back-button>
     </ion-buttons>
-
-    <!-- Récupération des informations de la personne -->
-    @if (personne | async; as p) {
-
-      <!-- Affichage du prénom et du nom dans la barre de titre -->
-      <ion-title>{{ p.prenom }} {{ p.nom }}</ion-title>
-
-    } @else {
-
-      <!-- Titre temporaire pendant le chargement -->
-      <ion-title>Chargement...</ion-title>
-
+    @if( personne | async; as p )
+    {
+      <ion-title>{{p.prenom}} {{p.nom}}</ion-title>
     }
-
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-
-  <!-- Récupération des informations de la personne -->
-  @if (personne | async; as p) {
-
-    <!-- En-tête du profil -->
-    <div class="profil-personne">
-
-      <!-- Photo de profil circulaire -->
-      <div class="photo-profil">
-
-        @if (p.photo) {
-
-          <!-- Affichage de la photo si elle existe -->
-          <img
-            [src]="p.photo"
-            alt="Photo de profil"
-          />
-
-        } @else {
-
-          <!-- Icône par défaut si aucune photo n'est renseignée -->
-          <ion-icon name="person-outline"></ion-icon>
-
+<ion-content>
+  @if( personne | async; as p )
+  {
+    <div class="profil">
+      <div class="photo">
+        @if( p.photo )
+        {
+          <img [src]="p.photo" [alt]="p.prenom + ' ' + p.nom">
         }
-
+        @else
+        {
+          <ion-icon name="person-outline"></ion-icon>
+        }
       </div>
-
-      <!-- Spécialité affichée uniquement si elle existe -->
-      @if (p.specialite) {
-        <p class="specialite">{{ p.specialite }}</p>
-      }
-
+      <div>
+        <h1>{{p.prenom}} {{p.nom}}</h1>
+        @if( p.specialite )
+        {
+          <p class="specialite">{{p.specialite}}</p>
+        }
+      </div>
     </div>
 
-    <!-- Affichage de la biographie uniquement si elle est renseignée -->
-    @if (p.biographie) {
-
-      <section class="biographie-personne">
-
-        <!-- Titre de la section -->
-        <h2>Biographie</h2>
-
-        <!-- Biographie récupérée depuis la base de données -->
-        <p>{{ p.biographie }}</p>
-
-      </section>
-
+    @if( p.biographie )
+    {
+      <ion-list>
+        <ion-item-divider color="light">
+          <ion-label>Biographie</ion-label>
+        </ion-item-divider>
+        <ion-item lines="none">
+          <ion-label class="ion-text-wrap biographie">{{p.biographie}}</ion-label>
+        </ion-item>
+      </ion-list>
     }
 
-    <!-- Livres de l'auteur avec leur couverture -->
-    <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
-
-    <!-- Récupération des exposants associés à la personne -->
-    @if (exposants | async; as listeExposants) {
-
-      <!-- Afficher la section uniquement si des exposants sont associés -->
-      @if (listeExposants.length > 0) {
-
-        <section class="exposants-personne">
-
-          <!-- Titre de la section -->
-          <h2>Exposants</h2>
-
-          <!-- Parcourir les exposants associés à la personne -->
-          @for (exposant of listeExposants; track $index) {
-
-            <!-- Carte de l'exposant -->
-            <div class="exposant-item">
-
-              <!-- En-tête contenant l'icône et les informations -->
-              <div class="exposant-entete">
-
-                <!-- Icône représentant l'exposant -->
-                <div class="exposant-icone">
-                  <ion-icon name="storefront-outline"></ion-icon>
-                </div>
-
-                <!-- Nom et numéro de stand -->
-                <div class="exposant-informations">
-
-                  <h3>{{ exposant.nom }}</h3>
-
-                  @if (exposant.numLieu != null) {
-                    <p>Stand {{ exposant.numLieu }}</p>
-                  }
-
-                </div>
-
-              </div>
-
-              <!-- Créneaux de présence de la personne chez l'exposant -->
-              <div class="exposant-creneaux">
-
-                <h4>Créneaux de présence</h4>
-
-                <!-- Grille des quatre créneaux -->
-                <div class="creneaux-grille">
-
-                  <!-- Samedi matin -->
-                  <span [class.inactif]="exposant.samedi_am !== 1">
-                    {{ exposant.samedi_am === 1 ? '✓' : '–' }}
-                    Samedi matin
-                  </span>
-
-                  <!-- Samedi après-midi -->
-                  <span [class.inactif]="exposant.samedi_pm !== 1">
-                    {{ exposant.samedi_pm === 1 ? '✓' : '–' }}
-                    Samedi après-midi
-                  </span>
-
-                  <!-- Dimanche matin -->
-                  <span [class.inactif]="exposant.dimanche_am !== 1">
-                    {{ exposant.dimanche_am === 1 ? '✓' : '–' }}
-                    Dimanche matin
-                  </span>
-
-                  <!-- Dimanche après-midi -->
-                  <span [class.inactif]="exposant.dimanche_pm !== 1">
-                    {{ exposant.dimanche_pm === 1 ? '✓' : '–' }}
-                    Dimanche après-midi
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-            <!-- Fin de la carte de l'exposant -->
-
+    <!-- stands où la personne est présente, un clic ouvre la page du stand -->
+    @if( exposants | async; as liste )
+    {
+      @if( liste.length > 0 )
+      {
+        <ion-list>
+          <ion-item-divider color="light">
+            <ion-label>Présent sur le stand</ion-label>
+          </ion-item-divider>
+          @for( exposant of liste; track exposant.id )
+          {
+            <ion-item [routerLink]="['/page-exposant', exposant.id]" detail="true">
+              <ion-icon slot="start" name="storefront-outline" color="primary"></ion-icon>
+              <ion-label class="ion-text-wrap">
+                <h2>{{exposant.nom}}</h2>
+                <p class="creneaux">
+                  <span [class.present]="exposant.samedi_am == 1">Samedi matin</span>
+                  <span [class.present]="exposant.samedi_pm == 1">Samedi après-midi</span>
+                  <span [class.present]="exposant.dimanche_am == 1">Dimanche matin</span>
+                  <span [class.present]="exposant.dimanche_pm == 1">Dimanche après-midi</span>
+                </p>
+              </ion-label>
+              @if( exposant.numLieu )
+              {
+                <ion-note slot="end">Stand {{exposant.numLieu}}</ion-note>
+              }
+            </ion-item>
           }
-          <!-- Fin de la boucle des exposants -->
-
-        </section>
-
+        </ion-list>
       }
-      <!-- Fin de la condition : des exposants existent -->
-
     }
 
-  } @else {
-
-    <p>Chargement des informations...</p>
-    <!-- Fin de la récupération des exposants -->
-
+    <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
   }
-  <!-- Fin de la récupération des informations de la personne -->
-
+  @else
+  {
+    <p class="ion-padding">Chargement...</p>
+  }
 </ion-content>

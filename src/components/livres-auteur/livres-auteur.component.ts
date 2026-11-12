@@ -3,7 +3,7 @@
 import { Component, OnChanges, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { IonBadge, IonButton, IonSpinner } from '@ionic/angular';
+import { IonBadge, IonButton, IonSpinner, IonList, IonItemDivider, IonLabel, IonNote } from '@ionic/angular';
 
 import { LivreAuteur } from '../../modeles/LivreAuteur';
 import { LivresAuteurService } from '../../services/livres-auteur.service';
@@ -17,6 +17,10 @@ import { LivresAuteurService } from '../../services/livres-auteur.service';
     IonBadge,
     IonButton,
     IonSpinner,
+    IonList,
+    IonItemDivider,
+    IonLabel,
+    IonNote,
     RouterLink
   ],
 })
