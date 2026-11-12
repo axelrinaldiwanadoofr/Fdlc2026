@@ -10,7 +10,7 @@ try
 
     if( isset($_GET["nom"])) 
     {
-        $sql .= " and nom = :nom " ;
+        $sql .= " and nom like :nom " ;
     }
 
     if( isset($_GET["type"])) 
@@ -24,7 +24,7 @@ try
 
     if( isset($_GET["nom"]))
     {
-        $cursor->bindValue( ":nom", $_GET["nom"], PDO::PARAM_STR ) ;
+        $cursor->bindValue( ":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
     }
 
     if( isset($_GET["type"]))

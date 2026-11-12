@@ -11,7 +11,7 @@ import {
   IonCardContent,
  } from '@ionic/angular';
 
-import {LieuService } from '../../servcies/lieu.service';
+import {LieuService } from '../../services/lieu.service';
 
 // Web component de combo box affichant les valeurs distinctes du champ type
 // de la table typelieu (restaurant, stand, théatre, toilettes...)
