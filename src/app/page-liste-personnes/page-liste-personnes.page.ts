@@ -18,6 +18,8 @@ import {
   IonList,
 } from '@ionic/angular';
 import { ListePersonnesComponent } from '../../components/liste-personnes/liste-personnes.component';
+import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
+import { NomExposantComboComponent } from '../../components/nom-exposant-combo/nom-exposant-combo.component';
 
 @Component({
   selector: 'app-page-liste-personnes',
@@ -41,10 +43,15 @@ import { ListePersonnesComponent } from '../../components/liste-personnes/liste-
     IonButton,
     IonList,
     ListePersonnesComponent,
+    NomPersonneComboComponent,
+    NomExposantComboComponent,
   ],
 })
 export class PageListePersonnesPage {
   protected listePersonnes = viewChild(ListePersonnesComponent);
+  protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
+  protected nomExposantCombo = viewChild(NomExposantComboComponent);
+
   public saisieNom = '';
   public saisieSpecialite = '';
   public saisieNomExposant = '';
@@ -71,5 +78,8 @@ export class PageListePersonnesPage {
     this.specialite = '';
     this.exposant = '';
     this.evenement = '';
+
+    this.nomPersonneCombo()?.reset();
+    this.nomExposantCombo()?.reset();
   }
 }
