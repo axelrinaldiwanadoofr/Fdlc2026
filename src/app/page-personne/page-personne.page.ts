@@ -1,9 +1,9 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { personOutline, storefrontOutline } from 'ionicons/icons';
+import { storefrontOutline } from 'ionicons/icons';
 
 import {
   IonContent,
@@ -57,12 +57,15 @@ export class PagePersonnePage implements OnInit
 
   protected personne: Observable<Personne> | null = null ;
 
+  // la photo n'a pas pu être chargée
+  protected photoErreur = signal( false ) ;
+
   // Stands où la personne est présente avec ses créneaux
   protected exposants: Observable<Exposant[]> | null = null ;
 
   constructor( private personneService: PersonneService, private exposantService: ExposantService )
   {
-    addIcons( { personOutline, storefrontOutline } ) ;
+    addIcons( { storefrontOutline } ) ;
   }
 
   ngOnInit()

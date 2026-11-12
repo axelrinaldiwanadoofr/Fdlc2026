@@ -18,13 +18,13 @@
   {
     <div class="profil">
       <div class="photo">
-        @if( p.photo )
+        @if( p.photo && !photoErreur() )
         {
-          <img [src]="p.photo" [alt]="p.prenom + ' ' + p.nom">
+          <img [src]="p.photo" alt="" (error)="photoErreur.set( true )">
         }
         @else
         {
-          <ion-icon name="person-outline"></ion-icon>
+          <div class="sans-image" title="Photo non disponible"></div>
         }
       </div>
       <div>

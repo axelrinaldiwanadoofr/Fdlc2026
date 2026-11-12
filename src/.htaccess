@@ -10,3 +10,11 @@ Options -Indexes -MultiViews
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^ index.html [L]
 </IfModule>
+
+# index.html, main.js et styles.css gardent le meme nom a chaque build,
+# le navigateur doit verifier s'ils ont change sinon il garde l'ancienne version du site
+<IfModule mod_headers.c>
+    <FilesMatch "(index\.html|main\.js|styles\.css)$">
+        Header set Cache-Control "no-cache"
+    </FilesMatch>
+</IfModule>

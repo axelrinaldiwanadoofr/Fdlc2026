@@ -32,10 +32,14 @@
     object-fit: cover;
 }
 
-.photo ion-icon
+// même icône que les livres sans couverture
+.sans-image
 {
-    font-size: 40px;
-    color: var(--ion-color-medium);
+    width: 50%;
+    aspect-ratio: 1;
+    background-color: var(--ion-color-medium);
+    -webkit-mask: url("../../assets/image-indisponible.png") center / contain no-repeat;
+    mask: url("../../assets/image-indisponible.png") center / contain no-repeat;
 }
 
 .specialite
