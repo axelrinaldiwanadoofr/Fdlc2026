@@ -6,7 +6,7 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct id, titre, resume from" . Connexion::$tables["livre"] . " where 1 " ;
+    $sql = "select distinct id, titre, resume from " . Connexion::$tables["livre"] . " where 1 " ;
 
     if( isset($_GET["titre"]))
     {
@@ -42,3 +42,5 @@ catch( PDOException $erreur )
 {
     echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
 }
+
+?>
