@@ -27,7 +27,8 @@
 <ion-content class="ion-padding">
 
   <!-- Récupération des informations de la personne -->
-  @if (personne | async; as p) {
+  @if (personne | async; as p) 
+  {
 
     <!-- En-tête du profil -->
     <div class="profil-personne">
@@ -35,7 +36,8 @@
       <!-- Photo de profil circulaire -->
       <div class="photo-profil">
 
-        @if (p.photo) {
+        @if (p.photo) 
+        {
 
           <!-- Affichage de la photo si elle existe -->
           <img
@@ -43,7 +45,8 @@
             alt="Photo de profil"
           />
 
-        } @else {
+        } @else 
+        {
 
           <!-- Icône par défaut si aucune photo n'est renseignée -->
           <ion-icon name="person-outline"></ion-icon>
@@ -53,15 +56,15 @@
       </div>
 
       <!-- Spécialité affichée uniquement si elle existe -->
-      @if (p.specialite) {
+      @if (p.specialite) 
+      {
         <p class="specialite">{{ p.specialite }}</p>
       }
-
     </div>
 
     <!-- Affichage de la biographie uniquement si elle est renseignée -->
-    @if (p.biographie) {
-
+    @if (p.biographie) 
+    {
       <section class="biographie-personne">
 
         <!-- Titre de la section -->
@@ -71,21 +74,23 @@
         <p>{{ p.biographie }}</p>
 
       </section>
-
     }
 
     <!-- Récupération des livres écrits par la personne -->
-    @if (livres | async; as listeLivres) {
+    @if (livres | async; as listeLivres) 
+    {
 
       <!-- Afficher la section uniquement si des livres sont associés -->
-      @if (listeLivres.length > 0) {
+      @if (listeLivres.length > 0) 
+      {
 
         <section class="livres-personne">
 
           <h2>Livres écrits</h2>
 
           <!-- Parcourir les livres associés à la personne -->
-          @for (livre of listeLivres; track livre.id) {
+          @for (livre of listeLivres; track livre.id) 
+          {
 
             <div class="livre-item">
               <p>{{ livre.titre }}</p>
@@ -99,100 +104,107 @@
 
     }
 
+    <!--
     @if( p.photo )
     {
       <ion-img [src]="p.photo"/>
     }
+    -->
+    
+    <!-- Afficher la section uniquement si des exposants sont associés -->
+    <!--
+    @if (exposants. > 0) 
+    {-->
 
-      <!-- Afficher la section uniquement si des exposants sont associés -->
-      @if (listeExposants.length > 0) {
+      <section class="exposants-personne">
 
-        <section class="exposants-personne">
+        <!-- Titre de la section -->
+        <h2>Exposants</h2>
 
-          <!-- Titre de la section -->
-          <h2>Exposants</h2>
+        <!-- Parcourir les exposants associés à la personne -->
+        @for (exposant of exposants| async; track $index) 
+        {
 
-          <!-- Parcourir les exposants associés à la personne -->
-          @for (exposant of listeExposants; track $index) {
+          <!-- Carte de l'exposant -->
+          <div class="exposant-item">
 
-            <!-- Carte de l'exposant -->
-            <div class="exposant-item">
+            <!-- En-tête contenant l'icône et les informations -->
+            <div class="exposant-entete">
 
-              <!-- En-tête contenant l'icône et les informations -->
-              <div class="exposant-entete">
-
-                <!-- Icône représentant l'exposant -->
-                <div class="exposant-icone">
-                  <ion-icon name="storefront-outline"></ion-icon>
-                </div>
-
-                <!-- Nom et numéro de stand -->
-                <div class="exposant-informations">
-
-                  <h3>{{ exposant.nom }}</h3>
-
-                  @if (exposant.numLieu != null) {
-                    <p>Stand {{ exposant.numLieu }}</p>
-                  }
-
-                </div>
-
+              <!-- Icône représentant l'exposant -->
+              <div class="exposant-icone">
+                <ion-icon name="storefront-outline"></ion-icon>
               </div>
 
-              <!-- Créneaux de présence de la personne chez l'exposant -->
-              <div class="exposant-creneaux">
+              <!-- Nom et numéro de stand -->
+              <div class="exposant-informations">
 
-                <h4>Créneaux de présence</h4>
+                <h3>{{ exposant.nom }}</h3>
 
-                <!-- Grille des quatre créneaux -->
-                <div class="creneaux-grille">
-
-                  <!-- Samedi matin -->
-                  <span [class.inactif]="exposant.samedi_am !== 1">
-                    {{ exposant.samedi_am === 1 ? '✓' : '–' }}
-                    Samedi matin
-                  </span>
-
-                  <!-- Samedi après-midi -->
-                  <span [class.inactif]="exposant.samedi_pm !== 1">
-                    {{ exposant.samedi_pm === 1 ? '✓' : '–' }}
-                    Samedi après-midi
-                  </span>
-
-                  <!-- Dimanche matin -->
-                  <span [class.inactif]="exposant.dimanche_am !== 1">
-                    {{ exposant.dimanche_am === 1 ? '✓' : '–' }}
-                    Dimanche matin
-                  </span>
-
-                  <!-- Dimanche après-midi -->
-                  <span [class.inactif]="exposant.dimanche_pm !== 1">
-                    {{ exposant.dimanche_pm === 1 ? '✓' : '–' }}
-                    Dimanche après-midi
-                  </span>
-
-                </div>
+                @if (exposant.numLieu != null) 
+                {
+                  <p>Stand {{ exposant.numLieu }}</p>
+                }
 
               </div>
 
             </div>
-            <!-- Fin de la carte de l'exposant -->
 
-          }
-          <!-- Fin de la boucle des exposants -->
+            <!-- Créneaux de présence de la personne chez l'exposant -->
+            <div class="exposant-creneaux">
 
-        </section>
+              <h4>Créneaux de présence</h4>
 
-      }
-      <!-- Fin de la condition : des exposants existent -->
+              <!-- Grille des quatre créneaux -->
+              <div class="creneaux-grille">
 
+                <!-- Samedi matin -->
+                <span [class.inactif]="exposant.samedi_am !== 1">
+                  {{ exposant.samedi_am === 1 ? '✓' : '–' }}
+                  Samedi matin
+                </span>
+
+                <!-- Samedi après-midi -->
+                <span [class.inactif]="exposant.samedi_pm !== 1">
+                  {{ exposant.samedi_pm === 1 ? '✓' : '–' }}
+                  Samedi après-midi
+                </span>
+
+                <!-- Dimanche matin -->
+                <span [class.inactif]="exposant.dimanche_am !== 1">
+                  {{ exposant.dimanche_am === 1 ? '✓' : '–' }}
+                  Dimanche matin
+                </span>
+
+                <!-- Dimanche après-midi -->
+                <span [class.inactif]="exposant.dimanche_pm !== 1">
+                  {{ exposant.dimanche_pm === 1 ? '✓' : '–' }}
+                  Dimanche après-midi
+                </span>
+
+              </div>
+
+            </div>
+
+          </div>
+          <!-- Fin de la carte de l'exposant -->
+
+        }
+        <!-- Fin de la boucle des exposants -->
+
+      </section>
+    <!--
     }
+    -->
+    <!-- Fin de la condition : des exposants existent -->
+
 
     <!--
     <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
     -->
 
-  } @else {
+  } @else 
+  {
 
     <p>Chargement des informations...</p>
     <!-- Fin de la récupération des exposants -->
