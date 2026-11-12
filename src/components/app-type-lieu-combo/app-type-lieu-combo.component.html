@@ -1,0 +1,26 @@
+<ion-input 
+  [label]="label()" 
+  placeholder="Taper le début du type" 
+  [clearInput]="true"
+  [(ngModel)]="saisie" 
+  (ionInput)="onTypeChanged($event)"
+  (click)="onInputClick($event)">
+</ion-input>
+@if(showList())
+{
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        @for( type of listeTypes | async;  track type )
+        {
+          <ion-item button [detail]="false" (click)="onClickTypeSelected( type )" [innerHTML]="itemText( type )">
+          </ion-item>
+        }
+        @empty
+        {
+          <ion-item lines="none">Aucun type de lieu trouvé</ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+}

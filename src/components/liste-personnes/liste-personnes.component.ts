@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { IonList, IonItem } from '@ionic/angular';
-import { PersonneService } from '../../servcies/personne.service';
+import { PersonneService } from '../../services/personne.service';
 import { Personne } from '../../modeles/Personne';
 
 @Component({
@@ -16,6 +16,8 @@ export class ListePersonnesComponent implements OnInit, OnChanges {
   childHtml = input<string>("$civilite <strong>$prenom $nom</strong> — $specialite");
   lienPage = input<string>("/page-personne");
   nom = input<string>("");
+  // Personnes présentes chez un exposant du lieu (-1 = pas de filtre)
+  numLieu = input<number>(-1);
   protected listePersonnes: Observable<Personne[]> | null = null;
 
   constructor(private servicePersonne: PersonneService) {}
@@ -24,7 +26,9 @@ export class ListePersonnesComponent implements OnInit, OnChanges {
   ngOnChanges() { this.actualiserListe(); }
 
   private actualiserListe() {
-    this.listePersonnes = this.servicePersonne.getToutesLesPersonnes(this.nom());
+    this.listePersonnes = (this.numLieu() != -1)
+      ? this.servicePersonne.getToutesLesPersonnesK(-1, "", -1, this.nom(), "", "", "", this.numLieu())
+      : this.servicePersonne.getToutesLesPersonnes(this.nom());
   }
 
   itemText(personne: Personne): string {

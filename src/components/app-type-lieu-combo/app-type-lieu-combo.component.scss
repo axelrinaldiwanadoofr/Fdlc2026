@@ -1,0 +1,7 @@
+
+ion-list
+{
+    height: 200px;       /* Hauteur fixe souhaitée */
+    max-height: 200px;   /* Sécurité maximale */
+    overflow-y: auto; 
+}
