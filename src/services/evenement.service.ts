@@ -22,37 +22,31 @@ export class EvenementService {
     return this.http.get<string[]>("php/evenement/themes-evenements.php", { params });
   }
 
+  // Critères vides ("" ou -1) ignorés, les autres se cumulent (AND)
   getTousLesEvenements(
     titre: string = "",
     debut: string = "",
     nomAnimateur: string = "",
-    titreLivre: string = ""
+    titreLivre: string = "",
+    numLieu: number = -1
   ): Observable<Evenement[]> {
     let first = true;
     let url = "php/evenement/tous-les-evenements.php";
 
-    if (titre !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "titre=" + titre;
-    }
+    const criteres: [string, string | number, boolean][] = [
+      ["titre", titre, titre !== ""],
+      ["debut", debut, debut !== ""],
+      ["nomAnimateur", nomAnimateur, nomAnimateur !== ""],
+      ["titreLivre", titreLivre, titreLivre !== ""],
+      ["numLieu", numLieu, numLieu !== -1],
+    ];
 
-    if (debut !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "debut=" + debut;
-    }
-
-    if (nomAnimateur !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "nomAnimateur=" + nomAnimateur;
-    }
-
-    if (titreLivre !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "titreLivre=" + titreLivre;
+    for (const [nom, valeur, renseigne] of criteres) {
+      if (renseigne) {
+        url += first ? "?" : "&";
+        first = false;
+        url += nom + "=" + encodeURIComponent(valeur);
+      }
     }
 
     return this.http.get<Evenement[]>(url);

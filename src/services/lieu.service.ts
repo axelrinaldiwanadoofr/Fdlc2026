@@ -24,18 +24,31 @@ export class LieuService
         if( nom != "" )
         {
             url += (first)? "?" : "&" ;
-            url += "nom=" + nom ;
+            url += "nom=" + encodeURIComponent( nom ) ;
             first = false ;
         }
 
         if( type != "" )
         {
             url += (first)? "?" : "&" ;
-            url += "type=" + type ;
+            url += "type=" + encodeURIComponent( type ) ;
             first = false ;
         }
 
         return this.http.get<Lieu[]>( url ) ;
+    }
+
+    // Types de lieu (table typelieu) commençant par debut ("" = tous)
+    getTousLesTypesLieu( debut: string = "" ): Observable<{type: string}[]>
+    {
+        let url: string = "php/lieu/tous-les-types-lieu.php" ;
+
+        if( debut != "" )
+        {
+            url += "?type=" + encodeURIComponent( debut ) ;
+        }
+
+        return this.http.get<{type: string}[]>( url ) ;
     }
 
     // Tous les lieux d'un hall avec leur zone sur le plan

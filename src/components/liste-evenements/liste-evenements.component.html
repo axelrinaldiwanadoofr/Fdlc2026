@@ -1,3 +1,17 @@
 <ion-list>
-  
+  @for( evenement of listeEvenements | async; track evenement.id )
+  {
+    @if( lienPage() != "" )
+    {
+      <ion-item [routerLink]="[lienPage(), evenement.id]" [innerHTML]="itemText(evenement)"></ion-item>
+    }
+    @else
+    {
+      <ion-item [innerHTML]="itemText(evenement)"></ion-item>
+    }
+  }
+  @empty
+  {
+    <ion-item lines="none">Aucun événement</ion-item>
+  }
 </ion-list>
