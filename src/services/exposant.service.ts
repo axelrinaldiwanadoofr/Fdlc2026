@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core" ;
 import {HttpClient} from "@angular/common/http" ;
 import {Observable} from "rxjs" ;
 import {Exposant} from "../modeles/Exposant" ;
+import {PersonneStand} from "../modeles/PersonneStand" ;
 
 @Injectable( {
     providedIn: "root" 
@@ -48,5 +49,11 @@ export class ExposantService
         }
 
         return this.http.get<Exposant[]>( url ) ;
+    }
+
+    // Personnes du stand avec leurs créneaux de présence
+    getPersonnesExposant( id: number ): Observable<PersonneStand[]>
+    {
+        return this.http.get<PersonneStand[]>( "php/exposant/personnes-exposant.php?id=" + id ) ;
     }
 }

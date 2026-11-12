@@ -25,6 +25,7 @@ import { Observable } from 'rxjs';
 import { Exposant } from '../../modeles/Exposant';
 import { ExposantService } from '../../services/exposant.service';
 import { AjouterEtapeButtonComponent } from '../../components/ajouter-etape-button/ajouter-etape-button.component';
+import { PersonnesStandComponent } from '../../components/personnes-stand/personnes-stand.component';
 
 @Component({
   selector: 'app-page-exposant',
@@ -47,7 +48,8 @@ import { AjouterEtapeButtonComponent } from '../../components/ajouter-etape-butt
     AsyncPipe,
     CommonModule, 
     FormsModule,
-    AjouterEtapeButtonComponent]
+    AjouterEtapeButtonComponent,
+    PersonnesStandComponent]
 })
 export class PageExposantPage implements OnInit 
 {
