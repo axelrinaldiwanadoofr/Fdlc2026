@@ -52,6 +52,47 @@
             <span class="nb">{{ jour.total }} événement{{ jour.total > 1 ? "s" : "" }}</span>
           </h2>
 
+          <!-- En premier : ce qui est visible toute la journée (stands, expositions...) -->
+          @if( jour.journee.length > 0 )
+          {
+            <div class="journee">
+              <h3 class="sous-entete">
+                Toute la journée
+                <span class="nb">{{ jour.journee.length }}</span>
+              </h3>
+              <ul class="programme">
+                @for( evenement of jour.journee; track evenement.id )
+                {
+                  <li class="ligne" [class.cliquable]="lienActif()" [routerLink]="lien(evenement)">
+                    <div class="heure">Journée</div>
+                    <div class="contenu">
+                      @if( evenement.typeevenement )
+                      {
+                        <p class="type">{{ evenement.typeevenement }}</p>
+                      }
+                      <h3 class="titre">{{ evenement.titre }}</h3>
+                      <p class="meta">
+                        {{ nomLieu(evenement) || "Lieu non défini" }}
+                        @if( nomAnimateur(evenement) )
+                        {
+                          · {{ nomAnimateur(evenement) }}
+                        }
+                      </p>
+                      @if( evenement.commentaire )
+                      {
+                        <p class="description">{{ evenement.commentaire }}</p>
+                      }
+                    </div>
+                    @if( lienActif() )
+                    {
+                      <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
+                    }
+                  </li>
+                }
+              </ul>
+            </div>
+          }
+
           @if( jour.creneaux.length > 0 )
           {
             <ul class="programme">
@@ -99,30 +140,6 @@
             </ul>
           }
 
-          @if( jour.journee.length > 0 )
-          {
-            <h3 class="sous-entete">Toute la journée</h3>
-            <ul class="programme">
-              @for( evenement of jour.journee; track evenement.id )
-              {
-                <li class="ligne" [class.cliquable]="lienActif()" [routerLink]="lien(evenement)">
-                  <div class="heure journee">—</div>
-                  <div class="contenu">
-                    @if( evenement.typeevenement )
-                    {
-                      <p class="type">{{ evenement.typeevenement }}</p>
-                    }
-                    <h3 class="titre">{{ evenement.titre }}</h3>
-                    <p class="meta">{{ nomLieu(evenement) || "Lieu non défini" }}</p>
-                  </div>
-                  @if( lienActif() )
-                  {
-                    <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
-                  }
-                </li>
-              }
-            </ul>
-          }
         </section>
       }
     }
