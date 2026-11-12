@@ -1,9 +1,12 @@
-    import { Component, OnInit, OnChanges, input } from '@angular/core';
+import { Component, OnInit, OnChanges, input } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
 import { EvenementService } from '../../services/evenement.service';
 import { Evenement } from '../../modeles/Evenement';
 import { 
   IonList,
+  IonItem,
 } from '@ionic/angular';
 
 @Component({
@@ -13,6 +16,9 @@ import {
   standalone: true,
   imports: [
     IonList,
+    IonItem,
+    AsyncPipe,
+    RouterLink,
   ],
 })
 export class ListeEvenementsComponent implements OnInit, OnChanges {
@@ -23,6 +29,8 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
   debut = input<string>("");
   nomAnimateurPartie = input<string>("");
   titreLivrePartie = input<string>("");
+  // Numéro du lieu de l'événement (-1 = tous les lieux)
+  numLieu = input<number>(-1);
 
   protected listeEvenements: Observable<Array<Evenement>> | null = null;
   protected serviceEvenement: EvenementService;
@@ -44,7 +52,8 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
       this.titrePartie(),
       this.debut(),
       this.nomAnimateurPartie(),
-      this.titreLivrePartie()
+      this.titreLivrePartie(),
+      this.numLieu()
     );
   }
 
