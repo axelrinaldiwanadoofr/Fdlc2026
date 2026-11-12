@@ -13,7 +13,7 @@
   <div class="grille">
     @for( livre of livresAffiches(); track $index )
     {
-      <div class="livre" [routerLink]="livre.id > 0 ? ['/page-livre', livre.id] : null" [class.cliquable]="livre.id > 0">
+      <div class="livre" [routerLink]="lien( livre )" [class.cliquable]="lien( livre ) != null">
         <div class="couverture">
           @if( livre.couvertures.length > 0 )
           {
@@ -29,7 +29,14 @@
           }
         </div>
         <p class="titre" [title]="livre.titre">{{livre.titre}}</p>
-        <p class="details">{{livre.annee}}@if( livre.annee && livre.editeur ) { | }{{livre.editeur}}</p>
+        @if( livre.nomExposant )
+        {
+          <p class="details stand">Stand : {{livre.nomExposant}}</p>
+        }
+        @else
+        {
+          <p class="details">{{livre.annee}}@if( livre.annee && livre.editeur ) { | }{{livre.editeur}}</p>
+        }
       </div>
     }
   </div>

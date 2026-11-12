@@ -62,7 +62,10 @@ export class LivresAuteurService
         let livres: LivreAuteur[] = [] ;
         for( let l of bd )
         {
-            livres.push( new LivreAuteur( l.id, this.nettoie( l.titre ), "", l.editeur ?? "", true ) ) ;
+            let livre = new LivreAuteur( l.id, this.nettoie( l.titre ), "", l.editeur ?? "", true ) ;
+            livre.idExposant = l.idExposant ?? -1 ;
+            livre.nomExposant = l.nomExposant ?? "" ;
+            livres.push( livre ) ;
         }
 
         let titresBd = livres.map( l => l.titre ) ;

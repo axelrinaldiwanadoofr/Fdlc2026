@@ -53,6 +53,14 @@ export class LivresAuteurComponent implements OnChanges
     }) ;
   }
 
+  // Livre du festival : page du stand pour pouvoir le situer, sinon page du livre
+  lien( livre: LivreAuteur ): Array<string | number> | null
+  {
+    if( livre.idExposant > 0 ) return ['/page-exposant', livre.idExposant] ;
+    if( livre.id > 0 ) return ['/page-livre', livre.id] ;
+    return null ;
+  }
+
   // Image en erreur : on essaie la suivante
   imageSuivante( livre: LivreAuteur )
   {
