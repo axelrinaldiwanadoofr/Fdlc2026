@@ -24,6 +24,8 @@
             "presenter" => "presenter",
             "specialite" => "specialite",
             "typelieu" => "typelieu",
+            "typeexposant" => "typeexposant",
+            "annonce" => "annonce",
             "typeevenement" => "typeevenement",
             "genre" => "genre",
             "invite" => "invite",

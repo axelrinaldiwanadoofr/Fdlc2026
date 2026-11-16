@@ -9,14 +9,17 @@ try
 {
     $bd = Connexion::getInstance() ;
 
+    // Les créneaux de présence n'ont de sens que pour une personne
+    $creneaux = isset($_GET["idPersonne"]) ? ", samedi_am, samedi_pm, dimanche_am, dimanche_pm" : "" ;
+
     // Récupérer les exposants et leurs créneaux de présence
     $sql = "SELECT DISTINCT
                 idExposant AS id,
-                nomExposant AS nom,
+                trim( nomExposant ) AS nom,
                 libelleExposant as libelle,
                 typeExposant as type,
                 nomLieu,
-                numLieu
+                numLieu" . $creneaux . "
             FROM " . Connexion::$tables["PersonneExposantExposerLieu"] . "
             WHERE 1 " ;
             
@@ -36,7 +39,7 @@ try
         $sql .= " and idPersonne = :idPersonne " ;
     }
 
-    $sql .= " order by nomexposant" ;
+    $sql .= " order by trim( nomExposant )" ;
 
     $cursor = $bd->prepare( $sql ) ;
 

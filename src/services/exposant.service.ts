@@ -24,14 +24,16 @@ export class ExposantService
 
         if( nom != "" ) 
         {
-            url += (first)? "?" : "&"  
-            url += "nom=" + nom ;
+            url += (first)? "?" : "&" ;
+            url += "nom=" + encodeURIComponent( nom ) ;
+            first = false ;
         }
 
         if( nomLieu != "" ) 
         {
-            url += (first)? "?" : "&"  
-            url += "nomLieu=" + nomLieu ;
+            url += (first)? "?" : "&" ;
+            url += "nomLieu=" + encodeURIComponent( nomLieu ) ;
+            first = false ;
         }
 
         return this.http.get<Exposant[]>( url ) ;
@@ -58,6 +60,12 @@ export class ExposantService
         return this.http.get<PersonneStand[]>( "php/exposant/personnes-exposant.php?id=" + id ) ;
     }
 
+    // Autres exposants qui partagent le stand
+    getExposantsStand( id: number ): Observable<Exposant[]>
+    {
+        return this.http.get<Exposant[]>( "php/exposant/exposants-stand.php?id=" + id ) ;
+    }
+
     // Récupérer les exposants associés à une personne
     // ainsi que ses créneaux de présence chez chaque exposant
     getExposantsByPersonne(idPersonne: number): Observable<Exposant[]>
@@ -68,5 +76,28 @@ export class ExposantService
 
         // Récupérer les informations depuis le fichier PHP
         return this.http.get<Exposant[]>(url);
+    }
+
+    // Page de config des exposants
+
+    getConfigExposants(): Observable<Exposant[]>
+    {
+        return this.http.get<Exposant[]>( "php/exposant/config-exposants.php" ) ;
+    }
+
+    getTypesExposant(): Observable<string[]>
+    {
+        return this.http.get<string[]>( "php/exposant/types-exposant.php" ) ;
+    }
+
+    majExposant( mdp: string, exposant: Exposant ): Observable<any>
+    {
+        return this.http.post( "php/exposant/maj-exposant.php", { mdp: mdp, exposant: exposant } ) ;
+    }
+
+    // Avec idGarde, les personnes et les livres passent sur cet exposant avant la suppression
+    supprimeExposant( mdp: string, id: number, idGarde: number = -1 ): Observable<any>
+    {
+        return this.http.post( "php/exposant/supprime-exposant.php", { mdp: mdp, id: id, idGarde: idGarde } ) ;
     }
 }

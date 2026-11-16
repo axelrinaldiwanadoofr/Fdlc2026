@@ -60,7 +60,16 @@ export class ListeExposantComponent  implements OnInit, OnChanges
     childHtml = childHtml.replace("$type", exposant.type ) ;
     childHtml = childHtml.replace("$nomLieu", exposant.nomLieu ) ;
     childHtml = childHtml.replace("$numLieu", exposant.numLieu.toString() ) ;
+    childHtml = childHtml.replace("$stand", this.stand( exposant ) ) ;
     return childHtml ;
+  }
+
+  // Numéro du stand suivi de son nom quand il en a un (ex : 328 | ADEB)
+  stand( exposant: Exposant ) : string
+  {
+    let stand = exposant.numLieu.toString() ;
+    if( exposant.nomLieu && exposant.nomLieu != stand ) stand += " | " + exposant.nomLieu ;
+    return stand ;
   }
 
 }

@@ -24,6 +24,8 @@
             "presenter" => "fdlc_presenter",
             "specialite" => "fdlc_specialite",
             "typelieu" => "fdlc_typelieu",
+            "typeexposant" => "fdlc_typeexposant",
+            "annonce" => "fdlc_annonce",
             "typeevenement" => "fdlc_typeevenement",
             "genre" => "fdlc_genre",
             "invite" => "fdlc_invite",

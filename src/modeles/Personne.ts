@@ -8,6 +8,10 @@ export class Personne
     public photo: string = "" ;
     public specialite: string = "" ;
 
+    // Pour la page de config : P ou J et numeros des stands
+    public type: string = "" ;
+    public stands: string = "" ;
+
     constructor(
         id: number = -1,
         civilite: string = "",

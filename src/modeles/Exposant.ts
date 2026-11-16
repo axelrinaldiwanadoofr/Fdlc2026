@@ -8,6 +8,10 @@ export class Exposant
     public libelleExposant: string = "" ;
     public type: string = "" ; // Type d'exposant (ex: "Auteur", "Maison d'édition", etc.)
 
+    // Remplis seulement par la page de config des exposants
+    public nbPersonnes: number = 0 ;
+    public nbLivres: number = 0 ;
+
     // Créneaux de présence de la personne chez cet exposant
     // 1 : présent, 0 : absent
     // null : information non renseignée

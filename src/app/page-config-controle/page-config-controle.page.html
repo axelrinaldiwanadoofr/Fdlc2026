@@ -1,0 +1,27 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Contrôle des données</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list class="liste">
+    @for( c of controles; track c.code )
+    {
+      <ion-item button [routerLink]="[c.page]" [queryParams]="parametres( c )">
+        <ion-label>{{c.texte}}</ion-label>
+        @if( nombres() )
+        {
+          <ion-badge slot="end" [color]="nombre( c ) == 0 ? 'success' : 'warning'">{{ nombre( c ) }}</ion-badge>
+        }
+      </ion-item>
+    }
+    <ion-item button [routerLink]="['/config-exposant']" [queryParams]="{ filtre: 'doublons' }">
+      <ion-label>Exposants en double possibles</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

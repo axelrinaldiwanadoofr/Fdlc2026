@@ -2,12 +2,17 @@ export class Lieu
 {
     public num: number = -1 ;
     public nom: string = "" ;
+    public libelle: string = "" ;
     public type: string = "" ;
     public hall: number = 0 ;
     public x1: number = 0 ;
     public y1: number = 0 ;
     public x2: number = 0 ;
     public y2: number = 0 ;
+
+    // Remplis seulement par la page de config des lieux
+    public nbExposants: number = 0 ;
+    public nbEvenements: number = 0 ;
 
     constructor( 
         num: number = -1, 

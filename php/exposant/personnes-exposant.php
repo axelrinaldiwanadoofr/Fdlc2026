@@ -7,12 +7,17 @@ require_once "../Connexion.php" ;
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Personnes présentes sur le stand d'un exposant avec leurs créneaux
+// (tous les exposants qui partagent le même stand)
 try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select idPersonne, trim( prenom ) as prenom, trim( nom ) as nom, samedi_am, samedi_pm, dimanche_am, dimanche_pm from "
-         . Connexion::$tables["PersonneExposantExposer"] . " where idExposant = :id order by nom, prenom" ;
+    $sql = "select idPersonne, trim( prenom ) as prenom, trim( nom ) as nom,"
+         . " max( samedi_am ) as samedi_am, max( samedi_pm ) as samedi_pm, max( dimanche_am ) as dimanche_am, max( dimanche_pm ) as dimanche_pm"
+         . " from " . Connexion::$tables["PersonneExposantExposer"]
+         . " where idExposant in ( select x.id from " . Connexion::$tables["exposant"] . " x join " . Connexion::$tables["exposant"] . " moi"
+         . " on moi.numLieu = x.numLieu where moi.id = :id )"
+         . " group by idPersonne, prenom, nom order by nom, prenom" ;
 
     $cursor = $bd->prepare( $sql ) ;
     $cursor->bindValue( ":id", (int)( $_GET["id"] ?? -1 ), PDO::PARAM_INT ) ;

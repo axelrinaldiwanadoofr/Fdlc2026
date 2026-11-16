@@ -50,6 +50,30 @@ export const routes: Routes = [
     loadComponent: () => import('./page-config-plan/page-config-plan.page').then( m => m.PageConfigPlanPage)
   },
   {
+    path: 'config-personne',
+    loadComponent: () => import('./page-config-personne/page-config-personne.page').then( m => m.PageConfigPersonnePage)
+  },
+  {
+    path: 'config-exposant',
+    loadComponent: () => import('./page-config-exposant/page-config-exposant.page').then( m => m.PageConfigExposantPage)
+  },
+  {
+    path: 'config-livre',
+    loadComponent: () => import('./page-config-livre/page-config-livre.page').then( m => m.PageConfigLivrePage)
+  },
+  {
+    path: 'config-controle',
+    loadComponent: () => import('./page-config-controle/page-config-controle.page').then( m => m.PageConfigControlePage)
+  },
+  {
+    path: 'config-annonce',
+    loadComponent: () => import('./page-config-annonce/page-config-annonce.page').then( m => m.PageConfigAnnoncePage)
+  },
+  {
+    path: 'config-lieu',
+    loadComponent: () => import('./page-config-lieu/page-config-lieu.page').then( m => m.PageConfigLieuPage)
+  },
+  {
     path: 'config-evenement',
     loadComponent: () => import('./page-config-evenement/page-config-evenement.page').then( m => m.PageConfigEvenementPage)
   },

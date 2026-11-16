@@ -56,7 +56,7 @@ LEFT JOIN ecrire AS ec
 LEFT JOIN livre AS l
     ON l.id = ec.idLivre
 
-LEFT JOIN editeur AS ed
+LEFT JOIN exposant AS ed
     ON ed.id = l.idEditeur
 
 LEFT JOIN exposer AS exp
