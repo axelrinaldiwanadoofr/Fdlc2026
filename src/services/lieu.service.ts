@@ -16,7 +16,7 @@ export class LieuService
         this.http = http ;
     }
 
-    getTousLesLieux( nom: string="", type: string = "" ): Observable<Lieu[]>
+    getTousLesLieux( nom: string="", type: string = "", avecExposant: boolean = false ): Observable<Lieu[]>
     {
         let first = true ;
         let url: string = "php/lieu/tous-les-lieux.php" ;
@@ -32,6 +32,13 @@ export class LieuService
         {
             url += (first)? "?" : "&" ;
             url += "type=" + encodeURIComponent( type ) ;
+            first = false ;
+        }
+
+        if( avecExposant )
+        {
+            url += (first)? "?" : "&" ;
+            url += "avecExposant=1" ;
             first = false ;
         }
 
@@ -69,6 +76,23 @@ export class LieuService
             x2: lieu.x2,
             y2: lieu.y2
         } ) ;
+    }
+
+    // Lieux pour la page de config, avec le nombre d'exposants et d'événements
+    getConfigLieux(): Observable<Lieu[]>
+    {
+        return this.http.get<Lieu[]>( "php/lieu/config-lieux.php" ) ;
+    }
+
+    // Crée (nouveau = true) ou modifie un lieu
+    majLieu( mdp: string, lieu: Lieu, nouveau: boolean ): Observable<any>
+    {
+        return this.http.post( "php/lieu/maj-lieu.php", { mdp: mdp, lieu: lieu, nouveau: nouveau } ) ;
+    }
+
+    supprimeLieu( mdp: string, num: number ): Observable<any>
+    {
+        return this.http.post( "php/lieu/supprime-lieu.php", { mdp: mdp, num: num } ) ;
     }
 
     getLieuByNum( num: number ): Observable<Lieu[]>
