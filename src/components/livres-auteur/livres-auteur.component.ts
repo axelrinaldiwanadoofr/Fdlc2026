@@ -3,7 +3,7 @@
 import { Component, OnChanges, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { IonBadge, IonButton, IonSpinner } from '@ionic/angular';
+import { IonBadge, IonButton, IonSpinner, IonList, IonItemDivider, IonLabel, IonNote } from '@ionic/angular';
 
 import { LivreAuteur } from '../../modeles/LivreAuteur';
 import { LivresAuteurService } from '../../services/livres-auteur.service';
@@ -17,6 +17,10 @@ import { LivresAuteurService } from '../../services/livres-auteur.service';
     IonBadge,
     IonButton,
     IonSpinner,
+    IonList,
+    IonItemDivider,
+    IonLabel,
+    IonNote,
     RouterLink
   ],
 })
@@ -51,6 +55,14 @@ export class LivresAuteurComponent implements OnChanges
       this.nbAffiches.set( 12 ) ;
       this.chargement.set( false ) ;
     }) ;
+  }
+
+  // Livre du festival : page du stand pour pouvoir le situer, sinon page du livre
+  lien( livre: LivreAuteur ): Array<string | number> | null
+  {
+    if( livre.idExposant > 0 ) return ['/page-exposant', livre.idExposant] ;
+    if( livre.id > 0 ) return ['/page-livre', livre.id] ;
+    return null ;
   }
 
   // Image en erreur : on essaie la suivante
