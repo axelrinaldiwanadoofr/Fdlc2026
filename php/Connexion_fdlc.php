@@ -38,9 +38,9 @@
         public static function getInstance()
         {
             $serveur = 'mysql:host=localhost:3306;';
-            $bdd = 'dbname=fdlc;charset=utf8mb4';   		
-            $user = 'fdlc' ; 
-            $mdp = 'fdlc' ;
+            $bdd = 'dbname=lyceecam_1';   		
+            $user = 'lyceecam' ; 
+            $mdp = 'hGMK5w7fvW77k4' ;
 
             if(!self::$connexion){
                 try {
