@@ -10,6 +10,9 @@ export class Livre
     public prenom: string = "" ;
     public nomExposant: string = "" ;
 
+    // id de l'exposant qui édite le livre (page de config)
+    public idEditeur: number = -1 ;
+
     constructor(
         id: number = -1,
         titre: string = "",
