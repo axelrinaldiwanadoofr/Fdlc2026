@@ -32,7 +32,7 @@ import {
   IonAlert,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { closeCircle, personCircleOutline, trashOutline } from 'ionicons/icons';
+import { closeCircle, trashOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { PersonneService } from '../../services/personne.service';
@@ -93,6 +93,9 @@ export class PageConfigPersonnePage
 
   // Filtres de la liste
   protected filtre = signal("tous") ;
+
+  // Rôles des personnes qui font tourner le festival
+  protected readonly rolesStaff = [ "animateur", "modérateur", "présentateur", "organisateur", "bénévole" ] ;
   protected recherche = signal("") ;
 
   // Personne en cours de modification (null = on affiche la liste)
@@ -102,6 +105,7 @@ export class PageConfigPersonnePage
   protected erreur = signal("") ;
   protected message = signal("") ;
   protected envoiEnCours = signal(false) ;
+  protected photoErreur = signal(false) ;
   protected alerteSupprimer = signal(false) ;
 
   protected readonly boutonsSupprimer = [
@@ -116,7 +120,9 @@ export class PageConfigPersonnePage
     { champ: "dimanche_pm", nom: "Dim. après-midi" }
   ] ;
 
-  // Fenetres de choix d'un stand et des livres
+  // Fenetres de choix d'un stand, des livres et gestion des rôles
+  protected modalRoles = signal(false) ;
+  protected nouveauRole: string = "" ;
   protected modalStand = signal(false) ;
   protected modalLivres = signal(false) ;
   protected rechercheModal = signal("") ;
@@ -128,6 +134,7 @@ export class PageConfigPersonnePage
     {
       if( this.filtre() == "stand" && !p.stands ) return false ;
       if( this.filtre() == "photo" && p.photo ) return false ;
+      if( this.filtre() == "staff" && !this.rolesStaff.includes( p.specialite ) ) return false ;
       return this.nomPersonne( p ).toLowerCase().includes( texte ) ;
     }) ;
   }) ;
@@ -152,7 +159,7 @@ export class PageConfigPersonnePage
     this.serviceExposant = serviceExposant ;
     this.serviceLivre = serviceLivre ;
     this.router = router ;
-    addIcons( { closeCircle, personCircleOutline, trashOutline } ) ;
+    addIcons( { closeCircle, trashOutline } ) ;
   }
 
   // Sans mot de passe on retourne sur la page principale de config
@@ -165,7 +172,7 @@ export class PageConfigPersonnePage
     }
 
     this.chargePersonnes() ;
-    this.servicePersonne.getSpecialites().subscribe( specialites => this.specialites.set( specialites ) ) ;
+    this.chargeSpecialites() ;
     this.serviceExposant.getTousLesExposants().subscribe( exposants => this.exposants.set( exposants ) ) ;
     this.serviceLivre.getTitresLivres().subscribe( livres => this.livres.set( livres ) ) ;
   }
@@ -173,6 +180,11 @@ export class PageConfigPersonnePage
   chargePersonnes()
   {
     this.servicePersonne.getConfigPersonnes().subscribe( personnes => this.personnes.set( personnes ) ) ;
+  }
+
+  chargeSpecialites()
+  {
+    this.servicePersonne.getSpecialites().subscribe( specialites => this.specialites.set( specialites ) ) ;
   }
 
   onNouveau()
@@ -192,6 +204,7 @@ export class PageConfigPersonnePage
   private ouvre( personne: Personne, creneaux: Array<PresenceStand>, idLivres: Array<number> )
   {
     this.erreur.set( "" ) ;
+    this.photoErreur.set( false ) ;
     this.creneaux.set( creneaux ) ;
     this.idLivres.set( idLivres ) ;
     this.personne.set( personne ) ;
@@ -248,6 +261,29 @@ export class PageConfigPersonnePage
     this.erreur.set( erreur.error?.erreur ?? "Erreur lors de l'enregistrement" ) ;
   }
 
+  // Rôles
+
+  nbAvecRole( specialite: string ): number
+  {
+    return this.personnes().filter( p => p.specialite == specialite ).length ;
+  }
+
+  onAjouterRole()
+  {
+    if( this.nouveauRole.trim() == "" ) return ;
+    this.majRole( this.nouveauRole, false ) ;
+    this.nouveauRole = "" ;
+  }
+
+  majRole( specialite: string, supprimer: boolean )
+  {
+    this.erreur.set( "" ) ;
+    this.servicePersonne.majSpecialite( this.serviceConfig.mdp, specialite, supprimer ).subscribe( {
+      next: () => this.chargeSpecialites(),
+      error: erreur => this.erreurServeur( erreur )
+    }) ;
+  }
+
   // Photo
 
   onPhotoChoisie( event: Event )
@@ -261,6 +297,7 @@ export class PageConfigPersonnePage
       next: reponse =>
       {
         personne.photo = reponse.photo ;
+        this.photoErreur.set( false ) ;
         this.envoiEnCours.set( false ) ;
       },
       error: erreur =>

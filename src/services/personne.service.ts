@@ -105,6 +105,12 @@ export class PersonneService
         return this.http.post( "php/personne/supprime-personne.php", { mdp: mdp, id: id } ) ;
     }
 
+    // Ajoute un rôle, ou le supprime si supprimer = true
+    majSpecialite( mdp: string, specialite: string, supprimer: boolean ): Observable<any>
+    {
+        return this.http.post( "php/personne/maj-specialite.php", { mdp: mdp, specialite: specialite, supprimer: supprimer } ) ;
+    }
+
     // Envoie le fichier de la photo, renvoie son chemin (assets/photos/...)
     envoiePhoto( mdp: string, fichier: File ): Observable<{ photo: string }>
     {
