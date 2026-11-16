@@ -1,0 +1,42 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Détail de l'événement</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (evenement(); as e) {
+    <ion-list>
+      <ion-item>
+        <ion-label>
+          <h2>{{ e.titre }}</h2>
+          <p>Type : {{ e.type }}</p>
+          <p>Début : {{ e.debut }}</p>
+          <p>Fin : {{ e.fin }}</p>
+          <p>Lieu : {{ e.lieu || 'Non précisé' }}</p>
+          <p>Animateur : {{ e.animateur || 'Non précisé' }}</p>
+          @if (e.commentaire) {
+            <p>Commentaire : {{ e.commentaire }}</p>
+          }
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  } @else {
+    <ion-item>
+      <ion-label>{{ message() }}</ion-label>
+    </ion-item>
+  }
+
+
+  <app-titre-livre-combo
+    (titreSelectionne)="titreChoisi = $event">
+  </app-titre-livre-combo>
+
+
+  @if (titreChoisi) {
+    <p>Vous avez sélectionné : {{ titreChoisi }}</p>
+  }
+</ion-content>

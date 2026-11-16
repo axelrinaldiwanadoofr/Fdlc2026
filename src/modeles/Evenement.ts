@@ -1,3 +1,5 @@
+// Modèle de master, avec les champs de détail additionnels renvoyés par notre PHP.
+
 
 export class Evenement
 {
