@@ -1,9 +1,92 @@
 // Auteur: Kevin MEYER - 05/11/2026
 
-.connexion, .menu, .boutons
+.connexion
 {
     max-width: 500px;
     margin: auto;
+}
+
+.resume, .section, .grille, .boutons
+{
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.resume
+{
+    --background: rgba(var(--ion-color-warning-rgb), 0.12);
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.section
+{
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ion-color-medium);
+}
+
+// 2 colonnes sur ordinateur, 1 sur téléphone
+.grille
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+}
+
+.tuile
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    width: 100%;
+    border: none;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+    background: var(--ion-color-light);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.tuile:hover
+{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.icone
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    color: white;
+    font-size: 22px;
+}
+
+.texte
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.texte span
+{
+    font-size: 0.85em;
+    color: var(--ion-color-medium);
 }
 
 .boutons
