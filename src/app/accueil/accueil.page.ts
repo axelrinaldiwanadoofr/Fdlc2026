@@ -9,6 +9,7 @@ import {
   IonButtons,
   IonMenuButton,
  } from '@ionic/angular';
+import { AnnoncesComponent } from '../../components/annonces/annonces.component';
 
 @Component({
   selector: 'app-accueil',
@@ -22,7 +23,8 @@ import {
     IonButtons,
     IonMenuButton,
     CommonModule, 
-    FormsModule]
+    FormsModule,
+    AnnoncesComponent]
 })
 export class AccueilPage implements OnInit {
 

@@ -58,6 +58,18 @@ export const routes: Routes = [
     loadComponent: () => import('./page-config-exposant/page-config-exposant.page').then( m => m.PageConfigExposantPage)
   },
   {
+    path: 'config-livre',
+    loadComponent: () => import('./page-config-livre/page-config-livre.page').then( m => m.PageConfigLivrePage)
+  },
+  {
+    path: 'config-controle',
+    loadComponent: () => import('./page-config-controle/page-config-controle.page').then( m => m.PageConfigControlePage)
+  },
+  {
+    path: 'config-annonce',
+    loadComponent: () => import('./page-config-annonce/page-config-annonce.page').then( m => m.PageConfigAnnoncePage)
+  },
+  {
     path: 'config-lieu',
     loadComponent: () => import('./page-config-lieu/page-config-lieu.page').then( m => m.PageConfigLieuPage)
   },
