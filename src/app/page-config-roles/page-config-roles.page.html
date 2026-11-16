@@ -19,26 +19,37 @@
           <ion-label>Root</ion-label>
           <ion-icon slot="end" name="lock-closed-outline" color="medium"></ion-icon>
         </ion-item>
-        @for( r of roles(); track r.id )
+        @for( r of rolesFixes(); track r.id )
         {
           <ion-item button [detail]="false" [class.choisi]="role()?.id == r.id" (click)="choisir( r )">
             <span slot="start" class="pastille" [style.background]="r.couleur"></span>
             <ion-label>
               <h3>{{r.nom}}</h3>
-              <p>niveau {{r.niveau}} | {{r.nbComptes}} compte(s)</p>
+              <p>{{r.nbComptes}} compte(s)</p>
             </ion-label>
-            @if( !r.modifiable )
-            {
-              <ion-icon slot="end" name="lock-closed-outline" color="medium"></ion-icon>
-            }
+            <ion-icon slot="end" name="lock-closed-outline" color="medium"></ion-icon>
           </ion-item>
         }
+        <ion-reorder-group [disabled]="false" (ionReorderEnd)="onDeplace( $event )">
+          @for( r of rolesDeplacables(); track r.id )
+          {
+            <ion-item button [detail]="false" [class.choisi]="role()?.id == r.id" (click)="choisir( r )">
+              <span slot="start" class="pastille" [style.background]="r.couleur"></span>
+              <ion-label>
+                <h3>{{r.nom}}</h3>
+                <p>{{r.nbComptes}} compte(s)</p>
+              </ion-label>
+              <ion-reorder slot="end" aria-label="Glisser pour changer la position"></ion-reorder>
+            </ion-item>
+          }
+        </ion-reorder-group>
       </ion-list>
       <ion-button expand="block" fill="outline" (click)="onNouveau()">
         <ion-icon slot="start" name="add-outline"></ion-icon>
         Créer un rôle
       </ion-button>
-      <p class="aide">Un rôle ne peut gérer que les comptes et les rôles placés en dessous de lui.</p>
+      <p class="aide">Glissez un rôle avec la poignée pour le monter ou le descendre : plus il est haut, plus il a de pouvoir.
+        Un rôle ne gère que les comptes et les rôles placés en dessous de lui.</p>
     </div>
 
     <!-- Rôle choisi -->
@@ -48,11 +59,6 @@
         <ion-list>
           <ion-item>
             <ion-input label="Nom" labelPlacement="stacked" maxlength="40" [disabled]="!r.modifiable" [(ngModel)]="r.nom" (ionInput)="touche()"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-input type="number" label="Niveau (plus haut = plus de pouvoir)" labelPlacement="stacked" min="1" [max]="monNiveau() - 1"
-                       [disabled]="!r.modifiable" [(ngModel)]="r.niveau" (ionInput)="touche()"></ion-input>
-            <ion-note slot="end">en dessous de {{monNiveau()}}</ion-note>
           </ion-item>
           <ion-item>
             <ion-label>Couleur</ion-label>

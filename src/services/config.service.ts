@@ -149,6 +149,12 @@ export class ConfigService
         return this.http.post<{ id: number }>( "php/compte/maj-role.php", { role: role } ) ;
     }
 
+    // ids des rôles déplaçables, du plus haut au plus bas
+    ordreRoles( ids: number[] ): Observable<any>
+    {
+        return this.http.post( "php/compte/ordre-roles.php", { ids: ids } ) ;
+    }
+
     supprimeRole( id: number ): Observable<any>
     {
         return this.http.post( "php/compte/supprime-role.php", { id: id } ) ;

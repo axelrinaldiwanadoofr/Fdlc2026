@@ -21,6 +21,8 @@ import {
   IonNote,
   IonToast,
   IonAlert,
+  IonReorderGroup,
+  IonReorder,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { lockClosedOutline, addOutline } from 'ionicons/icons';
@@ -52,6 +54,8 @@ import { Role } from '../../modeles/Role';
     IonNote,
     IonToast,
     IonAlert,
+    IonReorderGroup,
+    IonReorder,
     FormsModule
   ]
 })
@@ -63,6 +67,10 @@ export class PageConfigRolesPage
   protected roles = signal<Role[]>( [] ) ;
   protected groupes = signal<Array<{ nom: string, permissions: Array<{ code: string, texte: string }> }>>( [] ) ;
   protected monNiveau = signal(0) ;
+
+  // au-dessus de soi : affichés mais fixes ; en dessous : déplaçables à la souris ou au doigt
+  protected rolesFixes = computed( () => this.roles().filter( r => !r.modifiable ) ) ;
+  protected rolesDeplacables = computed( () => this.roles().filter( r => r.modifiable ) ) ;
 
   // rôle affiché à droite (copie) et sa version enregistrée pour voir s'il a changé
   protected role = signal<Role | null>( null ) ;
@@ -125,14 +133,17 @@ export class PageConfigRolesPage
   private empreinte( role: Role | null ): string
   {
     if( !role ) return "" ;
-    return JSON.stringify( [ role.nom, role.niveau, role.couleur, role.permissions.slice().sort() ] ) ;
+    return JSON.stringify( [ role.nom, role.couleur, role.permissions.slice().sort() ] ) ;
   }
 
   onNouveau()
   {
     let role = new Role() ;
     role.nom = "Nouveau rôle" ;
-    role.niveau = 1 ;
+
+    // un nouveau rôle arrive tout en bas, on le glisse ensuite à sa place
+    let plusBas = this.rolesDeplacables().at( -1 ) ;
+    role.niveau = plusBas ? Math.max( 1, plusBas.niveau - 1 ) : 1 ;
     this.original = "" ;
     this.erreur.set( "" ) ;
     this.role.set( role ) ;
@@ -143,6 +154,31 @@ export class PageConfigRolesPage
   touche()
   {
     this.version.set( this.version() + 1 ) ;
+  }
+
+  // glisser-déposer : le serveur réattribue les niveaux dans le nouvel ordre
+  onDeplace( event: any )
+  {
+    let liste = this.rolesDeplacables().slice() ;
+    let deplace = liste.splice( event.detail.from, 1 )[0] ;
+    liste.splice( event.detail.to, 0, deplace ) ;
+    event.detail.complete( false ) ;
+
+    if( event.detail.from == event.detail.to ) return ;
+    this.roles.set( this.rolesFixes().concat( liste ) ) ;
+
+    this.serviceConfig.ordreRoles( liste.map( r => r.id ) ).subscribe( {
+      next: () =>
+      {
+        this.message.set( "Ordre des rôles enregistré" ) ;
+        this.chargeRoles( this.role()?.id ?? -1 ) ;
+      },
+      error: erreur =>
+      {
+        this.erreur.set( erreur.error?.erreur ?? "Erreur lors du déplacement" ) ;
+        this.chargeRoles( this.role()?.id ?? -1 ) ;
+      }
+    }) ;
   }
 
   estAutorisee( code: string ): boolean
