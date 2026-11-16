@@ -11,6 +11,9 @@
 $hashParDefaut = '$2y$10$TeU61z314J7aeOz9nvUVKubTurNyDkHQqm6oSpzc5rwzJHG0GP9eC' ;
 $fichierHash = __DIR__ . "/mot-de-passe.hash.php" ;
 
+// si le serveur ne nous laisse pas écrire dans le dossier du site, on garde le hash dans le dossier temporaire
+if( !file_exists( $fichierHash ) && !is_writable( __DIR__ ) ) $fichierHash = sys_get_temp_dir() . "/fdlc2026-mot-de-passe.hash.php" ;
+
 // Contre les essais en boucle : apres 5 erreurs l'adresse IP est bloquee 5 minutes
 $fichierEssais = sys_get_temp_dir() . "/fdlc2026-essais-mdp.json" ;
 $nbEssaisMax = 5 ;
