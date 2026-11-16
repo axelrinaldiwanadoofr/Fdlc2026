@@ -54,6 +54,10 @@ export const routes: Routes = [
     loadComponent: () => import('./page-config-personne/page-config-personne.page').then( m => m.PageConfigPersonnePage)
   },
   {
+    path: 'config-exposant',
+    loadComponent: () => import('./page-config-exposant/page-config-exposant.page').then( m => m.PageConfigExposantPage)
+  },
+  {
     path: 'config-lieu',
     loadComponent: () => import('./page-config-lieu/page-config-lieu.page').then( m => m.PageConfigLieuPage)
   },
