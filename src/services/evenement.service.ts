@@ -26,6 +26,8 @@ export class EvenementService {
   getTousLesEvenements(
     titre: string = "",
     debut: string = "",
+    jourdebut: string = "",
+    heuredebut: string = "",
     nomAnimateur: string = "",
     titreLivre: string = "",
     numLieu: number = -1
@@ -36,6 +38,8 @@ export class EvenementService {
     const criteres: [string, string | number, boolean][] = [
       ["titre", titre, titre !== ""],
       ["debut", debut, debut !== ""],
+      ["jourdebut", jourdebut, jourdebut !== ""],
+      ["heuredebut", heuredebut, heuredebut !== ""],
       ["nomAnimateur", nomAnimateur, nomAnimateur !== ""],
       ["titreLivre", titreLivre, titreLivre !== ""],
       ["numLieu", numLieu, numLieu !== -1],

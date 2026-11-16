@@ -7,7 +7,10 @@ import {
   IonTitle, 
   IonToolbar, 
   IonButtons, 
-  IonMenuButton 
+  IonMenuButton,
+  IonList,
+  IonItemDivider,
+  IonLabel
 } from '@ionic/angular';
 import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
 
@@ -18,6 +21,9 @@ import { ListeEvenementsComponent } from '../../components/liste-evenements/list
   standalone: true,
   imports: [
     IonContent, 
+    IonList,
+    IonItemDivider,
+    IonLabel,
     IonHeader, 
     IonTitle, 
     IonToolbar, 

@@ -15,7 +15,6 @@ import {
   styleUrls: ['./liste-evenements.component.scss'],
   standalone: true,
   imports: [
-    IonList,
     IonItem,
     AsyncPipe,
     RouterLink,
@@ -27,6 +26,8 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
 
   titrePartie = input<string>("");
   debut = input<string>("");
+  jourdebut = input<string>("");
+  heuredebut = input<string>("");
   nomAnimateurPartie = input<string>("");
   titreLivrePartie = input<string>("");
   // Numéro du lieu de l'événement (-1 = tous les lieux)
@@ -51,6 +52,8 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
     this.listeEvenements = this.serviceEvenement.getTousLesEvenements(
       this.titrePartie(),
       this.debut(),
+      this.jourdebut(),
+      this.heuredebut(),
       this.nomAnimateurPartie(),
       this.titreLivrePartie(),
       this.numLieu()
@@ -62,6 +65,13 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
     html = html.replace("$id", evenement.id ? evenement.id.toString() : "");
     html = html.replace("$titre", evenement.titre ? evenement.titre : "");
     html = html.replace("$debut", evenement.debut ? evenement.debut.toString() : "");
+
+    if( evenement.heuredebut && evenement.heuredebut == "00:00" ) 
+      html = html.replace("$heuredebut", "") ;
+    else
+      html = html.replace("$heuredebut", evenement.heuredebut ? evenement.heuredebut : "");
+
+    html = html.replace("$jourdebut", evenement.jourdebut ? evenement.jourdebut : "");
     html = html.replace("$nomLieu", evenement.numLieu ? evenement.numLieu.toString() : "Lieu non défini");
     html = html.replace("$nomAnimateur", evenement.idAnimateur ? evenement.idAnimateur.toString() :"");
     return html;
