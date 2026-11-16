@@ -11,7 +11,7 @@ $donnees = json_decode( file_get_contents( "php://input" ), true ) ;
 $ancien = $donnees["ancien"] ?? "" ;
 $nouveau = $donnees["nouveau"] ?? "" ;
 
-if( !motDePasseOk( $ancien ) )
+if( !motDePasseOk( $ancien, true ) )
 {
     http_response_code( 403 ) ;
     echo json_encode( ["erreur" => "Ancien mot de passe incorrect"] ) ;

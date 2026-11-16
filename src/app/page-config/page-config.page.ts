@@ -58,6 +58,7 @@ export class PageConfigPage
 
   // Changement du mot de passe
   protected modalMdp = signal(false) ;
+  protected changementObligatoire = signal(false) ;
   protected ancienMdp: string = "" ;
   protected nouveauMdp: string = "" ;
   protected confirmationMdp: string = "" ;
@@ -79,6 +80,14 @@ export class PageConfigPage
       else this.erreurMdp.set( "Mot de passe incorrect" ) ;
 
       if( reponse.ok ) this.serviceConfig.connexion( this.mdp ) ;
+
+      // le mot de passe fdlc2026 du dépôt doit être changé avant d'aller plus loin
+      if( reponse.ok && reponse.parDefaut )
+      {
+        this.ouvreChangementMdp() ;
+        this.changementObligatoire.set( true ) ;
+        this.ancienMdp = this.mdp ;
+      }
       this.mdp = "" ;
     }) ;
   }
@@ -95,6 +104,17 @@ export class PageConfigPage
     this.modalMdp.set( true ) ;
   }
 
+  // fermer sans changer le mot de passe par défaut = déconnexion
+  onFermeChangementMdp()
+  {
+    this.modalMdp.set( false ) ;
+    if( this.changementObligatoire() )
+    {
+      this.changementObligatoire.set( false ) ;
+      this.serviceConfig.deconnexion() ;
+    }
+  }
+
   onChangerMdp()
   {
     if( this.nouveauMdp != this.confirmationMdp )
@@ -108,6 +128,7 @@ export class PageConfigPage
       {
         // le nouveau mot de passe sert pour les prochains enregistrements
         this.serviceConfig.connexion( this.nouveauMdp ) ;
+        this.changementObligatoire.set( false ) ;
         this.modalMdp.set( false ) ;
         this.message.set( "Mot de passe modifié" ) ;
       },

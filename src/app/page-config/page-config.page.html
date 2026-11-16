@@ -81,6 +81,18 @@
           <p>Créer, modifier ou supprimer les événements et leurs livres</p>
         </ion-label>
       </ion-item>
+      <ion-item href="php/livre/prepare-cache-bnf.php" target="_blank">
+        <ion-label>
+          <h2>Catalogue BnF</h2>
+          <p>Préparer le cache des livres de tous les auteurs (quelques minutes, une fois avant le festival)</p>
+        </ion-label>
+      </ion-item>
+      <ion-item href="php/updatebd/index.php" target="_blank">
+        <ion-label>
+          <h2>Imports de la base</h2>
+          <p>Scripts d'import des fichiers du festival</p>
+        </ion-label>
+      </ion-item>
     </ion-list>
 
     <div class="boutons">
@@ -89,17 +101,21 @@
     </div>
   }
 
-  <ion-modal [isOpen]="modalMdp()" (didDismiss)="modalMdp.set(false)" class="changement-mdp">
+  <ion-modal [isOpen]="modalMdp()" [backdropDismiss]="!changementObligatoire()" (didDismiss)="onFermeChangementMdp()" class="changement-mdp">
     <ng-template>
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            <ion-button (click)="modalMdp.set(false)">Annuler</ion-button>
+            <ion-button (click)="modalMdp.set(false)">{{ changementObligatoire() ? "Se déconnecter" : "Annuler" }}</ion-button>
           </ion-buttons>
           <ion-title>Mot de passe</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
+        @if( changementObligatoire() )
+        {
+          <ion-note color="warning">Le mot de passe par défaut est connu de tous : choisissez-en un nouveau pour continuer.</ion-note>
+        }
         <ion-list>
           <ion-item>
             <ion-input type="password" label="Ancien :" labelPlacement="stacked" [(ngModel)]="ancienMdp"></ion-input>

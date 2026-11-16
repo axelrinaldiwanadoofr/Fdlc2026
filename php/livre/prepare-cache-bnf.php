@@ -7,12 +7,8 @@ require_once "bnf.php" ;
 
 // A lancer une fois avant le festival pour mettre en cache les livres de tous les auteurs
 // ça prend quelques minutes car on fait une requête à la fois
-// seulement depuis le serveur (navigateur en localhost ou "php prepare-cache-bnf.php")
-if( php_sapi_name() != "cli" && !in_array( $_SERVER["REMOTE_ADDR"] ?? "", ["127.0.0.1", "::1"] ) )
-{
-    http_response_code( 403 ) ;
-    exit ;
-}
+// seulement après connexion à la config (ou "php prepare-cache-bnf.php" sur le serveur)
+require_once "../config/garde.php" ;
 
 set_time_limit( 0 ) ;
 header( "Content-Type: text/plain; charset=utf-8" ) ;

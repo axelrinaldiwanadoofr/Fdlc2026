@@ -40,9 +40,9 @@ export class ConfigService
         return this.http.get( "php/config/controle.php" ) ;
     }
 
-    verifieMotDePasse( mdp: string ): Observable<{ ok: boolean, bloque: boolean }>
+    verifieMotDePasse( mdp: string ): Observable<{ ok: boolean, bloque: boolean, parDefaut: boolean }>
     {
-        return this.http.post<{ ok: boolean, bloque: boolean }>( "php/config/verif-mot-de-passe.php", { mdp: mdp } ) ;
+        return this.http.post<{ ok: boolean, bloque: boolean, parDefaut: boolean }>( "php/config/verif-mot-de-passe.php", { mdp: mdp } ) ;
     }
 
     changeMotDePasse( ancien: string, nouveau: string ): Observable<any>
@@ -65,6 +65,8 @@ export class ConfigService
 
     deconnexion()
     {
+        // ferme aussi la session PHP (imports, cache BnF)
+        if( this.connecte() ) this.http.post( "php/config/deconnexion.php", {} ).subscribe() ;
         this.mdp = "" ;
         this.connecte.set( false ) ;
 

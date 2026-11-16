@@ -49,13 +49,27 @@ function estBloque()
     return isset( $essais[$ip] ) && $essais[$ip]["nb"] >= $nbEssaisMax ;
 }
 
-function motDePasseOk( $mdp )
+// Le mot de passe fdlc2026 est écrit dans le dépôt : sur le vrai serveur il faut le changer
+function motDePasseParDefaut()
+{
+    global $fichierHash ;
+    return !file_exists( $fichierHash ) ;
+}
+
+function estLocal()
+{
+    return in_array( $_SERVER["REMOTE_ADDR"] ?? "", ["127.0.0.1", "::1"] ) ;
+}
+
+// accepteParDefaut : seulement pour se connecter et changer le mot de passe
+function motDePasseOk( $mdp, $accepteParDefaut = false )
 {
     global $fichierEssais ;
 
     if( estBloque() ) return false ;
 
     $ok = is_string( $mdp ) && password_verify( $mdp, hashMotDePasse() ) ;
+    if( $ok && !$accepteParDefaut && motDePasseParDefaut() && !estLocal() ) return false ;
 
     $essais = lisEssais() ;
     $ip = $_SERVER["REMOTE_ADDR"] ?? "" ;
@@ -69,6 +83,44 @@ function motDePasseOk( $mdp )
 
     file_put_contents( $fichierEssais, json_encode( $essais ), LOCK_EX ) ;
     return $ok ;
+}
+
+// Session PHP ouverte à la connexion, pour les pages PHP (imports de la base, cache BnF)
+// elle se ferme après 15 minutes sans activité comme la page de config
+function demarreSession()
+{
+    if( session_status() == PHP_SESSION_ACTIVE ) return ;
+
+    session_name( "fdlc2026" ) ;
+    session_set_cookie_params( [
+        "httponly" => true,
+        "samesite" => "Strict",
+        "secure" => ( $_SERVER["HTTPS"] ?? "" ) == "on" || ( $_SERVER["HTTP_X_FORWARDED_PROTO"] ?? "" ) == "https"
+    ] ) ;
+    session_start() ;
+}
+
+function ouvreSessionConfig()
+{
+    demarreSession() ;
+    session_regenerate_id( true ) ;
+    $_SESSION["config"] = time() ;
+}
+
+function fermeSessionConfig()
+{
+    demarreSession() ;
+    $_SESSION = [] ;
+    session_destroy() ;
+}
+
+function sessionConfigOk()
+{
+    demarreSession() ;
+    if( !isset( $_SESSION["config"] ) || time() - $_SESSION["config"] > 15 * 60 ) return false ;
+
+    $_SESSION["config"] = time() ;
+    return true ;
 }
 
 function changeMotDePasse( $nouveau )
