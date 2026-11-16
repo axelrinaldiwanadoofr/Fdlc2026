@@ -31,7 +31,8 @@
             "invite" => "fdlc_invite",
             "PersonneExposantExposer" => "fdlc_PersonneExposantExposer",
             "PersonneExposantExposerLieu" => "fdlc_PersonneExposantExposerLieu",
-            "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant"
+            "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant",
+            "PersonneComplete" => "PersonneComplete"
          ) ;
 
         /**
