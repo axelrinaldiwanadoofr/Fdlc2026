@@ -17,6 +17,12 @@
       <div class="ion-padding" slot="content">
         <ion-list>
           <ion-item>
+            <app-nom-exposant-combo 
+              label="Exposant:"
+              (onExposantSelected)="onExposantSelected( $event )">
+            </app-nom-exposant-combo>
+          </ion-item>
+          <ion-item>
             <app-nom-lieu-combo
               label="Stand:"
               [avecExposant]="true"
