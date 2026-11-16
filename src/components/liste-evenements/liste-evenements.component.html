@@ -15,7 +15,10 @@
     }
     @empty
     {
-      <ion-item lines="none">Aucun événement</ion-item>
+      <ion-item lines="none">
+        @if( rechercheActive() ) { Aucun événement ne correspond à « {{ recherche() }} » }
+        @else { Aucun événement }
+      </ion-item>
     }
   </ion-list>
 }
@@ -26,7 +29,14 @@
   {
     @if( p.jours.length == 0 && p.journee.length == 0 )
     {
-      <p class="vide">Aucun événement</p>
+      @if( rechercheActive() )
+      {
+        <p class="vide">Aucun événement ne correspond à « {{ recherche() }} »</p>
+      }
+      @else
+      {
+        <p class="vide">Aucun événement</p>
+      }
     }
     @else
     {

@@ -1,4 +1,5 @@
-import { Component, OnInit, OnChanges, input, signal } from '@angular/core';
+import { Component, OnInit, OnChanges, SimpleChanges, input, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { AsyncPipe } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 import { Observable, catchError, combineLatest, map, of, shareReplay } from 'rxjs';
@@ -87,6 +88,10 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
   titreLivrePartie = input<string>("");
   // Numéro du lieu de l'événement (-1 = tous les lieux)
   numLieu = input<number>(-1);
+  // Recherche libre (titre, sous-titre, type, lieu, animateur, description...).
+  // Filtrée ici sur la liste déjà chargée : pas de nouvel appel au serveur à chaque frappe.
+  recherche = input<string>("");
+  private recherche$ = toObservable(this.recherche);
 
   protected listeEvenements: Observable<Array<Evenement>> | null = null;
   protected planning: Observable<Planning> | null = null;
@@ -129,8 +134,10 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
     if (this.listeEvenements === null) this.actualiser();
   }
 
-  ngOnChanges() {
-    this.actualiser();
+  // Seule la recherche a changé : recherche$ refiltre la liste, inutile de la recharger
+  ngOnChanges(changes: SimpleChanges) {
+    const autres = Object.keys(changes).filter(nom => nom !== "recherche");
+    if (autres.length > 0 || this.listeEvenements === null) this.actualiser();
   }
 
   private actualiser() {
@@ -143,7 +150,7 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
     );
 
     // Les événements s'affichent une fois les noms de lieux et de personnes connus
-    this.listeEvenements = combineLatest([evenements$, nomsLieux$!, nomsPersonnes$!]).pipe(
+    const evenementsCharges$ = combineLatest([evenements$, nomsLieux$!, nomsPersonnes$!]).pipe(
       map(([evenements, lieux, personnes]) => {
         this.nomsLieux = lieux;
         this.nomsPersonnes = personnes;
@@ -153,7 +160,42 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
       shareReplay(1)
     );
 
+    this.listeEvenements = combineLatest([evenementsCharges$, this.recherche$]).pipe(
+      map(([evenements, recherche]) => this.filtrer(evenements, recherche)),
+      shareReplay(1)
+    );
+
     this.planning = this.listeEvenements.pipe(map(evenements => this.grouperParJour(evenements)));
+  }
+
+  // ---------- Recherche ----------
+
+  // Garde les événements qui contiennent tous les mots recherchés,
+  // sans tenir compte des majuscules ni des accents ("theatre" trouve "Théâtre")
+  private filtrer(evenements: Evenement[], recherche: string): Evenement[] {
+    const mots = this.normaliser(recherche).split(/\s+/).filter(mot => mot !== "");
+    if (mots.length === 0) return evenements;
+
+    return evenements.filter(evenement => {
+      const texte = this.normaliser([
+        evenement.titre,
+        evenement.stitre,
+        evenement.typeevenement,
+        evenement.public,
+        evenement.commentaire,
+        this.nomLieu(evenement),
+        this.nomAnimateur(evenement),
+      ].join(" "));
+      return mots.every(mot => texte.includes(mot));
+    });
+  }
+
+  private normaliser(texte: string | null | undefined): string {
+    return (texte ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  }
+
+  protected rechercheActive(): boolean {
+    return this.recherche().trim() !== "";
   }
 
   // ---------- Planning ----------

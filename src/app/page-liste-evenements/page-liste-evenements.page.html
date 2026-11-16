@@ -5,8 +5,12 @@
       <ion-buttons slot="start"><ion-back-button defaultHref="/"></ion-back-button></ion-buttons>
       <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
     </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar placeholder="Titre, lieu, animateur…" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+    </ion-toolbar>
   </ion-header>
   <app-liste-evenements
+    [recherche]="recherche()"
     [titrePartie]="titreFiltre"
     [debut]="debutFiltre"
     [nomAnimateurPartie]="animateurFiltre"
