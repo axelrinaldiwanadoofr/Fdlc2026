@@ -2,7 +2,7 @@
 
 import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -85,6 +85,7 @@ export class PageConfigPersonnePage
   protected serviceExposant: ExposantService ;
   protected serviceLivre: LivreService ;
   protected router: Router ;
+  protected route: ActivatedRoute ;
 
   protected personnes = signal<Array<Personne>>( [] ) ;
   protected specialites = signal<Array<string>>( [] ) ;
@@ -152,13 +153,14 @@ export class PageConfigPersonnePage
   }) ;
 
   constructor( serviceConfig: ConfigService, servicePersonne: PersonneService, serviceExposant: ExposantService,
-               serviceLivre: LivreService, router: Router )
+               serviceLivre: LivreService, router: Router, route: ActivatedRoute )
   {
     this.serviceConfig = serviceConfig ;
     this.servicePersonne = servicePersonne ;
     this.serviceExposant = serviceExposant ;
     this.serviceLivre = serviceLivre ;
     this.router = router ;
+    this.route = route ;
     addIcons( { closeCircle, trashOutline } ) ;
   }
 
@@ -170,6 +172,10 @@ export class PageConfigPersonnePage
       this.router.navigateByUrl( "/config" ) ;
       return ;
     }
+
+    // ?filtre=... depuis la page de contrôle
+    let filtre = this.route.snapshot.queryParamMap.get( "filtre" ) ;
+    if( filtre ) this.filtre.set( filtre ) ;
 
     this.chargePersonnes() ;
     this.chargeSpecialites() ;

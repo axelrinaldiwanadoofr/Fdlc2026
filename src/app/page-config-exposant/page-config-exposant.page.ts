@@ -2,7 +2,7 @@
 
 import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -67,6 +67,7 @@ export class PageConfigExposantPage
   protected serviceExposant: ExposantService ;
   protected serviceLieu: LieuService ;
   protected router: Router ;
+  protected route: ActivatedRoute ;
 
   protected exposants = signal<Array<Exposant>>( [] ) ;
   protected types = signal<Array<string>>( [] ) ;
@@ -126,12 +127,13 @@ export class PageConfigExposantPage
     return this.exposants().filter( x => x.id != id && ( x.nom + " " + ( x.numLieu ?? "" ) ).toLowerCase().includes( texte ) ).slice( 0, 100 ) ;
   }) ;
 
-  constructor( serviceConfig: ConfigService, serviceExposant: ExposantService, serviceLieu: LieuService, router: Router )
+  constructor( serviceConfig: ConfigService, serviceExposant: ExposantService, serviceLieu: LieuService, router: Router, route: ActivatedRoute )
   {
     this.serviceConfig = serviceConfig ;
     this.serviceExposant = serviceExposant ;
     this.serviceLieu = serviceLieu ;
     this.router = router ;
+    this.route = route ;
   }
 
   // Sans mot de passe on retourne sur la page principale de config
@@ -142,6 +144,10 @@ export class PageConfigExposantPage
       this.router.navigateByUrl( "/config" ) ;
       return ;
     }
+
+    // ?filtre=... depuis la page de contrôle
+    let filtre = this.route.snapshot.queryParamMap.get( "filtre" ) ;
+    if( filtre ) this.filtre.set( filtre ) ;
 
     this.chargeExposants() ;
     this.serviceExposant.getTypesExposant().subscribe( types => this.types.set( types ) ) ;

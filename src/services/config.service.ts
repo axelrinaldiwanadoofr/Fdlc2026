@@ -34,6 +34,12 @@ export class ConfigService
         this.router = router ;
     }
 
+    // Nombre d'éléments incomplets dans la base (page de contrôle)
+    getControle(): Observable<any>
+    {
+        return this.http.get( "php/config/controle.php" ) ;
+    }
+
     verifieMotDePasse( mdp: string ): Observable<{ ok: boolean, bloque: boolean }>
     {
         return this.http.post<{ ok: boolean, bloque: boolean }>( "php/config/verif-mot-de-passe.php", { mdp: mdp } ) ;
