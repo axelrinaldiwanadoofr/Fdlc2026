@@ -1,0 +1,103 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-list>
+  <ion-item-divider color="light">
+    <ion-label>Accès à la configuration</ion-label>
+  </ion-item-divider>
+
+  @if( charge() )
+  {
+    @if( compte(); as c )
+    {
+      <ion-item>
+        <ion-toggle class="interrupteur" [checked]="c.actif == 1" [disabled]="!c.modifiable"
+                    (ionChange)="onBasculeAcces( $event.detail.checked )">
+          {{ c.actif == 1 ? "Peut se connecter" : "Accès désactivé" }}
+        </ion-toggle>
+      </ion-item>
+
+      @if( c.modifiable )
+      {
+        <ion-item>
+          <ion-input label="Identifiant" labelPlacement="stacked" maxlength="50" [(ngModel)]="identifiant"
+                     (ionBlur)="onChangeIdentifiant()" (keyup.enter)="onChangeIdentifiant()"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-select label="Rôle" labelPlacement="stacked" interface="popover" [value]="c.idRole" (ionChange)="onChangeRole( $event.detail.value )">
+            @for( r of rolesPossibles(); track r.id )
+            {
+              <ion-select-option [value]="r.id">{{r.nom}}</ion-select-option>
+            }
+          </ion-select>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-label color="medium">
+            <p>Dernière connexion : {{ dateConnexion( c.derniereConnexion ) }}{{ c.doitChanger == 1 ? " | mot de passe pas encore changé" : "" }}</p>
+          </ion-label>
+        </ion-item>
+        <div class="boutons">
+          <ion-button size="small" fill="outline" (click)="alerteNouveauMdp.set(true)">Nouveau mot de passe</ion-button>
+          <ion-button size="small" fill="clear" color="danger" (click)="alerteSupprimer.set(true)">Supprimer le compte</ion-button>
+        </div>
+      }
+      @else
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">
+            <p>{{c.identifiant}} | <span class="role" [style.background]="c.couleur">{{c.role}}</span></p>
+            <p>{{ c.estRoot ? "Le compte root ne se modifie pas ici." : "Ce compte a un rôle égal ou supérieur au vôtre, vous ne pouvez pas le modifier." }}</p>
+          </ion-label>
+        </ion-item>
+      }
+    }
+    @else
+    {
+      <ion-item>
+        <ion-toggle class="interrupteur" [checked]="false" (ionChange)="onBasculeAcces( $event.detail.checked )">
+          Pas d'accès à la configuration
+        </ion-toggle>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label color="medium">
+          <p>En activant l'accès, un mot de passe est créé : vous le donnez à la personne, elle le change à sa première connexion.</p>
+        </ion-label>
+      </ion-item>
+    }
+  }
+
+  @if( erreur() != "" )
+  {
+    <ion-item lines="none">
+      <ion-note color="danger">{{erreur()}}</ion-note>
+    </ion-item>
+  }
+</ion-list>
+
+<!-- Mot de passe donné : affiché une seule fois -->
+@if( mdpDonne() != "" )
+{
+  <div class="mdp-donne">
+    <p>Mot de passe à donner à <strong>{{prenom()}} {{nom()}}</strong> (identifiant <strong>{{ compte()?.identifiant }}</strong>) :</p>
+    <div class="mdp">
+      <code>{{mdpDonne()}}</code>
+      <ion-button size="small" fill="outline" (click)="copieMdp()">Copier</ion-button>
+    </div>
+    <p class="note">Il ne sera plus affiché. La personne devra le changer à sa première connexion.</p>
+    <ion-button size="small" (click)="mdpDonne.set('')">C'est noté</ion-button>
+  </div>
+}
+
+<ion-alert
+  [isOpen]="alerteNouveauMdp()"
+  (didDismiss)="alerteNouveauMdp.set(false)"
+  header="Nouveau mot de passe ?"
+  message="L'ancien ne marchera plus et la personne sera déconnectée."
+  [buttons]="boutonsMdp">
+</ion-alert>
+
+<ion-alert
+  [isOpen]="alerteSupprimer()"
+  (didDismiss)="alerteSupprimer.set(false)"
+  header="Supprimer le compte ?"
+  message="La personne reste dans la base mais ne pourra plus se connecter."
+  [buttons]="boutonsSupprimer">
+</ion-alert>

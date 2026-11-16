@@ -42,6 +42,7 @@ import { Personne } from '../../modeles/Personne';
 import { PresenceStand } from '../../modeles/PresenceStand';
 import { Exposant } from '../../modeles/Exposant';
 import { Livre } from '../../modeles/Livre';
+import { AccesCompteComponent } from '../../components/acces-compte/acces-compte.component';
 
 // Page de config des personnes : infos, photo, présence sur les stands et livres
 @Component({
@@ -75,7 +76,8 @@ import { Livre } from '../../modeles/Livre';
     IonNote,
     IonToast,
     IonAlert,
-    FormsModule
+    FormsModule,
+    AccesCompteComponent
   ]
 })
 export class PageConfigPersonnePage
@@ -95,7 +97,7 @@ export class PageConfigPersonnePage
   // Filtres de la liste
   protected filtre = signal("tous") ;
 
-  // Rôles des personnes qui font tourner le festival
+  // Spécialités des personnes qui font tourner le festival
   protected readonly rolesStaff = [ "animateur", "modérateur", "présentateur", "organisateur", "bénévole" ] ;
   protected recherche = signal("") ;
 
@@ -107,6 +109,9 @@ export class PageConfigPersonnePage
   protected message = signal("") ;
   protected envoiEnCours = signal(false) ;
   protected photoErreur = signal(false) ;
+
+  // la personne a un rôle égal ou supérieur au compte connecté
+  protected protege = signal(false) ;
   protected alerteSupprimer = signal(false) ;
 
   protected readonly boutonsSupprimer = [
@@ -121,7 +126,7 @@ export class PageConfigPersonnePage
     { champ: "dimanche_pm", nom: "Dim. après-midi" }
   ] ;
 
-  // Fenetres de choix d'un stand, des livres et gestion des rôles
+  // Fenetres de choix d'un stand, des livres et gestion des spécialités
   protected modalRoles = signal(false) ;
   protected nouveauRole: string = "" ;
   protected modalStand = signal(false) ;
@@ -204,13 +209,17 @@ export class PageConfigPersonnePage
   onModifier( personne: Personne )
   {
     this.servicePersonne.getConfigPersonne( personne.id ).subscribe( reponse =>
-      this.ouvre( Object.assign( new Personne(), reponse.personne ), reponse.creneaux, reponse.idLivres ) ) ;
+    {
+      this.ouvre( Object.assign( new Personne(), reponse.personne ), reponse.creneaux, reponse.idLivres ) ;
+      this.protege.set( reponse.protege ) ;
+    }) ;
   }
 
   private ouvre( personne: Personne, creneaux: Array<PresenceStand>, idLivres: Array<number> )
   {
     this.erreur.set( "" ) ;
     this.photoErreur.set( false ) ;
+    this.protege.set( false ) ;
     this.creneaux.set( creneaux ) ;
     this.idLivres.set( idLivres ) ;
     this.personne.set( personne ) ;
@@ -232,7 +241,7 @@ export class PageConfigPersonnePage
       return ;
     }
 
-    this.servicePersonne.majPersonne( this.serviceConfig.mdp, personne, this.creneaux(), this.idLivres() ).subscribe( {
+    this.servicePersonne.majPersonne( personne, this.creneaux(), this.idLivres() ).subscribe( {
       next: () => this.ferme( "Personne enregistrée" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -243,7 +252,7 @@ export class PageConfigPersonnePage
     let personne = this.personne() ;
     if( !personne ) return ;
 
-    this.servicePersonne.supprimePersonne( this.serviceConfig.mdp, personne.id ).subscribe( {
+    this.servicePersonne.supprimePersonne( personne.id ).subscribe( {
       next: () => this.ferme( "Personne supprimée" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -258,8 +267,8 @@ export class PageConfigPersonnePage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;
@@ -267,7 +276,7 @@ export class PageConfigPersonnePage
     this.erreur.set( erreur.error?.erreur ?? "Erreur lors de l'enregistrement" ) ;
   }
 
-  // Rôles
+  // Spécialités
 
   nbAvecRole( specialite: string ): number
   {
@@ -284,7 +293,7 @@ export class PageConfigPersonnePage
   majRole( specialite: string, supprimer: boolean )
   {
     this.erreur.set( "" ) ;
-    this.servicePersonne.majSpecialite( this.serviceConfig.mdp, specialite, supprimer ).subscribe( {
+    this.servicePersonne.majSpecialite( specialite, supprimer ).subscribe( {
       next: () => this.chargeSpecialites(),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -299,7 +308,7 @@ export class PageConfigPersonnePage
     if( !input.files || input.files.length == 0 || !personne ) return ;
 
     this.envoiEnCours.set( true ) ;
-    this.servicePersonne.envoiePhoto( this.serviceConfig.mdp, input.files[0] ).subscribe( {
+    this.servicePersonne.envoiePhoto( input.files[0] ).subscribe( {
       next: reponse =>
       {
         personne.photo = reponse.photo ;

@@ -70,6 +70,18 @@ export const routes: Routes = [
     loadComponent: () => import('./page-config-annonce/page-config-annonce.page').then( m => m.PageConfigAnnoncePage)
   },
   {
+    path: 'config-comptes',
+    loadComponent: () => import('./page-config-comptes/page-config-comptes.page').then( m => m.PageConfigComptesPage)
+  },
+  {
+    path: 'config-roles',
+    loadComponent: () => import('./page-config-roles/page-config-roles.page').then( m => m.PageConfigRolesPage)
+  },
+  {
+    path: 'config-journal',
+    loadComponent: () => import('./page-config-journal/page-config-journal.page').then( m => m.PageConfigJournalPage)
+  },
+  {
     path: 'config-lieu',
     loadComponent: () => import('./page-config-lieu/page-config-lieu.page').then( m => m.PageConfigLieuPage)
   },

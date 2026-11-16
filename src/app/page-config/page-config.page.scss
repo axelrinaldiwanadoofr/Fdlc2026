@@ -6,7 +6,7 @@
     margin: auto;
 }
 
-.resume, .section, .grille, .boutons
+.profil, .bandeau, .resume, .section, .grille, .vide
 {
     max-width: 760px;
     margin-left: auto;
@@ -89,16 +89,87 @@
     color: var(--ion-color-medium);
 }
 
-.boutons
+
+.attente
 {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    justify-content: center;
+    padding: 40px;
+}
+
+.profil
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.avatar
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.qui
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    flex: 1;
+}
+
+.role
+{
+    padding: 1px 8px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.bandeau
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(var(--ion-color-warning-rgb), 0.15);
+    font-size: 0.9em;
+}
+
+.bandeau ion-icon
+{
+    flex-shrink: 0;
+    font-size: 1.4em;
+    color: var(--ion-color-warning-shade);
+}
+
+.bandeau a
+{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.vide
+{
+    color: var(--ion-color-medium);
 }
 
 // fenetre de changement du mot de passe
 ion-modal.changement-mdp
 {
     --width: min(400px, 100%);
-    --height: min(420px, 100%);
+    --height: min(460px, 100%);
 }

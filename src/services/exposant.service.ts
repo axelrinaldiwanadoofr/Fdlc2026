@@ -90,14 +90,14 @@ export class ExposantService
         return this.http.get<string[]>( "php/exposant/types-exposant.php" ) ;
     }
 
-    majExposant( mdp: string, exposant: Exposant ): Observable<any>
+    majExposant( exposant: Exposant ): Observable<any>
     {
-        return this.http.post( "php/exposant/maj-exposant.php", { mdp: mdp, exposant: exposant } ) ;
+        return this.http.post( "php/exposant/maj-exposant.php", { exposant: exposant } ) ;
     }
 
     // Avec idGarde, les personnes et les livres passent sur cet exposant avant la suppression
-    supprimeExposant( mdp: string, id: number, idGarde: number = -1 ): Observable<any>
+    supprimeExposant( id: number, idGarde: number = -1 ): Observable<any>
     {
-        return this.http.post( "php/exposant/supprime-exposant.php", { mdp: mdp, id: id, idGarde: idGarde } ) ;
+        return this.http.post( "php/exposant/supprime-exposant.php", { id: id, idGarde: idGarde } ) ;
     }
 }

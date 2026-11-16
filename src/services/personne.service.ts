@@ -85,9 +85,9 @@ export class PersonneService
         return this.http.get<Personne[]>( "php/personne/config-personnes.php" ) ;
     }
 
-    getConfigPersonne( id: number ): Observable<{ personne: Personne, creneaux: PresenceStand[], idLivres: number[] }>
+    getConfigPersonne( id: number ): Observable<{ personne: Personne, creneaux: PresenceStand[], idLivres: number[], protege: boolean }>
     {
-        return this.http.get<{ personne: Personne, creneaux: PresenceStand[], idLivres: number[] }>( "php/personne/config-personne.php?id=" + id ) ;
+        return this.http.get<{ personne: Personne, creneaux: PresenceStand[], idLivres: number[], protege: boolean }>( "php/personne/config-personne.php?id=" + id ) ;
     }
 
     getSpecialites(): Observable<string[]>
@@ -95,27 +95,26 @@ export class PersonneService
         return this.http.get<string[]>( "php/personne/specialites.php" ) ;
     }
 
-    majPersonne( mdp: string, personne: Personne, creneaux: PresenceStand[], idLivres: number[] ): Observable<any>
+    majPersonne( personne: Personne, creneaux: PresenceStand[], idLivres: number[] ): Observable<any>
     {
-        return this.http.post( "php/personne/maj-personne.php", { mdp: mdp, personne: personne, creneaux: creneaux, idLivres: idLivres } ) ;
+        return this.http.post( "php/personne/maj-personne.php", { personne: personne, creneaux: creneaux, idLivres: idLivres } ) ;
     }
 
-    supprimePersonne( mdp: string, id: number ): Observable<any>
+    supprimePersonne( id: number ): Observable<any>
     {
-        return this.http.post( "php/personne/supprime-personne.php", { mdp: mdp, id: id } ) ;
+        return this.http.post( "php/personne/supprime-personne.php", { id: id } ) ;
     }
 
-    // Ajoute un rôle, ou le supprime si supprimer = true
-    majSpecialite( mdp: string, specialite: string, supprimer: boolean ): Observable<any>
+    // Ajoute une spécialité, ou la supprime si supprimer = true
+    majSpecialite( specialite: string, supprimer: boolean ): Observable<any>
     {
-        return this.http.post( "php/personne/maj-specialite.php", { mdp: mdp, specialite: specialite, supprimer: supprimer } ) ;
+        return this.http.post( "php/personne/maj-specialite.php", { specialite: specialite, supprimer: supprimer } ) ;
     }
 
     // Envoie le fichier de la photo, renvoie son chemin (assets/photos/...)
-    envoiePhoto( mdp: string, fichier: File ): Observable<{ photo: string }>
+    envoiePhoto( fichier: File ): Observable<{ photo: string }>
     {
         let formulaire = new FormData() ;
-        formulaire.append( "mdp", mdp ) ;
         formulaire.append( "photo", fichier ) ;
         return this.http.post<{ photo: string }>( "php/personne/photo-personne.php", formulaire ) ;
     }

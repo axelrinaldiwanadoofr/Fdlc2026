@@ -3,18 +3,12 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 require_once "../Connexion.php" ;
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
-$donnees = json_decode( file_get_contents( "php://input" ), true ) ;
-
-if( !motDePasseOk( $donnees["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+$compte = exigePermission( "personnes.supprimer" ) ;
+$donnees = donneesPost() ;
 
 try
 {
@@ -22,6 +16,7 @@ try
     $bd->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION ) ;
 
     $id = (int)( $donnees["id"] ?? 0 ) ;
+    verifieHierarchiePersonne( $compte, $id ) ;
 
     // la suppression de l'animateur supprimerait aussi ses événements (cascade)
     $cursor = $bd->prepare( "select count(*) from " . Connexion::$tables["evenement"] . " where idAnimateur = :id" ) ;
@@ -42,6 +37,8 @@ try
     }
 
     $bd->commit() ;
+
+    journal( "Personne supprimée", "id " . $id ) ;
 
     echo json_encode( ["ok" => true] ) ;
 }

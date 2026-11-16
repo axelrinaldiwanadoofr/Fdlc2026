@@ -207,7 +207,7 @@ export class PageConfigEvenementPage
       return ;
     }
 
-    this.serviceEvenement.majEvenement( this.serviceConfig.mdp, evenement, this.idLivres() ).subscribe( {
+    this.serviceEvenement.majEvenement( evenement, this.idLivres() ).subscribe( {
       next: () =>
       {
         this.message.set( "Evénement enregistré" ) ;
@@ -223,7 +223,7 @@ export class PageConfigEvenementPage
     let evenement = this.evenement() ;
     if( !evenement ) return ;
 
-    this.serviceEvenement.supprimeEvenement( this.serviceConfig.mdp, evenement.id ).subscribe( {
+    this.serviceEvenement.supprimeEvenement( evenement.id ).subscribe( {
       next: () =>
       {
         this.message.set( "Evénement supprimé" ) ;
@@ -236,8 +236,8 @@ export class PageConfigEvenementPage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;

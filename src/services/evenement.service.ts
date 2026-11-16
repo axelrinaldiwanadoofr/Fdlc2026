@@ -82,17 +82,16 @@ export class EvenementService {
   }
 
   // Ajoute (id = -1) ou modifie un evenement avec ses livres, renvoie l'id de l'evenement
-  majEvenement( mdp: string, evenement: Evenement, idLivres: number[] ): Observable<{ id: number }>
+  majEvenement( evenement: Evenement, idLivres: number[] ): Observable<{ id: number }>
   {
       return this.http.post<{ id: number }>( "php/evenement/maj-evenement.php", {
-          mdp: mdp,
           evenement: evenement,
           idLivres: idLivres
       } ) ;
   }
 
-  supprimeEvenement( mdp: string, id: number ): Observable<any>
+  supprimeEvenement( id: number ): Observable<any>
   {
-      return this.http.post( "php/evenement/supprime-evenement.php", { mdp: mdp, id: id } ) ;
+      return this.http.post( "php/evenement/supprime-evenement.php", { id: id } ) ;
   }
 }

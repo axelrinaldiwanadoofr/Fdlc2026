@@ -146,7 +146,7 @@ export class PageConfigAnnoncePage
       return ;
     }
 
-    this.serviceAnnonce.majAnnonce( this.serviceConfig.mdp, annonce ).subscribe( {
+    this.serviceAnnonce.majAnnonce( annonce ).subscribe( {
       next: () => this.ferme( "Annonce enregistrée" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -157,7 +157,7 @@ export class PageConfigAnnoncePage
     let annonce = this.annonce() ;
     if( !annonce ) return ;
 
-    this.serviceAnnonce.supprimeAnnonce( this.serviceConfig.mdp, annonce.id ).subscribe( {
+    this.serviceAnnonce.supprimeAnnonce( annonce.id ).subscribe( {
       next: () => this.ferme( "Annonce supprimée" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -172,8 +172,8 @@ export class PageConfigAnnoncePage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;

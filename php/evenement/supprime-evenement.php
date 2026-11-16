@@ -3,18 +3,12 @@
 // Auteur: Kevin MEYER - 05/11/2026
 
 require_once "../Connexion.php" ;
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
-$donnees = json_decode( file_get_contents( "php://input" ), true ) ;
-
-if( !motDePasseOk( $donnees["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+$compte = exigePermission( "evenements.modifier" ) ;
+$donnees = donneesPost() ;
 
 try
 {

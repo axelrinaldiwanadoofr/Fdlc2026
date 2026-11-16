@@ -112,13 +112,13 @@ export class LivreService
         return this.http.get<{ livre: Livre, idPersonnes: number[] }>( "php/livre/config-livre.php?id=" + id ) ;
     }
 
-    majLivre( mdp: string, livre: Livre, idPersonnes: number[] ): Observable<any>
+    majLivre( livre: Livre, idPersonnes: number[] ): Observable<any>
     {
-        return this.http.post( "php/livre/maj-livre.php", { mdp: mdp, livre: livre, idPersonnes: idPersonnes } ) ;
+        return this.http.post( "php/livre/maj-livre.php", { livre: livre, idPersonnes: idPersonnes } ) ;
     }
 
-    supprimeLivre( mdp: string, id: number ): Observable<any>
+    supprimeLivre( id: number ): Observable<any>
     {
-        return this.http.post( "php/livre/supprime-livre.php", { mdp: mdp, id: id } ) ;
+        return this.http.post( "php/livre/supprime-livre.php", { id: id } ) ;
     }
 }

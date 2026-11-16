@@ -1,6 +1,6 @@
 // Auteur: Kevin MEYER - 05/11/2026
 
-import { Component, signal } from '@angular/core';
+import { Component, computed, effect, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import {
@@ -20,15 +20,40 @@ import {
   IonModal,
   IonIcon,
   IonBadge,
+  IonSpinner,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline,
-         megaphoneOutline, checkmarkDoneOutline, libraryOutline, cloudUploadOutline } from 'ionicons/icons';
+import { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
+         checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
+         warningOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 
-// Page principale de configuration (pas dans le menu) : on se connecte une fois
-// avec le mot de passe puis on accède aux autres pages de config
+// une tuile du menu : la page, et la permission qu'il faut pour la voir
+class PageConfig
+{
+  public titre: string ;
+  public texte: string ;
+  public icone: string ;
+  public couleur: string ;
+  public lien: string ;
+  public permission: string ;
+  public alerte: string ;
+
+  constructor( titre: string, texte: string, icone: string, couleur: string, lien: string, permission: string, alerte: string = "" )
+  {
+    this.titre = titre ;
+    this.texte = texte ;
+    this.icone = icone ;
+    this.couleur = couleur ;
+    this.lien = lien ;
+    this.permission = permission ;
+    this.alerte = alerte ;
+  }
+}
+
+// Page principale de configuration (pas dans le menu) : connexion avec un compte
+// puis accès aux pages de config que le rôle du compte autorise
 @Component({
   selector: 'app-page-config',
   templateUrl: './page-config.page.html',
@@ -41,7 +66,7 @@ import { ConfigService } from '../../services/config.service';
     IonButtons,
     IonBackButton,
     IonList,
-      IonItem,
+    IonItem,
     IonLabel,
     IonInput,
     IonButton,
@@ -50,6 +75,7 @@ import { ConfigService } from '../../services/config.service';
     IonModal,
     IonIcon,
     IonBadge,
+    IonSpinner,
     FormsModule,
     RouterLink
   ]
@@ -59,56 +85,80 @@ export class PageConfigPage
   protected serviceConfig: ConfigService ;
   protected router: Router ;
 
+  protected identifiant: string = "" ;
   protected mdp: string = "" ;
-  protected erreurMdp = signal("") ;
+  protected erreurConnexion = signal("") ;
 
-  // Changement du mot de passe
+  // Changement de son mot de passe (obligatoire pour un mot de passe donné par un admin)
   protected modalMdp = signal(false) ;
-  protected changementObligatoire = signal(false) ;
   protected ancienMdp: string = "" ;
   protected nouveauMdp: string = "" ;
   protected confirmationMdp: string = "" ;
   protected erreurChangement = signal("") ;
+  protected changementObligatoire = computed( () => this.serviceConfig.compte()?.doitChanger ?? false ) ;
 
   protected message = signal("") ;
 
   // Nombres de la page de contrôle, pour signaler ce qui manque sur chaque tuile
   protected controle = signal<any>( null ) ;
 
-  // Les pages de config rangées par thème. alerte = compteur du contrôle à afficher
-  protected readonly sections = [
+  private readonly sections = [
     { titre: "Le festival", pages: [
-      { titre: "Personnes", texte: "Auteurs, invités et staff", icone: "people-outline", couleur: "#2d3a8c", lien: "/config-personne", href: "", alerte: "personnesSansPhoto" },
-      { titre: "Exposants", texte: "Stands, éditeurs, doublons", icone: "storefront-outline", couleur: "#2a9a6a", lien: "/config-exposant", href: "", alerte: "exposantsSansStand" },
-      { titre: "Livres", texte: "Titres, auteurs, éditeurs", icone: "book-outline", couleur: "#c2569a", lien: "/config-livre", href: "", alerte: "livresSansEditeur" },
-      { titre: "Événements", texte: "Rencontres, ateliers, horaires", icone: "calendar-outline", couleur: "#e08a2c", lien: "/config-evenement", href: "", alerte: "evenementsSansAnimateur" }
+      new PageConfig( "Personnes", "Auteurs, invités et staff", "people-outline", "#2d3a8c", "/config-personne", "personnes.modifier", "personnesSansPhoto" ),
+      new PageConfig( "Exposants", "Stands, éditeurs, doublons", "storefront-outline", "#2a9a6a", "/config-exposant", "exposants.modifier", "exposantsSansStand" ),
+      new PageConfig( "Livres", "Titres, auteurs, éditeurs", "book-outline", "#c2569a", "/config-livre", "livres.modifier", "livresSansEditeur" ),
+      new PageConfig( "Événements", "Rencontres, ateliers, horaires", "calendar-outline", "#e08a2c", "/config-evenement", "evenements.modifier", "evenementsSansAnimateur" )
     ] },
     { titre: "Plans et lieux", pages: [
-      { titre: "Lieux", texte: "Créer les stands et les salles", icone: "location-outline", couleur: "#2d3a8c", lien: "/config-lieu", href: "", alerte: "" },
-      { titre: "Plans des halls", texte: "Placer les stands sur les plans", icone: "map-outline", couleur: "#2a9a6a", lien: "/config-plan", href: "", alerte: "lieuxNonPlaces" }
+      new PageConfig( "Lieux", "Créer les stands et les salles", "location-outline", "#2d3a8c", "/config-lieu", "lieux.modifier" ),
+      new PageConfig( "Plans des halls", "Placer les stands sur les plans", "map-outline", "#2a9a6a", "/config-plan", "plans.modifier", "lieuxNonPlaces" )
     ] },
     { titre: "Pendant le festival", pages: [
-      { titre: "Annonces", texte: "Bandeau d'info sur l'accueil", icone: "megaphone-outline", couleur: "#c2569a", lien: "/config-annonce", href: "", alerte: "" },
-      { titre: "Contrôle des données", texte: "Ce qui manque encore", icone: "checkmark-done-outline", couleur: "#e08a2c", lien: "/config-controle", href: "", alerte: "" }
+      new PageConfig( "Annonces", "Bandeau d'info sur l'accueil", "megaphone-outline", "#c2569a", "/config-annonce", "annonces.modifier" ),
+      new PageConfig( "Contrôle des données", "Ce qui manque encore", "checkmark-done-outline", "#e08a2c", "/config-controle", "controle.voir" )
     ] },
     { titre: "Outils", pages: [
-      { titre: "Catalogue BnF", texte: "Préparer les livres des auteurs", icone: "library-outline", couleur: "#6b7280", lien: "", href: "php/livre/prepare-cache-bnf.php", alerte: "" },
-      { titre: "Imports de la base", texte: "Fichiers du festival", icone: "cloud-upload-outline", couleur: "#6b7280", lien: "", href: "php/updatebd/index.php", alerte: "" }
+      new PageConfig( "Catalogue BnF", "Préparer les livres des auteurs", "library-outline", "#6b7280", "php/livre/prepare-cache-bnf.php", "bnf.lancer" ),
+      new PageConfig( "Imports de la base", "Fichiers du festival", "cloud-upload-outline", "#6b7280", "php/updatebd/index.php", "imports.lancer" )
+    ] },
+    { titre: "Administration", pages: [
+      new PageConfig( "Comptes", "Qui peut se connecter, avec quel rôle", "key-outline", "#111827", "/config-comptes", "comptes.gerer" ),
+      new PageConfig( "Rôles et permissions", "Ce que chaque rôle a le droit de faire", "shield-checkmark-outline", "#111827", "/config-roles", "roles.gerer" ),
+      new PageConfig( "Journal", "Connexions et actions importantes", "list-outline", "#111827", "/config-journal", "journal.voir" )
     ] }
   ] ;
+
+  // seulement les tuiles autorisées, et les thèmes qui en ont
+  protected sectionsVisibles = computed( () =>
+  {
+    let compte = this.serviceConfig.compte() ;
+    if( !compte ) return [] ;
+    return this.sections
+      .map( s => ( { titre: s.titre, pages: s.pages.filter( p => compte.permissions.includes( p.permission ) ) } ) )
+      .filter( s => s.pages.length > 0 ) ;
+  }) ;
 
   constructor( serviceConfig: ConfigService, router: Router )
   {
     this.serviceConfig = serviceConfig ;
     this.router = router ;
-    addIcons( { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline,
-                megaphoneOutline, checkmarkDoneOutline, libraryOutline, cloudUploadOutline } ) ;
+    addIcons( { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
+                checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
+                warningOutline } ) ;
+
+    // à chaque connexion : compteurs du contrôle, et mot de passe à changer si besoin
+    effect( () =>
+    {
+      let compte = this.serviceConfig.compte() ;
+      if( compte && this.serviceConfig.peut( "controle.voir" ) && !compte.doitChanger ) this.chargeControle() ;
+      if( compte?.doitChanger ) this.ouvreChangementMdp() ;
+    }) ;
   }
 
   // Les compteurs sont rechargés à chaque retour sur la page
   ionViewWillEnter()
   {
-    if( this.serviceConfig.connecte() ) this.chargeControle() ;
+    if( this.serviceConfig.peut( "controle.voir" ) ) this.chargeControle() ;
   }
 
   chargeControle()
@@ -116,11 +166,71 @@ export class PageConfigPage
     this.serviceConfig.getControle().subscribe( controle => this.controle.set( controle ) ) ;
   }
 
-  // Les pages PHP (outils) s'ouvrent dans un nouvel onglet
-  ouvre( lien: string, href: string )
+  onConnexion()
   {
-    if( href ) window.open( href, "_blank" ) ;
-    else this.router.navigateByUrl( lien ) ;
+    if( this.identifiant.trim() == "" || this.mdp == "" ) return ;
+
+    this.serviceConfig.connexion( this.identifiant, this.mdp ).subscribe( {
+      next: () =>
+      {
+        // le mot de passe donné par l'admin sert d'ancien dans la fenêtre de changement
+        this.ancienMdp = this.mdp ;
+        this.erreurConnexion.set( "" ) ;
+        this.mdp = "" ;
+      },
+      error: erreur =>
+      {
+        this.erreurConnexion.set( erreur.error?.erreur ?? "Connexion impossible" ) ;
+        this.mdp = "" ;
+      }
+    }) ;
+  }
+
+  onDeconnexion()
+  {
+    this.serviceConfig.deconnexion() ;
+    this.controle.set( null ) ;
+  }
+
+  ouvreChangementMdp()
+  {
+    if( !this.changementObligatoire() ) this.ancienMdp = "" ;
+    this.nouveauMdp = this.confirmationMdp = "" ;
+    this.erreurChangement.set( "" ) ;
+    this.modalMdp.set( true ) ;
+  }
+
+  // fermer sans changer un mot de passe obligatoire = déconnexion
+  onFermeChangementMdp()
+  {
+    this.modalMdp.set( false ) ;
+    if( this.changementObligatoire() ) this.onDeconnexion() ;
+  }
+
+  onChangerMdp()
+  {
+    if( this.nouveauMdp != this.confirmationMdp )
+    {
+      this.erreurChangement.set( "Les deux nouveaux mots de passe sont différents" ) ;
+      return ;
+    }
+
+    this.serviceConfig.changeMonMotDePasse( this.ancienMdp, this.nouveauMdp ).subscribe( {
+      next: () =>
+      {
+        this.ancienMdp = this.nouveauMdp = this.confirmationMdp = "" ;
+        this.modalMdp.set( false ) ;
+        this.message.set( "Mot de passe modifié" ) ;
+      },
+      error: erreur => this.erreurChangement.set( erreur.error?.erreur ?? "Erreur lors du changement" )
+    }) ;
+  }
+
+  // Les pages PHP (outils) s'ouvrent dans un nouvel onglet
+  ouvre( page: PageConfig )
+  {
+    if( page.lien.startsWith( "php/" ) ) window.open( page.lien, "_blank" ) ;
+    else this.router.navigateByUrl( page.lien ) ;
   }
 
   nombre( code: string ): number
@@ -135,72 +245,8 @@ export class PageConfigPage
     return Object.values( controle ).reduce( ( total: number, nb: any ) => total + nb, 0 ) ;
   }
 
-  onConnexion()
+  initiale( nom: string ): string
   {
-    this.serviceConfig.verifieMotDePasse( this.mdp ).subscribe( reponse =>
-    {
-      if( reponse.ok ) this.erreurMdp.set( "" ) ;
-      else if( reponse.bloque ) this.erreurMdp.set( "Trop d'essais, réessayez dans 5 minutes" ) ;
-      else this.erreurMdp.set( "Mot de passe incorrect" ) ;
-
-      if( reponse.ok )
-      {
-        this.serviceConfig.connexion( this.mdp ) ;
-        this.chargeControle() ;
-      }
-
-      // le mot de passe fdlc2026 du dépôt doit être changé avant d'aller plus loin
-      if( reponse.ok && reponse.parDefaut )
-      {
-        this.ouvreChangementMdp() ;
-        this.changementObligatoire.set( true ) ;
-        this.ancienMdp = this.mdp ;
-      }
-      this.mdp = "" ;
-    }) ;
-  }
-
-  onDeconnexion()
-  {
-    this.serviceConfig.deconnexion() ;
-  }
-
-  ouvreChangementMdp()
-  {
-    this.ancienMdp = this.nouveauMdp = this.confirmationMdp = "" ;
-    this.erreurChangement.set( "" ) ;
-    this.modalMdp.set( true ) ;
-  }
-
-  // fermer sans changer le mot de passe par défaut = déconnexion
-  onFermeChangementMdp()
-  {
-    this.modalMdp.set( false ) ;
-    if( this.changementObligatoire() )
-    {
-      this.changementObligatoire.set( false ) ;
-      this.serviceConfig.deconnexion() ;
-    }
-  }
-
-  onChangerMdp()
-  {
-    if( this.nouveauMdp != this.confirmationMdp )
-    {
-      this.erreurChangement.set( "Les deux nouveaux mots de passe sont différents" ) ;
-      return ;
-    }
-
-    this.serviceConfig.changeMotDePasse( this.ancienMdp, this.nouveauMdp ).subscribe( {
-      next: () =>
-      {
-        // le nouveau mot de passe sert pour les prochains enregistrements
-        this.serviceConfig.connexion( this.nouveauMdp ) ;
-        this.changementObligatoire.set( false ) ;
-        this.modalMdp.set( false ) ;
-        this.message.set( "Mot de passe modifié" ) ;
-      },
-      error: erreur => this.erreurChangement.set( erreur.error?.erreur ?? "Erreur lors du changement" )
-    }) ;
+    return ( nom ?? "?" ).trim().charAt( 0 ).toUpperCase() ;
   }
 }

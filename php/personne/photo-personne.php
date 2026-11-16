@@ -2,17 +2,12 @@
 
 // Auteur: Kevin MEYER - 16/11/2026
 
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Envoi d'une photo de profil, elle est rangée avec les autres dans assets/photos
-if( !motDePasseOk( $_POST["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+exigePermission( "personnes.modifier" ) ;
 
 $fichier = $_FILES["photo"] ?? null ;
 $extensions = [ IMAGETYPE_JPEG => "jpg", IMAGETYPE_PNG => "png", IMAGETYPE_WEBP => "webp" ] ;

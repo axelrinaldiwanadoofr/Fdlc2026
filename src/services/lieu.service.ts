@@ -65,10 +65,9 @@ export class LieuService
     }
 
     // Enregistre la zone d'un lieu sur le plan, x1 = null pour la supprimer
-    majZoneLieu( mdp: string, lieu: Lieu ): Observable<any>
+    majZoneLieu( lieu: Lieu ): Observable<any>
     {
         return this.http.post( "php/lieu/maj-zone-lieu.php", {
-            mdp: mdp,
             num: lieu.num,
             hall: lieu.hall,
             x1: lieu.x1,
@@ -85,14 +84,14 @@ export class LieuService
     }
 
     // Crée (nouveau = true) ou modifie un lieu
-    majLieu( mdp: string, lieu: Lieu, nouveau: boolean ): Observable<any>
+    majLieu( lieu: Lieu, nouveau: boolean ): Observable<any>
     {
-        return this.http.post( "php/lieu/maj-lieu.php", { mdp: mdp, lieu: lieu, nouveau: nouveau } ) ;
+        return this.http.post( "php/lieu/maj-lieu.php", { lieu: lieu, nouveau: nouveau } ) ;
     }
 
-    supprimeLieu( mdp: string, num: number ): Observable<any>
+    supprimeLieu( num: number ): Observable<any>
     {
-        return this.http.post( "php/lieu/supprime-lieu.php", { mdp: mdp, num: num } ) ;
+        return this.http.post( "php/lieu/supprime-lieu.php", { num: num } ) ;
     }
 
     getLieuByNum( num: number ): Observable<Lieu[]>

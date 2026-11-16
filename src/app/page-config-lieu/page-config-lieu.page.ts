@@ -165,7 +165,7 @@ export class PageConfigLieuPage
       return ;
     }
 
-    this.serviceLieu.majLieu( this.serviceConfig.mdp, lieu, this.nouveau ).subscribe( {
+    this.serviceLieu.majLieu( lieu, this.nouveau ).subscribe( {
       next: () =>
       {
         this.chargeLieux() ;
@@ -181,7 +181,7 @@ export class PageConfigLieuPage
     let lieu = this.lieu() ;
     if( !lieu ) return ;
 
-    this.serviceLieu.supprimeLieu( this.serviceConfig.mdp, lieu.num ).subscribe( {
+    this.serviceLieu.supprimeLieu( lieu.num ).subscribe( {
       next: () =>
       {
         this.chargeLieux() ;
@@ -214,8 +214,8 @@ export class PageConfigLieuPage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;
