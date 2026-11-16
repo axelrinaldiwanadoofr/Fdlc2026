@@ -7,14 +7,16 @@ require_once "../Connexion.php" ;
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Livres de la base écrits par une personne (table ecrire)
-// avec le stand où l'auteur est présent (table exposer)
+// avec le stand de l'editeur ou sinon celui où l'auteur est présent (table exposer)
 try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select l.id, l.titre, e.nom as editeur, x.id as idExposant, x.nom as nomExposant from " . Connexion::$tables["livre"] . " l"
+    $sql = "select l.id, l.titre, trim( e.nom ) as editeur,"
+         . " if( e.numLieu is not null, e.id, x.id ) as idExposant, if( e.numLieu is not null, e.nom, x.nom ) as nomExposant"
+         . " from " . Connexion::$tables["livre"] . " l"
          . " join " . Connexion::$tables["ecrire"] . " ec on ec.idLivre = l.id"
-         . " left join " . Connexion::$tables["editeur"] . " e on e.id = l.idEditeur"
+         . " left join " . Connexion::$tables["exposant"] . " e on e.id = l.idEditeur"
          . " left join " . Connexion::$tables["exposant"] . " x on x.id = ( select min( idExposant ) from "
          . Connexion::$tables["exposer"] . " where idPersonne = ec.idPersonne )"
          . " where ec.idPersonne = :id order by l.titre" ;
