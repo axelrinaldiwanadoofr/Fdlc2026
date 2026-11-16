@@ -18,10 +18,10 @@ if( !motDePasseOk( $ancien ) )
     exit ;
 }
 
-if( !is_string( $nouveau ) || strlen( $nouveau ) < 6 )
+if( !is_string( $nouveau ) || strlen( $nouveau ) < 8 )
 {
     http_response_code( 400 ) ;
-    echo json_encode( ["erreur" => "Le nouveau mot de passe doit faire au moins 6 caracteres"] ) ;
+    echo json_encode( ["erreur" => "Le nouveau mot de passe doit faire au moins 8 caracteres"] ) ;
     exit ;
 }
 
