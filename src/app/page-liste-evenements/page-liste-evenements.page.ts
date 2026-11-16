@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { 
@@ -10,7 +10,8 @@ import {
   IonMenuButton,
   IonList,
   IonItemDivider,
-  IonLabel
+  IonLabel,
+  IonSearchbar,
 } from '@ionic/angular';
 import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
 
@@ -31,10 +32,15 @@ import { ListeEvenementsComponent } from '../../components/liste-evenements/list
     IonMenuButton, 
     CommonModule, 
     FormsModule,
-    ListeEvenementsComponent
+    ListeEvenementsComponent,
+    IonBackButton,
+    IonSearchbar
   ]
 })
 export class PageListeEvenementsPage implements OnInit {
+  // Texte de la barre de recherche (filtre fait dans app-liste-evenements, sans recharger)
+  protected recherche = signal('');
+
   titreFiltre: string = '';
   debutFiltre: string = '';
   animateurFiltre: string = '';
