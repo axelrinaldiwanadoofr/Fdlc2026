@@ -37,7 +37,7 @@ import { EvenementService } from '../../services/evenement.service';
 import { LieuService } from '../../services/lieu.service';
 import { LivreService } from '../../services/livre.service';
 import { PersonneService } from '../../services/personne.service';
-import { Evenement } from '../../modeles/Evenements';
+import { Evenement } from '../../modeles/Evenement';
 import { Etape } from '../../modeles/Etape';
 import { Lieu } from '../../modeles/Lieu';
 import { Livre } from '../../modeles/Livre';

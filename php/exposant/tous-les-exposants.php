@@ -13,12 +13,10 @@ try
     $sql = "SELECT DISTINCT
                 idExposant AS id,
                 nomExposant AS nom,
+                libelleExposant as libelle,
+                typeExposant as type,
                 nomLieu,
-                numLieu,
-                samedi_am,
-                samedi_pm,
-                dimanche_am,
-                dimanche_pm
+                numLieu
             FROM " . Connexion::$tables["PersonneExposantExposerLieu"] . "
             WHERE 1 " ;
             

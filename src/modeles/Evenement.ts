@@ -11,6 +11,8 @@ export class Evenement
     public fin: string = "" ;             // date et heure de fin
     public idAnimateur: number = -1 ;     // id personne qui anime
     public numLieu: number = -1 ;         // num du lieu où se déroule l'événement
+    public heuredebut: string = "" ;      // heure de début ("HH:MM")
+    public jourdebut: string = "" ;      // jour de début ("AAAA-MM-JJ")
 
     constructor( 
         id: number = -1, 
@@ -34,5 +36,18 @@ export class Evenement
         this.fin = fin ;
         this.idAnimateur = idAnimateur ;
         this.numLieu = numLieu ;
+        this.heuredebut = debut ? debut.substring( 11, 16 ) : "" ;
+        this.jourdebut = debut ? debut.substring( 0, 10 ) : "" ;
     }
+
+    /*
+    get heuredebut(): string
+    {
+        return this.debut ? this.debut.substring( 11, 16 ) : "" ;
+    }
+
+    get jourdebut(): string
+    {
+        return this.debut ? this.debut.substring( 0, 10 ) : "" ;
+    }*/
 }

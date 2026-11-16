@@ -1,61 +1,14 @@
-@if( details() )
-{
-  <!-- Mode détaillé : un accordéon par lieu avec ses exposants, auteurs et événements -->
-  <ion-accordion-group (ionChange)="onAccordeonChange($event)">
-    @for( lieu of listeLieux | async; track lieu.num )
-    {
-      <ion-accordion [value]="lieu.num.toString()">
-        <ion-item slot="header">
-          <ion-label [innerHTML]="itemText(lieu)"></ion-label>
-        </ion-item>
-        <div slot="content" class="ion-padding-start">
-          @if( lieuOuvert() == lieu.num )
-          {
-            <ion-button size="small" fill="outline" [routerLink]="[lienPage(), lieu.num]">Voir la fiche du lieu</ion-button>
-
-            <ion-list-header><ion-label>Exposants</ion-label></ion-list-header>
-            <app-liste-exposant
-              [nomLieu]="lieu.nom"
-              lienPage="/page-exposant"
-              childHtml="<strong>$nom</strong>">
-            </app-liste-exposant>
-
-            <ion-list-header><ion-label>Auteurs</ion-label></ion-list-header>
-            <app-liste-personnes
-              [numLieu]="lieu.num"
-              lienPage="/page-personne"
-              childHtml="<strong>$prenom $nom</strong> — $specialite">
-            </app-liste-personnes>
-
-            <ion-list-header><ion-label>Événements</ion-label></ion-list-header>
-            <app-liste-evenements
-              [numLieu]="lieu.num"
-              lienPage=""
-              childHtml="<strong>$titre</strong> — $debut">
-            </app-liste-evenements>
-          }
-        </div>
-      </ion-accordion>
-    }
-    @empty
-    {
-      <ion-item lines="none">Aucun lieu trouvé</ion-item>
-    }
-  </ion-accordion-group>
-}
-@else
-{
-  <ion-list>
-    @for( lieu of listeLieux | async; track lieu.num )
-    {
-      <ion-item
-        [routerLink]="[lienPage(), lieu.num]"
-        [innerHTML]="itemText(lieu)">
-      </ion-item>
-    }
-    @empty
-    {
-      <ion-item lines="none">Aucun lieu trouvé</ion-item>
-    }
-  </ion-list>
-}
+<ion-list>
+  @for( lieu of listeLieux | async; track lieu.num )
+  {
+    <ion-item>
+      <ion-label>
+        <strong>{{ lieu.nom }}</strong> {{ lieu.type }} (n° {{ lieu.num }})
+      </ion-label>
+    </ion-item>
+  }
+  @empty
+  {
+    <ion-item lines="none">Aucun lieu trouvé</ion-item>
+  }
+</ion-list>

@@ -8,49 +8,28 @@ try
     // Récupération de la connexion
     $bd = Connexion::getInstance();
 
-    $sql = "select distinct id, titre, resume from " . Connexion::$tables["livre"] . " where 1 " ;
+    $sql = "select distinct idLivre as id, titreLivre as titre, resumeLivre as resume from " . Connexion::$tables["PersonneComplete"] . " where 1 " ;
 
     if( isset($_GET["titre"]))
     {
-        $sql .= " and titre = :titre" ;
+        $sql .= " and titreLivre like :titre" ;
     }
 
     if( isset($_GET["resume"]))
     {
-        $sql .= " and resume like :resume" ;
+        $sql .= " and resumeLivre like :resume" ;
     }
 
-    $sql .= " order by titre" ;
 
-    $cursor = $bd->prepare ( $sql ) ;
-
-    // Filtre facultatif sur le titre du livre
-    if (isset($_GET["titre"]))
-    {
-        $sql .= " AND l.titre = :titre";
-    }
-
-    // Filtre facultatif sur le résumé du livre
-    if (isset($_GET["resume"]))
-    {
-        $sql .= " AND l.resume LIKE :resume";
-    }
-
-    // Nouveau filtre facultatif : livres écrits par une personne
+       // Nouveau filtre facultatif : livres écrits par une personne
     // La vue PersonneComplete contient les associations
     // entre les personnes et leurs livres
     if (isset($_GET["idPersonne"]))
     {
-        $sql .= " AND l.id IN (
-                    SELECT idLivre
-                    FROM PersonneComplete
-                    WHERE id = :idPersonne
-                      AND idLivre IS NOT NULL
-                  )";
+        $sql .= " and id = :idPersonne" ;
     }
 
-    // Tri alphabétique des livres
-    $sql .= " ORDER BY l.titre";
+    $sql .= " order by titreLivre" ;
 
     // Préparation de la requête SQL
     $cursor = $bd->prepare($sql);
@@ -60,7 +39,7 @@ try
     {
         $cursor->bindValue(
             ":titre",
-            $_GET["titre"],
+            '%' . $_GET["titre"] . '%',
             PDO::PARAM_STR
         );
     }

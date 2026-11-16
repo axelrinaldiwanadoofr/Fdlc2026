@@ -16,13 +16,27 @@ try
     $bd = Connexion::getInstance() ;
 
     // dans la nouvelle base le type est dans la colonne type (typeevenement est vide)
-    $sql = "select ev.id, ev.type as typeevenement, ev.titre, ev.stitre, ev.public, ev.commentaire,"
-         . " ev.debut, ev.fin, ev.idAnimateur, ev.numLieu"
-         . " from " . Connexion::$tables["evenement"] . " as ev where 1 " ;
+    $sql = "select 
+        ev.id, 
+        ev.type as typeevenement, 
+        ev.titre, 
+        ev.stitre, 
+        ev.public, 
+        ev.commentaire,
+        ev.debut, 
+        date_format(ev.debut, '%H:%i') as heuredebut,    
+        date_format(ev.debut, '%Y-%m-%d') as jourdebut, 
+        ev.idAnimateur, 
+        ev.numLieu
+        from " . Connexion::$tables["evenement"] . " as ev where 1 " ;
 
     if( isset($_GET["titre"])) $sql .= " and ev.titre like :titre " ;
 
-    if( isset($_GET["debut"])) $sql .= " and ev.debut like :debut " ;
+    if( isset($_GET["debut"])) $sql .= " and ev.debut >= :debut " ;
+
+    if( isset($_GET["jourdebut"])) $sql .= " and date_format(ev.debut, '%Y-%m-%d') = :jourdebut " ;
+
+    if( isset($_GET["heuredebut"])) $sql .= " and date_format(ev.debut, '%H:%i') = :heuredebut " ;
 
     if( isset($_GET["numLieu"])) $sql .= " and ev.numLieu = :numLieu " ;
 
@@ -44,7 +58,9 @@ try
     $cursor = $bd->prepare( $sql ) ;
 
     if( isset($_GET["titre"])) $cursor->bindValue( ":titre", "%" . $_GET["titre"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["debut"])) $cursor->bindValue( ":debut", $_GET["debut"] . "%", PDO::PARAM_STR ) ;
+    if( isset($_GET["debut"])) $cursor->bindValue( ":debut", $_GET["debut"], PDO::PARAM_STR ) ;
+    if( isset($_GET["jourdebut"])) $cursor->bindValue( ":jourdebut", $_GET["jourdebut"], PDO::PARAM_STR ) ;
+    if( isset($_GET["heuredebut"])) $cursor->bindValue( ":heuredebut", $_GET["heuredebut"], PDO::PARAM_STR ) ;
     if( isset($_GET["numLieu"])) $cursor->bindValue( ":numLieu", $_GET["numLieu"], PDO::PARAM_INT ) ;
     if( isset($_GET["nomAnimateur"])) $cursor->bindValue( ":nomAnimateur", "%" . $_GET["nomAnimateur"] . "%", PDO::PARAM_STR ) ;
     if( isset($_GET["titreLivre"])) $cursor->bindValue( ":titreLivre", "%" . $_GET["titreLivre"] . "%", PDO::PARAM_STR ) ;

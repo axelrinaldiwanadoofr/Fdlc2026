@@ -57,7 +57,9 @@ export class ListeExposantComponent  implements OnInit, OnChanges
     let childHtml = this.childHtml() ;
     childHtml = childHtml.replace("$id", exposant.id.toString() ) ;
     childHtml = childHtml.replace("$nom", exposant.nom ) ;
+    childHtml = childHtml.replace("$type", exposant.type ) ;
     childHtml = childHtml.replace("$nomLieu", exposant.nomLieu ) ;
+    childHtml = childHtml.replace("$numLieu", exposant.numLieu.toString() ) ;
     return childHtml ;
   }
 

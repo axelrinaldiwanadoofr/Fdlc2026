@@ -26,6 +26,7 @@
             "typelieu" => "typelieu",
             "typeevenement" => "typeevenement",
             "genre" => "genre",
+            "invite" => "invite",
             "PersonneExposantExposer" => "PersonneExposantExposer",
             "PersonneExposantExposerLieu" => "PersonneExposantExposerLieu",
             "LivreEditeurPersonneExposant" => "LivreEditeurPersonneExposant",
