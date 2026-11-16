@@ -32,7 +32,7 @@
             "PersonneExposantExposer" => "fdlc_PersonneExposantExposer",
             "PersonneExposantExposerLieu" => "fdlc_PersonneExposantExposerLieu",
             "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant",
-            "PersonneComplete" => "PersonneComplete"
+            "PersonneComplete" => "fdlc_PersonneComplete"
          ) ;
 
         /**
