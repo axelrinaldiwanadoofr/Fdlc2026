@@ -51,6 +51,14 @@
     </ion-item>
   </ion-list>
 
+  <!-- acces discret aux pages de configuration -->
+  <div class="config">
+    <ion-button fill="clear" size="small" color="medium" [routerLink]="['/config']">
+      <ion-icon slot="start" name="settings-outline"></ion-icon>
+      Configuration
+    </ion-button>
+  </div>
+
   <p class="credits">
     Ce projet a été créé par les étudiants de la classe de 2ème année de BTS SIO option SLAM
     du lycée Camille Sée à Colmar.
