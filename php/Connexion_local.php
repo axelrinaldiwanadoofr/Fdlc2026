@@ -32,7 +32,8 @@
             "PersonneExposantExposer" => "PersonneExposantExposer",
             "PersonneExposantExposerLieu" => "PersonneExposantExposerLieu",
             "LivreEditeurPersonneExposant" => "LivreEditeurPersonneExposant",
-            "PersonneComplete" => "PersonneComplete"
+            "PersonneComplete" => "PersonneComplete",
+            "EvenementLieuAnimateur" => "EvenementLieuAnimateur"
          ) ;
 
         /**

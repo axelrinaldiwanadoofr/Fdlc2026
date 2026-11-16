@@ -13,7 +13,7 @@ import {
 } from '@ionic/angular';
 
 import { TitreLivreComboComponent } from '../../components/titre-livre-combo/titre-livre-combo.component';
-import { EvenementService } from '../../servcies/evenement.service';
+import { EvenementService } from '../../services/evenement.service';
 import { Evenement } from '../../modeles/Evenement';
 
 @Component({
@@ -54,7 +54,7 @@ export class PageEvenementComponent implements OnInit {
 
     // En attendant evenement-by-id.php (mission de Mathieu),
     // on réutilise le service PHP de liste déjà développé.
-    this.serviceEvenement.getTousLesEvenements().subscribe({
+    this.serviceEvenement.getEvenementById( this.id() ).subscribe({
       next: liste => {
         const resultat = liste.find(e => Number(e.id) === identifiant) ?? null;
         this.evenement.set(resultat);

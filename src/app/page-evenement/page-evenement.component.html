@@ -15,9 +15,10 @@
           <h2>{{ e.titre }}</h2>
           <p>Type : {{ e.type }}</p>
           <p>Début : {{ e.debut }}</p>
-          <p>Fin : {{ e.fin }}</p>
-          <p>Lieu : {{ e.lieu || 'Non précisé' }}</p>
-          <p>Animateur : {{ e.animateur || 'Non précisé' }}</p>
+          <p>Lieu : {{ e.nomLieu || 'Non précisé' }}</p>
+          @if (e.idAnimateur) {
+            <p>Animateur : {{ e.prenomAnimateur }} {{ e.nomAnimateur }}</p>
+          }
           @if (e.commentaire) {
             <p>Commentaire : {{ e.commentaire }}</p>
           }

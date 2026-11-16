@@ -32,7 +32,8 @@
             "PersonneExposantExposer" => "fdlc_PersonneExposantExposer",
             "PersonneExposantExposerLieu" => "fdlc_PersonneExposantExposerLieu",
             "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant",
-            "PersonneComplete" => "fdlc_PersonneComplete"
+            "PersonneComplete" => "fdlc_PersonneComplete",
+            "EvenementLieuAnimateur" => "fdlc_EvenementLieuAnimateur"
          ) ;
 
         /**

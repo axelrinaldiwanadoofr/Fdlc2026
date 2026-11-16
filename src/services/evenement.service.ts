@@ -58,7 +58,7 @@ export class EvenementService {
 
   getEvenementById(id: number = -1): Observable<Evenement[]> {
     let first = true;
-    let url = "php/evenement/evenement-by-id.php";
+    let url = "php/evenement/evenement-id.php";
 
     if (id !== -1) {
       url += first ? "?" : "&";

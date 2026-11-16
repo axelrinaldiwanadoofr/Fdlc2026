@@ -15,6 +15,10 @@ export class Evenement
     public numLieu: number = -1 ;         // num du lieu où se déroule l'événement
     public heuredebut: string = "" ;      // heure de début ("HH:MM")
     public jourdebut: string = "" ;      // jour de début ("AAAA-MM-JJ")
+    public type: string = "" ;             // type de l'événement (conférence, dédicace, etc.)
+    public nomLieu: string = "" ;          // nom du lieu où se déroule l'événement
+    public nomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
+    public prenomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
 
     constructor( 
         id: number = -1, 
