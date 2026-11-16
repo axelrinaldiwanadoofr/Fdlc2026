@@ -4,7 +4,7 @@
 
 require_once "securite.php" ;
 
-// Rôles du plus haut au plus bas, avec leurs permissions et la liste de toutes les permissions
+// Rôles du plus haut au plus bas avec leurs permissions
 try
 {
     $moi = compteConnecte() ;

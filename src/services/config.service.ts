@@ -8,8 +8,7 @@ import {CompteConnecte} from "../modeles/CompteConnecte" ;
 import {Compte} from "../modeles/Compte" ;
 import {Role} from "../modeles/Role" ;
 
-// Connexion aux pages de configuration avec un compte (session PHP).
-// Le serveur vérifie les permissions à chaque appel, ici on s'en sert seulement pour l'affichage.
+// Connexion aux pages de configuration avec un compte
 @Injectable( {
     providedIn: "root"
 })
@@ -38,8 +37,7 @@ export class ConfigService
         this.http = http ;
         this.router = router ;
 
-        // reprend la session si la page a été rechargée (après la création du service,
-        // l'intercepteur du jeton a besoin de lui)
+        // reprend la session si la page a été rechargée
         setTimeout( () => this.relitSession() ) ;
     }
 
@@ -149,7 +147,7 @@ export class ConfigService
         return this.http.post<{ id: number }>( "php/compte/maj-role.php", { role: role } ) ;
     }
 
-    // ids des rôles déplaçables, du plus haut au plus bas
+    // ids des rôles du plus haut au plus bas
     ordreRoles( ids: number[] ): Observable<any>
     {
         return this.http.post( "php/compte/ordre-roles.php", { ids: ids } ) ;

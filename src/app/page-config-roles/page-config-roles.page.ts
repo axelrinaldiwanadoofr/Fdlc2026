@@ -30,8 +30,7 @@ import { lockClosedOutline, addOutline } from 'ionicons/icons';
 import { ConfigService } from '../../services/config.service';
 import { Role } from '../../modeles/Role';
 
-// Rôles et permissions, comme les rôles d'un serveur Discord :
-// la liste à gauche (du plus haut au plus bas), les interrupteurs de permissions à droite
+// Page des rôles et de leurs permissions
 @Component({
   selector: 'app-page-config-roles',
   templateUrl: './page-config-roles.page.html',
@@ -68,11 +67,11 @@ export class PageConfigRolesPage
   protected groupes = signal<Array<{ nom: string, permissions: Array<{ code: string, texte: string }> }>>( [] ) ;
   protected monNiveau = signal(0) ;
 
-  // au-dessus de soi : affichés mais fixes ; en dessous : déplaçables à la souris ou au doigt
+  // Rôles au-dessus de soi (fixes) et en dessous (déplaçables)
   protected rolesFixes = computed( () => this.roles().filter( r => !r.modifiable ) ) ;
   protected rolesDeplacables = computed( () => this.roles().filter( r => r.modifiable ) ) ;
 
-  // rôle affiché à droite (copie) et sa version enregistrée pour voir s'il a changé
+  // Rôle affiché à droite
   protected role = signal<Role | null>( null ) ;
   private original: string = "" ;
   protected version = signal(0) ;
@@ -104,7 +103,6 @@ export class PageConfigRolesPage
     this.chargeRoles( -1 ) ;
   }
 
-  // recharge la liste puis réaffiche le rôle idChoisi
   chargeRoles( idChoisi: number )
   {
     this.serviceConfig.getRoles().subscribe( reponse =>
@@ -129,7 +127,7 @@ export class PageConfigRolesPage
     this.touche() ;
   }
 
-  // le rôle en texte, permissions triées, pour savoir s'il a changé
+  // Rôle en texte pour savoir s'il a été modifié
   private empreinte( role: Role | null ): string
   {
     if( !role ) return "" ;
@@ -141,7 +139,6 @@ export class PageConfigRolesPage
     let role = new Role() ;
     role.nom = "Nouveau rôle" ;
 
-    // un nouveau rôle arrive tout en bas, on le glisse ensuite à sa place
     let plusBas = this.rolesDeplacables().at( -1 ) ;
     role.niveau = plusBas ? Math.max( 1, plusBas.niveau - 1 ) : 1 ;
     this.original = "" ;
@@ -150,13 +147,12 @@ export class PageConfigRolesPage
     this.touche() ;
   }
 
-  // les champs modifient la copie directement : on relance la comparaison
   touche()
   {
     this.version.set( this.version() + 1 ) ;
   }
 
-  // glisser-déposer : le serveur réattribue les niveaux dans le nouvel ordre
+  // Envoie le nouvel ordre après un glisser-déposer
   onDeplace( event: any )
   {
     let liste = this.rolesDeplacables().slice() ;
@@ -186,7 +182,6 @@ export class PageConfigRolesPage
     return this.role()?.permissions.includes( code ) ?? false ;
   }
 
-  // on ne donne que les permissions qu'on a soi-même
   peutDonner( code: string ): boolean
   {
     let role = this.role() ;

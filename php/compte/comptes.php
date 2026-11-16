@@ -4,7 +4,7 @@
 
 require_once "securite.php" ;
 
-// Tous les comptes (ou celui d'une personne avec ?idPersonne), avec ce que le compte connecté peut modifier
+// Liste des comptes, ou celui d'une personne avec ?idPersonne
 try
 {
     $moi = exigePermission( "comptes.gerer", false ) ;
@@ -33,10 +33,9 @@ try
         if( $compte["estRoot"] )
         {
             $compte["role"] = "Root" ;
-            $compte["couleur"] = "#111827" ;
+            $compte["couleur"] = "#4b5563" ;
             $compte["niveau"] = NIVEAU_ROOT ;
         }
-        // root, soi-même et les rôles égaux ou supérieurs ne se modifient pas ici
         $compte["modifiable"] = !$compte["estRoot"] && $compte["id"] != $moi["id"] && ( $moi["estRoot"] || (int)$compte["niveau"] < $moi["niveau"] ) ;
     }
 

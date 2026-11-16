@@ -2,8 +2,7 @@
 
 // Auteur: Kevin MEYER - 16/11/2026
 
-// Comptes de connexion à la configuration : session, rôles, permissions et hiérarchie.
-// Le compte root est au-dessus de tous les rôles, il ne peut être ni supprimé ni désactivé.
+// Comptes de la configuration : session, rôles, permissions
 
 require_once __DIR__ . "/../Connexion.php" ;
 
@@ -12,11 +11,11 @@ const DUREE_INACTIVITE = 15 * 60 ;
 const DUREE_SESSION_MAX = 8 * 3600 ;
 const ESSAIS_MAX = 5 ;
 
-// Mot de passe du compte root à l'installation, la page config prévient tant qu'il n'est pas changé
+// Mot de passe du compte root à l'installation
 const MDP_ROOT_DEFAUT = "fdlc2026" ;
 const DUREE_BLOCAGE = 15 * 60 ;
 
-// Liste des permissions, rangées par groupe pour la page des rôles
+// Permissions rangées par groupe
 const PERMISSIONS = [
     "Le festival" => [
         "personnes.modifier" => "Créer et modifier les personnes",
@@ -84,7 +83,7 @@ function donneesPost()
     return json_decode( file_get_contents( "php://input" ), true ) ?? [] ;
 }
 
-// Tables créées au premier lancement (on n'a pas accès à la base du serveur)
+// Création des tables au premier lancement
 function creeTables()
 {
     $bd = bd() ;
@@ -148,14 +147,18 @@ function rootExiste()
     }
 }
 
-// Session : cookie HttpOnly, SameSite Strict, Secure en https
+// Cookie de session HttpOnly, SameSite Strict, Secure en https
 function demarreSession()
 {
     if( session_status() == PHP_SESSION_ACTIVE ) return ;
 
     session_name( "fdlc2026" ) ;
+    // cookie limité au dossier de l'appli (ex : /fdlc/), pas aux autres sites du domaine
+    $script = $_SERVER["SCRIPT_NAME"] ?? "/" ;
+    $position = strpos( $script, "/php/" ) ;
+
     session_set_cookie_params( [
-        "path" => "/",
+        "path" => $position === false ? "/" : substr( $script, 0, $position + 1 ),
         "httponly" => true,
         "samesite" => "Strict",
         "secure" => ( $_SERVER["HTTPS"] ?? "" ) == "on" || ( $_SERVER["HTTP_X_FORWARDED_PROTO"] ?? "" ) == "https"
@@ -201,7 +204,7 @@ function chargeCompte( $id )
     {
         $compte["niveau"] = NIVEAU_ROOT ;
         $compte["role"] = "Root" ;
-        $compte["couleur"] = "#111827" ;
+        $compte["couleur"] = "#4b5563" ;
         $compte["permissions"] = codesPermissions() ;
     }
     else
@@ -214,8 +217,7 @@ function chargeCompte( $id )
     return $compte ;
 }
 
-// Compte connecté, relu dans la base à chaque appel : une désactivation
-// ou un changement de mot de passe coupe la session tout de suite
+// Compte connecté, relu dans la base à chaque appel
 function compteConnecte()
 {
     static $compte = false ;
@@ -244,7 +246,7 @@ function compteConnecte()
     return $compte ;
 }
 
-// Toute modification doit venir de l'appli : jeton de session dans l'en-tête X-Jeton
+// Jeton de session envoyé par l'appli dans l'en-tête X-Jeton
 function verifieJeton()
 {
     $jeton = $_SERVER["HTTP_X_JETON"] ?? "" ;
@@ -278,8 +280,7 @@ function niveauPersonne( $idPersonne )
     return $ligne["estRoot"] == 1 ? NIVEAU_ROOT : (int)$ligne["niveau"] ;
 }
 
-// On ne touche pas à une personne dont le rôle est égal ou supérieur au sien
-// (sa propre fiche peut être modifiée si soiMeme = true, jamais supprimée)
+// Refuse si la personne a un rôle égal ou supérieur au sien
 function verifieHierarchiePersonne( $compte, $idPersonne, $soiMeme = false )
 {
     if( $compte["estRoot"] || $idPersonne <= 0 ) return ;
@@ -307,7 +308,7 @@ function journal( $action, $detail = "", $compte = null )
     }
 }
 
-// Mot de passe : 10 caractères minimum, pas l'identifiant dedans
+// 10 caractères minimum, sans l'identifiant dedans
 function verifieMotDePasse( $mdp, $identifiant )
 {
     if( !is_string( $mdp ) || mb_strlen( $mdp ) < 10 ) refuse( "Le mot de passe doit faire au moins 10 caractères", 400 ) ;
@@ -315,7 +316,7 @@ function verifieMotDePasse( $mdp, $identifiant )
     if( $identifiant != "" && str_contains( mb_strtolower( $mdp ), mb_strtolower( $identifiant ) ) ) refuse( "Le mot de passe ne doit pas contenir l'identifiant", 400 ) ;
 }
 
-// Mot de passe donné à une personne : 12 caractères sans les lettres qui se confondent (l, 1, O, 0...)
+// 12 caractères, sans l, 1, O, 0 qui se confondent
 function motDePasseAleatoire()
 {
     $caracteres = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789" ;
@@ -324,7 +325,7 @@ function motDePasseAleatoire()
     return $mdp ;
 }
 
-// Essais ratés par adresse IP, en plus du blocage de chaque compte
+// Essais ratés par adresse IP
 function fichierEssais()
 {
     return sys_get_temp_dir() . "/fdlc2026-essais-ip.json" ;
@@ -364,7 +365,7 @@ function rootParDefaut()
     return $hash && password_verify( MDP_ROOT_DEFAUT, $hash ) ;
 }
 
-// Ce que l'appli a besoin de savoir sur le compte connecté
+// Compte renvoyé à l'appli
 function compteAppli( $compte )
 {
     return [

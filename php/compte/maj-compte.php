@@ -4,9 +4,7 @@
 
 require_once "securite.php" ;
 
-// Crée ou modifie le compte d'une personne : identifiant, rôle, accès.
-// A la création (ou avec nouveauMdp) le serveur tire un mot de passe au hasard, renvoyé une seule fois
-// pour le donner à la personne, qui devra le changer à sa première connexion
+// Crée ou modifie le compte d'une personne, renvoie le mot de passe tiré au hasard
 try
 {
     $moi = exigePermission( "comptes.gerer" ) ;
@@ -21,14 +19,13 @@ try
         refuse( "L'identifiant fait 3 à 50 caractères : lettres sans accent, chiffres, point, tiret", 400 ) ;
     }
 
-    // le rôle donné doit être en dessous du sien
     $cursor = bd()->prepare( "select niveau, nom from " . table( "role" ) . " where id = :id" ) ;
     $cursor->execute( ["id" => (int)( $compte["idRole"] ?? 0 )] ) ;
     $role = $cursor->fetch( PDO::FETCH_ASSOC ) ;
     if( !$role ) refuse( "Choisissez un rôle", 400 ) ;
     if( !$moi["estRoot"] && (int)$role["niveau"] >= $moi["niveau"] ) refuse( "Vous ne pouvez donner qu'un rôle inférieur au vôtre" ) ;
 
-    // identifiant déjà pris : à la création on ajoute un numéro (jean.dupont2), sinon on refuse
+    // identifiant déjà pris : jean.dupont2, jean.dupont3...
     $cursor = bd()->prepare( "select count(*) from " . table( "compte" ) . " where identifiant = :identifiant and id <> :id" ) ;
     $base = mb_substr( $identifiant, 0, 47 ) ;
     for( $numero = 2 ; ; $numero++ )
@@ -75,7 +72,6 @@ try
     $sql = "update " . table( "compte" ) . " set identifiant = :identifiant, idRole = :idRole, actif = :actif" ;
     $parametres = ["identifiant" => $identifiant, "idRole" => (int)$compte["idRole"], "actif" => $actif, "id" => $id] ;
 
-    // nouveau mot de passe, désactivation ou changement de rôle : les sessions ouvertes sont coupées
     $couperSessions = $actif != $cible["actif"] || (int)$compte["idRole"] != (int)$cible["idRole"] ;
     if( $mdp != "" )
     {

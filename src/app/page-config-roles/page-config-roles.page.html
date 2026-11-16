@@ -11,11 +11,10 @@
 <ion-content class="ion-padding">
   <div class="page">
 
-    <!-- Liste des rôles, du plus haut au plus bas -->
     <div class="liste-roles">
       <ion-list>
         <ion-item lines="none" class="root">
-          <span slot="start" class="pastille" style="background: #111827"></span>
+          <span slot="start" class="pastille root"></span>
           <ion-label>Root</ion-label>
           <ion-icon slot="end" name="lock-closed-outline" color="medium"></ion-icon>
         </ion-item>
@@ -52,7 +51,6 @@
         Un rôle ne gère que les comptes et les rôles placés en dessous de lui.</p>
     </div>
 
-    <!-- Rôle choisi -->
     @if( role(); as r )
     {
       <div class="detail">
@@ -92,11 +90,10 @@
     }
   </div>
 
-  <!-- Barre d'enregistrement, comme sur Discord -->
   @if( modifie() || erreur() != "" )
   {
     <div class="barre">
-      <span>{{ erreur() != "" ? erreur() : "Attention, il reste des modifications non enregistrées !" }}</span>
+      <span>{{ erreur() != "" ? erreur() : "Modifications non enregistrées" }}</span>
       <ion-button fill="clear" color="light" (click)="onAnnuler()">Annuler</ion-button>
       <ion-button color="success" (click)="onEnregistrer()">Enregistrer</ion-button>
     </div>

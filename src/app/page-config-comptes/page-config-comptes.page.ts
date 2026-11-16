@@ -56,7 +56,7 @@ export class PageConfigComptesPage
   protected personnes = signal<Personne[]>( [] ) ;
   protected recherche = signal("") ;
 
-  // personne dont on gère l'accès dans la fenêtre (null = fenêtre fermée)
+  // Personne affichée dans la fenêtre d'accès
   protected personne = signal<Personne | null>( null ) ;
   protected modalPersonnes = signal(false) ;
   protected recherchePersonne = signal("") ;
@@ -67,7 +67,6 @@ export class PageConfigComptesPage
     return this.comptes().filter( c => ( c.identifiant + " " + ( c.nom ?? "" ) + " " + c.role ).toLowerCase().includes( texte ) ) ;
   }) ;
 
-  // personnes qui n'ont pas encore de compte
   protected personnesSansCompte = computed( () =>
   {
     let avecCompte = this.comptes().map( c => c.idPersonne ) ;

@@ -4,7 +4,7 @@
 
 require_once "securite.php" ;
 
-// Supprime un compte (la personne reste dans la base)
+// Supprime un compte, la personne reste dans la base
 try
 {
     $moi = exigePermission( "comptes.gerer" ) ;

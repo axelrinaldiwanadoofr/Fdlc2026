@@ -18,7 +18,7 @@ import {
 
 import { ConfigService } from '../../services/config.service';
 
-// Journal : connexions, échecs, comptes et rôles modifiés, suppressions
+// Journal des actions de la configuration
 @Component({
   selector: 'app-page-config-journal',
   templateUrl: './page-config-journal.page.html',

@@ -16,7 +16,6 @@
   }
   @else if( serviceConfig.compte(); as compte )
   {
-    <!-- Compte connecté -->
     <div class="profil">
       <div class="avatar" [style.background]="compte.couleur">{{ initiale( compte.nom ) }}</div>
       <div class="qui">
@@ -80,7 +79,6 @@
   }
   @else
   {
-    <!-- Connexion -->
     <ion-list class="connexion">
       <ion-item>
         <ion-input label="Identifiant" labelPlacement="stacked" autocomplete="username" [(ngModel)]="identifiant"

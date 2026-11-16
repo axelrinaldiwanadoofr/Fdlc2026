@@ -4,7 +4,7 @@
 
 require_once "securite.php" ;
 
-// Les 300 dernières actions (connexions, comptes, rôles, suppressions)
+// Les 300 dernières actions
 try
 {
     exigePermission( "journal.voir", false ) ;

@@ -5,7 +5,6 @@
 require_once "securite.php" ;
 
 // Connexion avec identifiant et mot de passe
-// 5 erreurs sur un compte le bloquent 15 minutes, 15 erreurs depuis une même adresse aussi
 try
 {
     creeTables() ;
@@ -23,8 +22,8 @@ try
 
     if( !$ligne )
     {
-        // même temps de réponse qu'avec un vrai compte
-        password_verify( $mdp, '$2y$10$abcdefghijklmnopqrstuu6qe8c0gD5BJ/IIQtsYb3dVPqk6cXWW6' ) ;
+        // même durée de calcul qu'avec un vrai compte
+        password_verify( $mdp, '$2y$10$GEEh04zGoFG7N0Edo78She1Tqir2N2vtuCGzCvLclb9rbjT8SyZjK' ) ;
         noteEssaiIp( false ) ;
         journal( "Échec de connexion", "Identifiant inconnu : " . $identifiant, [] ) ;
         refuse( $messageErreur, 401 ) ;
@@ -46,7 +45,6 @@ try
 
     if( $ligne["actif"] != 1 ) refuse( "Ce compte est désactivé", 403 ) ;
 
-    // hash refait si PHP conseille un algorithme plus récent
     if( password_needs_rehash( $ligne["hash"], PASSWORD_DEFAULT ) )
     {
         bd()->prepare( "update " . table( "compte" ) . " set hash = :hash where id = :id" )

@@ -4,8 +4,7 @@
 
 require_once "securite.php" ;
 
-// Crée ou modifie un rôle : nom, couleur, niveau et permissions
-// On ne gère que les rôles en dessous du sien et on ne donne que les permissions qu'on a
+// Crée ou modifie un rôle et ses permissions
 try
 {
     $moi = exigePermission( "roles.gerer" ) ;
@@ -42,7 +41,6 @@ try
         $actuelles = $cursor->fetchAll( PDO::FETCH_COLUMN ) ;
     }
 
-    // les permissions qu'on n'a pas soi-même restent comme elles étaient
     $codes = $moi["estRoot"] ? $demandees
            : array_merge( array_intersect( $demandees, $moi["permissions"] ), array_diff( $actuelles, $moi["permissions"] ) ) ;
 

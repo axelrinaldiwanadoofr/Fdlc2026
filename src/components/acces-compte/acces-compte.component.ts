@@ -20,8 +20,7 @@ import { ConfigService } from '../../services/config.service';
 import { Compte } from '../../modeles/Compte';
 import { Role } from '../../modeles/Role';
 
-// Accès d'une personne à la configuration : interrupteur, identifiant, rôle et mot de passe.
-// Activer l'accès d'une personne sans compte crée son compte avec un mot de passe tiré au hasard.
+// Accès d'une personne à la configuration : identifiant, rôle et mot de passe
 @Component({
   selector: 'app-acces-compte',
   templateUrl: './acces-compte.component.html',

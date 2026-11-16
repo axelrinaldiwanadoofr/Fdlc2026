@@ -29,7 +29,7 @@ import { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locatio
 
 import { ConfigService } from '../../services/config.service';
 
-// une tuile du menu : la page, et la permission qu'il faut pour la voir
+// Tuile du menu et permission nécessaire pour la voir
 class PageConfig
 {
   public titre: string ;
@@ -52,8 +52,7 @@ class PageConfig
   }
 }
 
-// Page principale de configuration (pas dans le menu) : connexion avec un compte
-// puis accès aux pages de config que le rôle du compte autorise
+// Page principale de configuration : connexion puis menu des pages autorisées
 @Component({
   selector: 'app-page-config',
   templateUrl: './page-config.page.html',
@@ -89,7 +88,7 @@ export class PageConfigPage
   protected mdp: string = "" ;
   protected erreurConnexion = signal("") ;
 
-  // Changement de son mot de passe (obligatoire pour un mot de passe donné par un admin)
+  // Changement de son mot de passe
   protected modalMdp = signal(false) ;
   protected ancienMdp: string = "" ;
   protected nouveauMdp: string = "" ;
@@ -99,7 +98,7 @@ export class PageConfigPage
 
   protected message = signal("") ;
 
-  // Nombres de la page de contrôle, pour signaler ce qui manque sur chaque tuile
+  // Nombres de la page de contrôle
   protected controle = signal<any>( null ) ;
 
   private readonly sections = [
@@ -122,13 +121,13 @@ export class PageConfigPage
       new PageConfig( "Imports de la base", "Fichiers du festival", "cloud-upload-outline", "#6b7280", "php/updatebd/index.php", "imports.lancer" )
     ] },
     { titre: "Administration", pages: [
-      new PageConfig( "Comptes", "Qui peut se connecter, avec quel rôle", "key-outline", "#111827", "/config-comptes", "comptes.gerer" ),
-      new PageConfig( "Rôles et permissions", "Ce que chaque rôle a le droit de faire", "shield-checkmark-outline", "#111827", "/config-roles", "roles.gerer" ),
-      new PageConfig( "Journal", "Connexions et actions importantes", "list-outline", "#111827", "/config-journal", "journal.voir" )
+      new PageConfig( "Comptes", "Qui peut se connecter, avec quel rôle", "key-outline", "#4b5563", "/config-comptes", "comptes.gerer" ),
+      new PageConfig( "Rôles et permissions", "Ce que chaque rôle a le droit de faire", "shield-checkmark-outline", "#4b5563", "/config-roles", "roles.gerer" ),
+      new PageConfig( "Journal", "Connexions et actions importantes", "list-outline", "#4b5563", "/config-journal", "journal.voir" )
     ] }
   ] ;
 
-  // seulement les tuiles autorisées, et les thèmes qui en ont
+  // Tuiles autorisées par le rôle
   protected sectionsVisibles = computed( () =>
   {
     let compte = this.serviceConfig.compte() ;
@@ -146,7 +145,6 @@ export class PageConfigPage
                 checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
                 warningOutline } ) ;
 
-    // à chaque connexion : compteurs du contrôle, et mot de passe à changer si besoin
     effect( () =>
     {
       let compte = this.serviceConfig.compte() ;
@@ -155,7 +153,6 @@ export class PageConfigPage
     }) ;
   }
 
-  // Les compteurs sont rechargés à chaque retour sur la page
   ionViewWillEnter()
   {
     if( this.serviceConfig.peut( "controle.voir" ) ) this.chargeControle() ;
@@ -173,7 +170,6 @@ export class PageConfigPage
     this.serviceConfig.connexion( this.identifiant, this.mdp ).subscribe( {
       next: () =>
       {
-        // le mot de passe donné par l'admin sert d'ancien dans la fenêtre de changement
         this.ancienMdp = this.mdp ;
         this.erreurConnexion.set( "" ) ;
         this.mdp = "" ;
@@ -200,7 +196,7 @@ export class PageConfigPage
     this.modalMdp.set( true ) ;
   }
 
-  // fermer sans changer un mot de passe obligatoire = déconnexion
+  // Fermer sans changer un mot de passe obligatoire déconnecte
   onFermeChangementMdp()
   {
     this.modalMdp.set( false ) ;
@@ -226,7 +222,7 @@ export class PageConfigPage
     }) ;
   }
 
-  // Les pages PHP (outils) s'ouvrent dans un nouvel onglet
+  // Les pages PHP s'ouvrent dans un nouvel onglet
   ouvre( page: PageConfig )
   {
     if( page.lien.startsWith( "php/" ) ) window.open( page.lien, "_blank" ) ;
