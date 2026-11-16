@@ -6,11 +6,11 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct num, nom, type, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where 1 " ;
+    $sql = "select distinct num, nom, libelle, type, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where 1 " ;
 
     if( isset($_GET["nom"])) 
     {
-        $sql .= " and nom like :nom " ;
+        $sql .= " and (nom like :nom or libelle like :libelle) " ;
     }
 
     if( isset($_GET["type"])) 
@@ -25,6 +25,7 @@ try
     if( isset($_GET["nom"]))
     {
         $cursor->bindValue( ":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
+        $cursor->bindValue( ":libelle", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
     }
 
     if( isset($_GET["type"]))

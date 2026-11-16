@@ -155,3 +155,5 @@ ALTER TABLE `presenter` ADD CONSTRAINT `fk_presenter_evenement` FOREIGN KEY (`id
 ALTER TABLE `evenement` ADD CONSTRAINT `fk_evenement_personne` FOREIGN KEY (`idAnimateur`) REFERENCES `personne`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `lieu` ADD CONSTRAINT `fk_lieu_typelieu` FOREIGN KEY (`type`) REFERENCES `typelieu`(`type`) ON DELETE CASCADE ON UPDATE CASCADE;
 ALTER TABLE `personne` ADD CONSTRAINT `fk_personne_specialite` FOREIGN KEY (`specialite`) REFERENCES `specialite`(`specialite`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `lieu` ADD `libelle` varchar(100) NULL AFTER `nom`;

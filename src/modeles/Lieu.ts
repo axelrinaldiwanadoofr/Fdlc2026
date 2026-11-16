@@ -2,6 +2,7 @@ export class Lieu
 {
     public num: number = -1 ;
     public nom: string = "" ;
+    public libelle: string = "" ;
     public type: string = "" ;
     public hall: number = 0 ;
     public x1: number = 0 ;

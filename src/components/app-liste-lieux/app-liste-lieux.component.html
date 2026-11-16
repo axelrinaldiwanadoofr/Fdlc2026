@@ -1,9 +1,13 @@
 <ion-list>
   @for( lieu of listeLieux | async; track lieu.num )
   {
-    <ion-item>
+    <ion-item [routerLink]="['/page-lieu', lieu.num]" detail="true">
       <ion-label>
-        <strong>{{ lieu.nom }}</strong> {{ lieu.type }} (n° {{ lieu.num }})
+        <h2>{{ lieu.nom }}</h2>
+        @if( lieu.libelle )
+        {
+          <p>{{ lieu.libelle }}</p>
+        }
       </ion-label>
     </ion-item>
   }
