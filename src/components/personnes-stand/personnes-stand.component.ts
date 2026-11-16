@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { IonList, IonItemDivider, IonItem, IonLabel, IonNote, IonButton } from '@ionic/angular';
 
 import { PersonneStand } from '../../modeles/PersonneStand';
+import { Exposant } from '../../modeles/Exposant';
 import { ExposantService } from '../../services/exposant.service';
 
 // un créneau de présence sur un stand
@@ -25,7 +26,7 @@ class Creneau
   }
 }
 
-// Personnes présentes sur le stand et auteurs du stand
+// Personnes présentes sur le stand, auteurs et autres exposants du stand
 @Component({
   selector: 'app-personnes-stand',
   templateUrl: './personnes-stand.component.html',
@@ -45,6 +46,7 @@ export class PersonnesStandComponent implements OnChanges
   public idExposant = input.required<number>() ;
 
   protected personnes = signal<PersonneStand[]>( [] ) ;
+  protected exposants = signal<Exposant[]>( [] ) ;
 
   protected creneaux: Creneau[] = [
     new Creneau( "samedi_am", "Samedi matin", "2026-11-21T09:00", "2026-11-21T13:00" ),
@@ -67,6 +69,7 @@ export class PersonnesStandComponent implements OnChanges
   {
     this.creneauActuel = this.trouveCreneau( new Date() ) ;
     this.serviceExposant.getPersonnesExposant( this.idExposant() ).subscribe( personnes => this.personnes.set( personnes ) ) ;
+    this.serviceExposant.getExposantsStand( this.idExposant() ).subscribe( exposants => this.exposants.set( exposants ) ) ;
   }
 
   private trouveCreneau( date: Date ): Creneau | null

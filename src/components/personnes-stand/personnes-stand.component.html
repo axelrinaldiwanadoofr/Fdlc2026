@@ -52,3 +52,22 @@
     }
   </div>
 }
+
+@if( exposants().length > 0 )
+{
+  <ion-list>
+    <ion-item-divider color="light">
+      <ion-label>Aussi sur ce stand</ion-label>
+      <ion-note slot="end">{{exposants().length}}</ion-note>
+    </ion-item-divider>
+  </ion-list>
+
+  <div class="auteurs">
+    @for( x of exposants(); track x.id )
+    {
+      <ion-button fill="outline" size="small" [routerLink]="['/page-exposant', x.id]">
+        {{x.nom}}
+      </ion-button>
+    }
+  </div>
+}

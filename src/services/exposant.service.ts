@@ -24,14 +24,16 @@ export class ExposantService
 
         if( nom != "" ) 
         {
-            url += (first)? "?" : "&"  
-            url += "nom=" + nom ;
+            url += (first)? "?" : "&" ;
+            url += "nom=" + encodeURIComponent( nom ) ;
+            first = false ;
         }
 
         if( nomLieu != "" ) 
         {
-            url += (first)? "?" : "&"  
-            url += "nomLieu=" + nomLieu ;
+            url += (first)? "?" : "&" ;
+            url += "nomLieu=" + encodeURIComponent( nomLieu ) ;
+            first = false ;
         }
 
         return this.http.get<Exposant[]>( url ) ;
@@ -56,6 +58,12 @@ export class ExposantService
     getPersonnesExposant( id: number ): Observable<PersonneStand[]>
     {
         return this.http.get<PersonneStand[]>( "php/exposant/personnes-exposant.php?id=" + id ) ;
+    }
+
+    // Autres exposants qui partagent le stand
+    getExposantsStand( id: number ): Observable<Exposant[]>
+    {
+        return this.http.get<Exposant[]>( "php/exposant/exposants-stand.php?id=" + id ) ;
     }
 
     // Récupérer les exposants associés à une personne

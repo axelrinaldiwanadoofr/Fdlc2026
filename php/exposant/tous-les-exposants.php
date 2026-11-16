@@ -12,7 +12,7 @@ try
     // Récupérer les exposants et leurs créneaux de présence
     $sql = "SELECT DISTINCT
                 idExposant AS id,
-                nomExposant AS nom,
+                trim( nomExposant ) AS nom,
                 libelleExposant as libelle,
                 typeExposant as type,
                 nomLieu,
@@ -36,7 +36,7 @@ try
         $sql .= " and idPersonne = :idPersonne " ;
     }
 
-    $sql .= " order by nomexposant" ;
+    $sql .= " order by trim( nomExposant )" ;
 
     $cursor = $bd->prepare( $sql ) ;
 

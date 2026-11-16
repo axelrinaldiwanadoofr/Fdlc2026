@@ -6,16 +6,22 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct num, nom, type, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where 1 " ;
+    $sql = "select distinct num, nom, libelle, hall, type, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where 1 " ;
 
     if( isset($_GET["nom"])) 
     {
-        $sql .= " and nom like :nom " ;
+        $sql .= " and ( nom like :nom or num like :num ) " ;
     }
 
     if( isset($_GET["type"])) 
     {
         $sql .= " and type = :type " ;
+    }
+
+    // Seulement les lieux où il y a au moins un exposant
+    if( isset($_GET["avecExposant"]))
+    {
+        $sql .= " and num in ( select numLieu from " . Connexion::$tables["exposant"] . " ) " ;
     }
 
     $sql .= " order by nom" ;
@@ -25,6 +31,7 @@ try
     if( isset($_GET["nom"]))
     {
         $cursor->bindValue( ":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
+        $cursor->bindValue( ":num", $_GET["nom"] . "%", PDO::PARAM_STR ) ;
     }
 
     if( isset($_GET["type"]))
