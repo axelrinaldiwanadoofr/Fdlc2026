@@ -3,6 +3,7 @@ import {Injectable} from "@angular/core" ;
 import {HttpClient} from "@angular/common/http" ;
 import {Observable} from "rxjs" ;
 import {Personne} from "../modeles/Personne" ;
+import {PresenceStand} from "../modeles/PresenceStand" ;
 
 @Injectable( {
     providedIn: "root"
@@ -75,5 +76,41 @@ export class PersonneService
         }
 
         return this.http.get<Personne[]>( url ) ;
+    }
+
+    // Page de config des personnes
+
+    getConfigPersonnes(): Observable<Personne[]>
+    {
+        return this.http.get<Personne[]>( "php/personne/config-personnes.php" ) ;
+    }
+
+    getConfigPersonne( id: number ): Observable<{ personne: Personne, creneaux: PresenceStand[], idLivres: number[] }>
+    {
+        return this.http.get<{ personne: Personne, creneaux: PresenceStand[], idLivres: number[] }>( "php/personne/config-personne.php?id=" + id ) ;
+    }
+
+    getSpecialites(): Observable<string[]>
+    {
+        return this.http.get<string[]>( "php/personne/specialites.php" ) ;
+    }
+
+    majPersonne( mdp: string, personne: Personne, creneaux: PresenceStand[], idLivres: number[] ): Observable<any>
+    {
+        return this.http.post( "php/personne/maj-personne.php", { mdp: mdp, personne: personne, creneaux: creneaux, idLivres: idLivres } ) ;
+    }
+
+    supprimePersonne( mdp: string, id: number ): Observable<any>
+    {
+        return this.http.post( "php/personne/supprime-personne.php", { mdp: mdp, id: id } ) ;
+    }
+
+    // Envoie le fichier de la photo, renvoie son chemin (assets/photos/...)
+    envoiePhoto( mdp: string, fichier: File ): Observable<{ photo: string }>
+    {
+        let formulaire = new FormData() ;
+        formulaire.append( "mdp", mdp ) ;
+        formulaire.append( "photo", fichier ) ;
+        return this.http.post<{ photo: string }>( "php/personne/photo-personne.php", formulaire ) ;
     }
 }
