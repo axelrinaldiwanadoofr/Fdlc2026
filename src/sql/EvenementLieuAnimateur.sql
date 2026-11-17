@@ -5,6 +5,8 @@ create or replace view EvenementLieuAnimateur as
 select 
     e.id,
     e.titre,
+    e.stitre,
+    e.public,
     e.type,
     e.debut,
     e.fin,
@@ -28,6 +30,8 @@ create or replace view fdlc_EvenementLieuAnimateur as
 select 
     e.id,
     e.titre,
+    e.stitre,
+    e.public,
     e.type,
     e.debut,
     e.fin,

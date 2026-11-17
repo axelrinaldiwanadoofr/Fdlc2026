@@ -17,43 +17,40 @@ try
 
     // dans la nouvelle base le type est dans la colonne type (typeevenement est vide)
     $sql = "select 
-        ev.id, 
-        ev.type as typeevenement, 
-        ev.titre, 
-        ev.stitre, 
-        ev.public, 
-        ev.commentaire,
-        ev.debut, 
-        date_format(ev.debut, '%H:%i') as heuredebut,    
-        date_format(ev.debut, '%Y-%m-%d') as jourdebut, 
-        ev.idAnimateur, 
-        ev.numLieu
-        from " . Connexion::$tables["evenement"] . " as ev where 1 " ;
+        id, 
+        type as typeevenement, 
+        titre, 
+        stitre,
+        public,
+        commentaire,
+        debut, 
+        date_format(debut, '%H:%i') as heuredebut,    
+        date_format(debut, '%Y-%m-%d') as jourdebut, 
+        idAnimateur, 
+        nomAnimateur,
+        prenomAnimateur,
+        specialiteAnimateur,
+        numLieu,
+        nomLieu,
+        theme
+        from " . Connexion::$tables["EvenementLieuAnimateur"] . " where 1 " ;
 
-    if( isset($_GET["titre"])) $sql .= " and ev.titre like :titre " ;
+    if( isset($_GET["titre"])) $sql .= " and titre like :titre " ;
 
-    if( isset($_GET["debut"])) $sql .= " and ev.debut >= :debut " ;
+    if( isset($_GET["debut"])) $sql .= " and debut >= :debut " ;
 
-    if( isset($_GET["jourdebut"])) $sql .= " and date_format(ev.debut, '%Y-%m-%d') = :jourdebut " ;
+    if( isset($_GET["jourdebut"])) $sql .= " and date_format(debut, '%Y-%m-%d') = :jourdebut " ;
 
-    if( isset($_GET["heuredebut"])) $sql .= " and date_format(ev.debut, '%H:%i') = :heuredebut " ;
+    if( isset($_GET["heuredebut"])) $sql .= " and date_format(debut, '%H:%i') = :heuredebut " ;
 
-    if( isset($_GET["numLieu"])) $sql .= " and ev.numLieu = :numLieu " ;
+    if( isset($_GET["numLieu"])) $sql .= " and numLieu = :numLieu " ;
 
     if( isset($_GET["nomAnimateur"]))
     {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["personne"] . " as p"
-              . " where p.id = ev.idAnimateur and p.nom like :nomAnimateur ) " ;
+        $sql .= " and  nomAnimateur like :nomAnimateur  " ;
     }
 
-    if( isset($_GET["titreLivre"]))
-    {
-        $sql .= " and exists ( select 1 from " . Connexion::$tables["presenter"] . " as pr"
-              . " inner join " . Connexion::$tables["livre"] . " as li on pr.idLivre = li.id"
-              . " where pr.idEvenement = ev.id and li.titre like :titreLivre ) " ;
-    }
-
-    $sql .= " order by ev.debut, ev.titre" ;
+    $sql .= " order by debut, titre" ;
 
     $cursor = $bd->prepare( $sql ) ;
 
@@ -63,7 +60,6 @@ try
     if( isset($_GET["heuredebut"])) $cursor->bindValue( ":heuredebut", $_GET["heuredebut"], PDO::PARAM_STR ) ;
     if( isset($_GET["numLieu"])) $cursor->bindValue( ":numLieu", $_GET["numLieu"], PDO::PARAM_INT ) ;
     if( isset($_GET["nomAnimateur"])) $cursor->bindValue( ":nomAnimateur", "%" . $_GET["nomAnimateur"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["titreLivre"])) $cursor->bindValue( ":titreLivre", "%" . $_GET["titreLivre"] . "%", PDO::PARAM_STR ) ;
 
     $cursor->execute() ;
 
