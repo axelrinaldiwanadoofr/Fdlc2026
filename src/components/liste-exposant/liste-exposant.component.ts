@@ -31,6 +31,7 @@ export class ListeExposantComponent  implements OnInit, OnChanges
   // Critères de filtration
   nomPersonne = input<string>( "" ) ;
   nomLieu = input<string>( "" ) ;
+  nomExposant = input<string>( "" ) ;
 
   protected listeExposants: Observable<Array<Exposant>> | null = null ;
   protected serviceExposant: ExposantService ;
@@ -42,13 +43,13 @@ export class ListeExposantComponent  implements OnInit, OnChanges
 
   ngOnInit() 
   {
-    this.listeExposants = this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu() ) ;
+    this.listeExposants = this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu(), this.nomExposant() ) ;
   }
 
   // Rafraichit la liste quand les parametres d'input sont modifiés 
   ngOnChanges()
   {
-    this.listeExposants = this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu() ) ;
+    this.listeExposants = this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu(), this.nomExposant() ) ;
   }
 
   // Met en forme le texte affiché dans chaque ligne de la liste

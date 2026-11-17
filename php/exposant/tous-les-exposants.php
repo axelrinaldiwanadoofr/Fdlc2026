@@ -15,7 +15,7 @@ try
     // Récupérer les exposants et leurs créneaux de présence
     $sql = "SELECT DISTINCT
                 idExposant AS id,
-                trim( nomExposant ) AS nom,
+                nomExposant AS nom,
                 libelleExposant as libelle,
                 typeExposant as type,
                 nomLieu,
@@ -33,13 +33,18 @@ try
         $sql .= " and nomLieu like :nomLieu " ;
     }
 
+    if( isset($_GET["nomExposant"])) 
+    {
+        $sql .= " and nomExposant like :nomExposant " ;
+    }
+
     // Filtrer les exposants associés à une personne
     if( isset($_GET["idPersonne"]))
     {
         $sql .= " and idPersonne = :idPersonne " ;
     }
 
-    $sql .= " order by trim( nomExposant )" ;
+    $sql .= " order by nomExposant" ;
 
     $cursor = $bd->prepare( $sql ) ;
 
@@ -51,6 +56,11 @@ try
     if( isset($_GET["nomLieu"]))
     {
         $cursor->bindValue( ":nomLieu", $_GET["nomLieu"] . "%", PDO::PARAM_STR ) ;
+    }
+
+    if( isset($_GET["nomExposant"]))
+    {
+        $cursor->bindValue( ":nomExposant", $_GET["nomExposant"] . "%", PDO::PARAM_STR ) ;
     }
 
     // Associer l'identifiant de la personne au paramètre SQL

@@ -17,7 +17,7 @@ export class ExposantService
         this.http = http ;
     }
 
-    getTousLesExposants( nom: string = "", nomLieu: string = "" ): Observable<Exposant[]>
+    getTousLesExposants( nom: string = "", nomLieu: string = "", nomExposant: string = "" ): Observable<Exposant[]>
     {
         let first = true ;
         let url = "php/exposant/tous-les-exposants.php" ;
@@ -25,15 +25,21 @@ export class ExposantService
         if( nom != "" ) 
         {
             url += (first)? "?" : "&" ;
-            url += "nom=" + encodeURIComponent( nom ) ;
+            url += "nom=" + nom;
             first = false ;
         }
 
         if( nomLieu != "" ) 
         {
             url += (first)? "?" : "&" ;
-            url += "nomLieu=" + encodeURIComponent( nomLieu ) ;
+            url += "nomLieu=" + nomLieu ;
             first = false ;
+        }
+
+        if( nomExposant != "" ) 
+        {
+            url += (first)? "?" : "&" ;
+            url += "nomExposant=" + nomExposant ;
         }
 
         return this.http.get<Exposant[]>( url ) ;
