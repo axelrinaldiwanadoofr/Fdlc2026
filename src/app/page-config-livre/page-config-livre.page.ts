@@ -204,7 +204,7 @@ export class PageConfigLivrePage
       return ;
     }
 
-    this.serviceLivre.majLivre( this.serviceConfig.mdp, livre, this.idPersonnes() ).subscribe( {
+    this.serviceLivre.majLivre( livre, this.idPersonnes() ).subscribe( {
       next: () => this.ferme( "Livre enregistré" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -215,7 +215,7 @@ export class PageConfigLivrePage
     let livre = this.livre() ;
     if( !livre ) return ;
 
-    this.serviceLivre.supprimeLivre( this.serviceConfig.mdp, livre.id ).subscribe( {
+    this.serviceLivre.supprimeLivre( livre.id ).subscribe( {
       next: () => this.ferme( "Livre supprimé" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -230,8 +230,8 @@ export class PageConfigLivrePage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;

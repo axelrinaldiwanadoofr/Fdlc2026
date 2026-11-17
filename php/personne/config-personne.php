@@ -3,6 +3,7 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 require_once "../Connexion.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -28,12 +29,17 @@ try
     $cursor->execute( ["id" => $id] ) ;
     $idLivres = array_map( "intval", $cursor->fetchAll( PDO::FETCH_COLUMN ) ) ;
 
-    echo json_encode( ["personne" => $personne, "creneaux" => $creneaux, "idLivres" => $idLivres], JSON_UNESCAPED_UNICODE ) ;
+    // protege : la personne a un rôle égal ou supérieur au compte connecté
+    $moi = compteConnecte() ;
+    $protege = $moi && !$moi["estRoot"] && (int)$moi["idPersonne"] != $id && niveauPersonne( $id ) >= $moi["niveau"] ;
+
+    echo json_encode( ["personne" => $personne, "creneaux" => $creneaux, "idLivres" => $idLivres, "protege" => $protege], JSON_UNESCAPED_UNICODE ) ;
 }
 catch( Exception $erreur )
 {
     http_response_code( 500 ) ;
-    echo json_encode( ["erreur" => "Probleme d'acces à la BD " . $erreur->getMessage()], JSON_UNESCAPED_UNICODE ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

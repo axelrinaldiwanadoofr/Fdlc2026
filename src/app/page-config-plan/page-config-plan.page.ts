@@ -208,7 +208,7 @@ export class PageConfigPlanPage
 
   private enregistre( lieu: Lieu, message: string )
   {
-    this.serviceLieu.majZoneLieu( this.serviceConfig.mdp, lieu ).subscribe( {
+    this.serviceLieu.majZoneLieu( lieu ).subscribe( {
       next: () =>
       {
         this.zone.set( null ) ;
@@ -217,8 +217,8 @@ export class PageConfigPlanPage
       },
       error: erreur =>
       {
-        // 403 : mot de passe refusé par le serveur
-        if( erreur.status == 403 )
+        // 401 : session expirée, on revient à la connexion
+        if( erreur.status == 401 )
         {
           this.serviceConfig.deconnexion() ;
           this.router.navigateByUrl( "/config" ) ;

@@ -2,17 +2,12 @@
 
 // Auteur: Kevin MEYER - 16/11/2026
 
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Envoi d'une photo de profil, elle est rangée avec les autres dans assets/photos
-if( !motDePasseOk( $_POST["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+exigePermission( "personnes.modifier" ) ;
 
 $fichier = $_FILES["photo"] ?? null ;
 $extensions = [ IMAGETYPE_JPEG => "jpg", IMAGETYPE_PNG => "png", IMAGETYPE_WEBP => "webp" ] ;
@@ -28,9 +23,33 @@ if( !$infos || !isset( $extensions[$infos[2]] ) || $fichier["size"] > 5 * 1024 *
 $dossier = dirname( __DIR__, 2 ) . "/assets/photos" ;
 if( !is_dir( $dossier ) ) mkdir( $dossier, 0777, true ) ;
 
-$nom = "photo-" . date( "YmdHis" ) . "-" . rand( 100, 999 ) . "." . $extensions[$infos[2]] ;
+$nom = "photo-" . date( "YmdHis" ) . "-" . rand( 100, 999 ) ;
 
-if( !move_uploaded_file( $fichier["tmp_name"], $dossier . "/" . $nom ) )
+// on refait l'image en jpg de 400 px max : plus légère, et tout ce qui n'est pas
+// de l'image (code caché dans le fichier) disparait
+$image = function_exists( "imagecreatefromstring" ) ? @imagecreatefromstring( file_get_contents( $fichier["tmp_name"] ) ) : false ;
+
+if( $image )
+{
+    $largeur = imagesx( $image ) ;
+    $hauteur = imagesy( $image ) ;
+    $echelle = min( 1, 400 / max( $largeur, $hauteur ) ) ;
+    $photo = imagecreatetruecolor( (int)round( $largeur * $echelle ), (int)round( $hauteur * $echelle ) ) ;
+
+    // fond blanc pour les png transparents
+    imagefill( $photo, 0, 0, imagecolorallocate( $photo, 255, 255, 255 ) ) ;
+    imagecopyresampled( $photo, $image, 0, 0, 0, 0, imagesx( $photo ), imagesy( $photo ), $largeur, $hauteur ) ;
+
+    $nom .= ".jpg" ;
+    $ok = imagejpeg( $photo, $dossier . "/" . $nom, 85 ) ;
+}
+else
+{
+    $nom .= "." . $extensions[$infos[2]] ;
+    $ok = move_uploaded_file( $fichier["tmp_name"], $dossier . "/" . $nom ) ;
+}
+
+if( !$ok )
 {
     http_response_code( 500 ) ;
     echo json_encode( ["erreur" => "Impossible d'enregistrer la photo"], JSON_UNESCAPED_UNICODE ) ;

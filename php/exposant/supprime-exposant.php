@@ -3,20 +3,14 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 require_once "../Connexion.php" ;
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Supprime un exposant, ou le fusionne dans un autre si idGarde est donné :
 // ses personnes et ses livres passent sur l'exposant gardé
-$donnees = json_decode( file_get_contents( "php://input" ), true ) ;
-
-if( !motDePasseOk( $donnees["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+$compte = exigePermission( "exposants.supprimer" ) ;
+$donnees = donneesPost() ;
 
 $id = (int)( $donnees["id"] ?? 0 ) ;
 $idGarde = (int)( $donnees["idGarde"] ?? 0 ) ;
@@ -66,7 +60,8 @@ catch( Exception $erreur )
 {
     if( isset( $bd ) && $bd->inTransaction() ) $bd->rollBack() ;
     http_response_code( 500 ) ;
-    echo json_encode( ["erreur" => "Probleme d'acces à la BD " . $erreur->getMessage()], JSON_UNESCAPED_UNICODE ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

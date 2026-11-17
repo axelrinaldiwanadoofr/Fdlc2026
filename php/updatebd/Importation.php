@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 <?php
 
 require_once "../Connexion.php" ;
@@ -78,13 +79,15 @@ class Importation
     {
         if( $this->getAfficheErreurDb() )
         {
-            echo "   Erreur!!! table: " . $this->nomTable . " erreur sur: " . $valeur . " : " . $erreur->getMessage() . "<br><br>" ;
+            error_log( $erreur->getMessage() ) ;
+            echo "   Erreur!!! table: " . $this->nomTable . " erreur sur: " . $valeur . " : " . "<br><br>" ;
         }
     }
 
     public function afficheErreurConnexionDb( PDOException $erreur )
     {
-        echo "Erreur!!! Probleme de connexion à la base de données " . $erreur->getMessage() ;
+        error_log( $erreur->getMessage() ) ;
+        echo "Erreur!!! Probleme de connexion à la base de données " ;
     }
 
     public function afficheDebutTraitement()

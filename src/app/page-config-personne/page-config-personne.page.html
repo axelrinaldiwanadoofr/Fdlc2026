@@ -8,7 +8,7 @@
     @if( !personne() )
     {
       <ion-buttons slot="end">
-        <ion-button fill="outline" (click)="modalRoles.set(true)">Rôles</ion-button>
+        <ion-button fill="outline" (click)="modalRoles.set(true)">Spécialités</ion-button>
         <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouvelle personne</ion-button>
       </ion-buttons>
     }
@@ -79,7 +79,7 @@
         <ion-input label="Nom *" labelPlacement="stacked" [(ngModel)]="p.nom" maxlength="50"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-select label="Rôle" labelPlacement="stacked" interface="popover" [(ngModel)]="p.specialite">
+        <ion-select label="Spécialité" labelPlacement="stacked" interface="popover" [(ngModel)]="p.specialite">
           @for( specialite of specialites(); track specialite )
           {
             <ion-select-option [value]="specialite">{{specialite}}</ion-select-option>
@@ -150,13 +150,23 @@
       <ion-note color="danger" class="formulaire">{{erreur()}}</ion-note>
     }
 
+    @if( p.id > 0 && serviceConfig.peut( 'comptes.gerer' ) )
+    {
+      <app-acces-compte class="formulaire" [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom"></app-acces-compte>
+    }
+
+    @if( protege() )
+    {
+      <ion-note color="medium" class="formulaire">Cette personne a un rôle égal ou supérieur au vôtre : vous ne pouvez pas la modifier.</ion-note>
+    }
+
     <div class="formulaire boutons">
       <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler</ion-button>
-      @if( p.id > 0 )
+      @if( p.id > 0 && serviceConfig.peut( 'personnes.supprimer' ) )
       {
-        <ion-button fill="outline" color="danger" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+        <ion-button fill="outline" color="danger" [disabled]="protege()" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
       }
-      <ion-button [disabled]="envoiEnCours()" (click)="onEnregistrer()">Enregistrer</ion-button>
+      <ion-button [disabled]="envoiEnCours() || protege()" (click)="onEnregistrer()">Enregistrer</ion-button>
     </div>
 
     <!-- Choix d'un stand -->
@@ -255,12 +265,12 @@
     </ion-list>
   }
 
-  <!-- Gestion des rôles -->
+  <!-- Gestion des spécialités -->
   <ion-modal [isOpen]="modalRoles()" (didDismiss)="modalRoles.set(false)">
     <ng-template>
       <ion-header>
         <ion-toolbar>
-          <ion-title>Rôles</ion-title>
+          <ion-title>Spécialités</ion-title>
           <ion-buttons slot="end">
             <ion-button [strong]="true" (click)="modalRoles.set(false)">OK</ion-button>
           </ion-buttons>
@@ -279,7 +289,7 @@
             </ion-item>
           }
           <ion-item>
-            <ion-input placeholder="Nouveau rôle" maxlength="20" [(ngModel)]="nouveauRole" (keyup.enter)="onAjouterRole()"></ion-input>
+            <ion-input placeholder="Nouvelle spécialité" maxlength="20" [(ngModel)]="nouveauRole" (keyup.enter)="onAjouterRole()"></ion-input>
             <ion-button slot="end" (click)="onAjouterRole()">Ajouter</ion-button>
           </ion-item>
         </ion-list>

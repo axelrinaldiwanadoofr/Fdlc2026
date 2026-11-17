@@ -203,7 +203,7 @@ export class PageConfigExposantPage
       return ;
     }
 
-    this.serviceExposant.majExposant( this.serviceConfig.mdp, exposant ).subscribe( {
+    this.serviceExposant.majExposant( exposant ).subscribe( {
       next: () => this.ferme( "Exposant enregistré" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -214,7 +214,7 @@ export class PageConfigExposantPage
     let exposant = this.exposant() ;
     if( !exposant ) return ;
 
-    this.serviceExposant.supprimeExposant( this.serviceConfig.mdp, exposant.id ).subscribe( {
+    this.serviceExposant.supprimeExposant( exposant.id ).subscribe( {
       next: () => this.ferme( "Exposant supprimé" ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -238,7 +238,7 @@ export class PageConfigExposantPage
     let garde = this.exposantGarde() ;
     if( !exposant || !garde ) return ;
 
-    this.serviceExposant.supprimeExposant( this.serviceConfig.mdp, exposant.id, garde.id ).subscribe( {
+    this.serviceExposant.supprimeExposant( exposant.id, garde.id ).subscribe( {
       next: () => this.ferme( exposant.nom + " fusionné dans " + garde.nom ),
       error: erreur => this.erreurServeur( erreur )
     }) ;
@@ -253,8 +253,8 @@ export class PageConfigExposantPage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;

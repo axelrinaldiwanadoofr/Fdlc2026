@@ -1,0 +1,54 @@
+// Auteur: Kevin MEYER - 16/11/2026
+
+.boutons
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 4px 12px 8px;
+}
+
+.role
+{
+    padding: 1px 6px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+
+.mdp-donne
+{
+    margin: 8px 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(var(--ion-color-success-rgb), 0.12);
+}
+
+.mdp-donne p
+{
+    margin: 0 0 8px;
+}
+
+.mdp
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.mdp code
+{
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 1.2em;
+    letter-spacing: 0.05em;
+    background: var(--ion-background-color);
+}
+
+.note
+{
+    font-size: 0.85em;
+    color: var(--ion-color-medium);
+}

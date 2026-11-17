@@ -26,6 +26,10 @@
             "typelieu" => "fdlc_typelieu",
             "typeexposant" => "fdlc_typeexposant",
             "annonce" => "fdlc_annonce",
+            "compte" => "fdlc_compte",
+            "role" => "fdlc_role",
+            "permission" => "fdlc_permission",
+            "journal" => "fdlc_journal",
             "typeevenement" => "fdlc_typeevenement",
             "genre" => "fdlc_genre",
             "invite" => "fdlc_invite",
@@ -51,7 +55,7 @@
                     self::$connexion = new PDO($serveur.$bdd, $user, $mdp); 
                     self::$connexion->query("SET CHARACTER SET utf8");
                 } catch (PDOException $e) {
-                        echo " Error connexion: " . $serveur . " " . $bdd . " " . $e->getMessage() ;
+                        error_log( $e->getMessage() ) ;
                         throw new Exception("Erreur à la connexion \n" . $e->getMessage());
                 }
             }

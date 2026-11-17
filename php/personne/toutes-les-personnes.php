@@ -204,7 +204,8 @@ $sql = "SELECT DISTINCT
 catch (PDOException $erreur)
 {
     // Affichage d'un message en cas d'erreur de base de données.
-    echo "Problème d'accès à la BD : " . $erreur->getMessage();
+    error_log( $erreur->getMessage() ) ;
+    echo "Problème d'accès à la BD : ";
 }
 
 ?>

@@ -23,13 +23,13 @@ export class AnnonceService
         return this.http.get<Annonce[]>( "php/annonce/annonces.php" + ( toutes ? "?toutes=1" : "" ) ) ;
     }
 
-    majAnnonce( mdp: string, annonce: Annonce ): Observable<any>
+    majAnnonce( annonce: Annonce ): Observable<any>
     {
-        return this.http.post( "php/annonce/maj-annonce.php", { mdp: mdp, annonce: annonce } ) ;
+        return this.http.post( "php/annonce/maj-annonce.php", { annonce: annonce } ) ;
     }
 
-    supprimeAnnonce( mdp: string, id: number ): Observable<any>
+    supprimeAnnonce( id: number ): Observable<any>
     {
-        return this.http.post( "php/annonce/supprime-annonce.php", { mdp: mdp, id: id } ) ;
+        return this.http.post( "php/annonce/supprime-annonce.php", { id: id } ) ;
     }
 }

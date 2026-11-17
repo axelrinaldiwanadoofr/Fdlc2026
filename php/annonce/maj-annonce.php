@@ -3,18 +3,12 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 require_once "../Connexion.php" ;
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
-$donnees = json_decode( file_get_contents( "php://input" ), true ) ;
-
-if( !motDePasseOk( $donnees["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+$compte = exigePermission( "annonces.modifier" ) ;
+$donnees = donneesPost() ;
 
 $annonce = $donnees["annonce"] ?? [] ;
 
@@ -38,6 +32,11 @@ try
     $bd->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION ) ;
 
     $table = Connexion::$tables["annonce"] ;
+
+    // la table est créée à la première annonce (on n'a pas accès à la base du serveur)
+    $bd->exec( "create table if not exists " . $table . " ( id int not null auto_increment primary key, texte varchar(300) not null,"
+             . " couleur varchar(20) not null default 'primary', debut datetime default null, fin datetime default null,"
+             . " active tinyint(1) not null default 1 )" ) ;
     $id = (int)( $annonce["id"] ?? -1 ) ;
 
     if( $id <= 0 )
@@ -59,7 +58,8 @@ try
 catch( Exception $erreur )
 {
     http_response_code( 500 ) ;
-    echo json_encode( ["erreur" => "Probleme d'acces à la BD " . $erreur->getMessage()], JSON_UNESCAPED_UNICODE ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

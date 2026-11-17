@@ -29,8 +29,8 @@ try
 }
 catch( PDOException $erreur )
 {
-    $message = $erreur->getMessage() ;
-    echo "Probleme d'acces à la BD " . $message ;
+    error_log( $erreur->getMessage() ) ;
+    echo "Probleme d'acces à la BD" ;
 }
 
 ?>

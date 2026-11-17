@@ -7,6 +7,10 @@ require_once "bnf.php" ;
 
 // A lancer une fois avant le festival pour mettre en cache les livres de tous les auteurs
 // ça prend quelques minutes car on fait une requête à la fois
+// seulement après connexion à la config (ou "php prepare-cache-bnf.php" sur le serveur)
+$permissionGarde = "bnf.lancer" ;
+require_once "../config/garde.php" ;
+
 set_time_limit( 0 ) ;
 header( "Content-Type: text/plain; charset=utf-8" ) ;
 
