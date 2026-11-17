@@ -50,8 +50,10 @@
     </ion-accordion>
   </ion-accordion-group>
 
+  
   <!-- Liste des livres filtrée (critères combinés en AND) -->
   <app-liste-livres
+    childHtml="<strong>$titre</strong> par $prenom $nom ($editeur)"
     [titreLivre]="criteres.titreLivre"
     [nomAuteur]="criteres.nomAuteur"
     [genre]="criteres.genre"

@@ -10,12 +10,9 @@ import { Evenement } from '../../modeles/Evenement';
 import { Lieu } from '../../modeles/Lieu';
 import { Personne } from '../../modeles/Personne';
 import {
-  IonList,
   IonItem,
   IonIcon,
   IonSegment,
-  IonSegmentButton,
-  IonLabel,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { chevronForward } from 'ionicons/icons';
@@ -67,9 +64,6 @@ const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
   imports: [
     IonItem,
     IonIcon,
-    IonSegment,
-    IonSegmentButton,
-    IonLabel,
     AsyncPipe,
     RouterLink,
   ],
@@ -332,6 +326,8 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
     let html = this.childHtml();
     html = html.replace("$id", evenement.id ? evenement.id.toString() : "");
     html = html.replace("$titre", evenement.titre ? evenement.titre : "");
+    html = html.replace("$type", evenement.type ? evenement.type : "");
+    html = html.replace("$commentaire", evenement.commentaire ? evenement.commentaire : "");
     html = html.replace("$debut", evenement.debut ? evenement.debut.toString() : "");
 
     if( evenement.heuredebut && evenement.heuredebut == "00:00" ) 
@@ -341,10 +337,8 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
 
     html = html.replace("$jourdebut", evenement.jourdebut ? evenement.jourdebut : "");
     html = html.replace("$nomLieu", evenement.numLieu ? evenement.numLieu.toString() : "Lieu non défini");
-    html = html.replace("$nomAnimateur", evenement.idAnimateur ? evenement.idAnimateur.toString() :"");
-    html = html.replace("$debut", debutTexte);
-    html = html.replace("$nomLieu", nomLieu ? nomLieu : "Lieu non défini");
-    html = html.replace("$nomAnimateur", nomAnimateur ? nomAnimateur : "");
+    html = html.replace("$nomAnimateur", evenement.nomAnimateur ? evenement.nomAnimateur : "");
+    html = html.replace("$prenomAnimateur", evenement.prenomAnimateur ? evenement.prenomAnimateur : "");
     return html;
   }
 }

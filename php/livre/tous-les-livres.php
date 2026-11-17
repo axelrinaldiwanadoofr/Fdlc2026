@@ -8,7 +8,15 @@ try
     // Récupération de la connexion
     $bd = Connexion::getInstance();
 
-    $sql = "select distinct idLivre as id, titreLivre as titre, resumeLivre as resume from " . Connexion::$tables["PersonneComplete"] . " where 1 " ;
+    $sql = "select distinct 
+        idLivre as id, 
+        titreLivre as titre, 
+        resumeLivre as resume,
+        nomEditeur as editeur,
+        nom,
+        prenom,
+        genreLivre as genre
+        from " . Connexion::$tables["PersonneComplete"] . " where idLivre is not null " ;
 
     if( isset($_GET["titre"]))
     {
