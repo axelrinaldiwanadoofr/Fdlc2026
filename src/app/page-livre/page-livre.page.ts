@@ -1,21 +1,21 @@
 import { Component, OnInit, input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { LivreService } from '../../services/livre.service';
+import { AsyncPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
 import { Livre } from '../../modeles/Livre';
-import { 
-  IonContent, 
-  IonHeader, 
-  IonTitle, 
+
+import {
+  IonContent,
+  IonHeader,
+  IonTitle,
   IonToolbar,
   IonButtons,
   IonMenuButton,
   IonBackButton,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
+  IonList,
+  IonItem,
+  IonLabel,
 } from '@ionic/angular';
 
 @Component({
@@ -23,38 +23,31 @@ import {
   templateUrl: './page-livre.page.html',
   styleUrls: ['./page-livre.page.scss'],
   imports: [
-    IonContent, 
-    IonHeader, 
-    IonTitle, 
-    IonToolbar, 
+    IonContent,
+    IonHeader,
+    IonTitle,
+    IonToolbar,
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    IonCard,
-    IonCardHeader,
-    IonCardTitle,
-    IonCardSubtitle,
-    IonCardContent,
-    CommonModule, 
-    FormsModule
+    IonList,
+    IonItem,
+    IonLabel,
+    AsyncPipe
   ]
 })
-export class PageLivrePage implements OnInit 
+export class PageLivrePage implements OnInit
 {
-  public id = input<number>( -1 ) ;
-  public livre: Livre | null = null ;
+  // Reçu depuis la route page-livre/:id
+  public id = input<number>( -1 );
 
-  constructor( private serviceLivre: LivreService ) {}
+  protected livres: Observable<Array<Livre>> | null = null;
 
-  ngOnInit() 
+  constructor( private http: HttpClient ) {}
+
+  ngOnInit()
   {
-    const bookId = Number( this.id() ) ;
-    if( bookId > 0 )
-    {
-      this.serviceLivre.getLivreById( bookId ).subscribe({
-        next: ( data ) => { this.livre = data ; },
-        error: ( err ) => { console.error( err ) ; }
-      }) ;
-    }
+    // livre-by-id.php renvoie un tableau (0 ou 1 livre)
+    this.livres = this.http.get<Array<Livre>>( 'php/livre/livre-by-id.php?id=' + this.id() );
   }
 }
