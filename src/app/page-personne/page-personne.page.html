@@ -80,6 +80,20 @@
       }
     }
 
+    <!-- événements de la personne (elle anime, un de ses livres est présenté ou elle est citée) -->
+    <ion-list [hidden]="nbEvenements() == 0">
+      <ion-item-divider color="light">
+        <ion-label>Événements</ion-label>
+      </ion-item-divider>
+    </ion-list>
+    <app-liste-evenements
+      [idPersonne]="p.id"
+      [onglets]="false"
+      messageVide=""
+      [hidden]="nbEvenements() == 0"
+      (total)="nbEvenements.set( $event )">
+    </app-liste-evenements>
+
     <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
   }
   @else
