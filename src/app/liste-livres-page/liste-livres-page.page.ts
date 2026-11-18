@@ -20,6 +20,8 @@ import {
 import { ListeLivresComponent } from '../../components/liste-livres/liste-livres.component';
 import { TitreLivreComboComponent } from '../../components/titre-livre-combo/titre-livre-combo.component';
 import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
+import { NomLieuComboComponent } from '../../components/nom-lieu-combo/nom-lieu-combo.component';
+import { TitreEvenementComboComponent } from '../../components/titre-evenement-combo/titre-evenement-combo.component';
 import { GenreComboComponent } from '../../components/genre-combo/genre-combo.component';
 import { NomExposantComboComponent } from '../../components/nom-exposant-combo/nom-exposant-combo.component';
 
@@ -46,6 +48,8 @@ import { NomExposantComboComponent } from '../../components/nom-exposant-combo/n
     ListeLivresComponent,
     TitreLivreComboComponent,
     NomPersonneComboComponent,
+    NomLieuComboComponent,
+    TitreEvenementComboComponent,
     // GenreComboComponent, (filtre genre en commentaire dans la page)
     NomExposantComboComponent
   ]
@@ -56,6 +60,8 @@ export class ListeLivresPagePage implements OnInit
   protected listeLivres = viewChild(ListeLivresComponent);
   protected titreLivreCombo = viewChild(TitreLivreComboComponent);
   protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
+  protected nomLieuCombo = viewChild(NomLieuComboComponent);
+  protected titreEvenementCombo = viewChild(TitreEvenementComboComponent);
   protected genreCombo = viewChild(GenreComboComponent);
   protected nomExposantCombo = viewChild(NomExposantComboComponent);
 
@@ -64,12 +70,16 @@ export class ListeLivresPagePage implements OnInit
   public flt_nomAuteur: string = "" ;
   public flt_genre: string = "" ;
   public flt_nomExposant: string = "" ;
+  public flt_nomLieu: string = "" ;
+  public flt_titreEvenement: string = "" ;
 
   // Critères appliqués pour la filtration des livres
   public titre: string = "" ;
   public nomAuteur: string = "" ;
   public genre: string = "" ;
   public nomExposant: string = "" ;
+  public nomLieu: string = "" ;
+  public titreEvenement: string = "" ;
 
   constructor() {}
 
@@ -83,6 +93,16 @@ export class ListeLivresPagePage implements OnInit
   onAuteurSelected( nom: string ) 
   {
     this.flt_nomAuteur = nom ;
+  }
+
+  onLieuSelected( nom: string ) 
+  {
+    this.flt_nomLieu = nom ;
+  }
+
+  onEvenementSelected( titre: string ) 
+  {
+    this.flt_titreEvenement = titre ;
   }
 
   onGenreSelected( genre: string ) 
@@ -107,10 +127,14 @@ export class ListeLivresPagePage implements OnInit
     this.nomAuteur = this.flt_nomAuteur ;
     this.genre = this.flt_genre ;
     this.nomExposant = this.flt_nomExposant ;
+    this.nomLieu = this.flt_nomLieu ;
+    this.titreEvenement = this.flt_titreEvenement ;
 
     // Masque les listes déroulantes de recherche
     this.titreLivreCombo()?.masqueListe() ;
     this.nomPersonneCombo()?.masqueListe() ;
+    this.nomLieuCombo()?.masqueListe() ;
+    this.titreEvenementCombo()?.masqueListe() ;
     this.genreCombo()?.masqueListe() ;
     this.nomExposantCombo()?.masqueListe() ;
 
@@ -123,14 +147,20 @@ export class ListeLivresPagePage implements OnInit
     this.flt_nomAuteur = "" ;
     this.flt_genre = "" ;
     this.flt_nomExposant = "" ;
+    this.flt_nomLieu = "" ;
+    this.flt_titreEvenement = "" ;
 
     this.titre = "" ;
     this.nomAuteur = "" ;
     this.genre = "" ;
     this.nomExposant = "" ;
+    this.nomLieu = "" ;
+    this.titreEvenement = "" ;
 
     this.titreLivreCombo()?.reset() ;
-    this.nomPersonneCombo()?.masqueListe() ;
+    this.nomPersonneCombo()?.reset() ;
+    this.nomLieuCombo()?.reset() ;
+    this.titreEvenementCombo()?.reset() ;
     this.genreCombo()?.reset() ;
     this.nomExposantCombo()?.reset() ;
 

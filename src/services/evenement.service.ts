@@ -14,6 +14,12 @@ export class EvenementService {
     this.http = http;
   }
 
+  getTitresEvenements(titre: string = ""): Observable<string[]> {
+    let params = new HttpParams();
+    if (titre !== "") params = params.set("titre", titre);
+    return this.http.get<string[]>("php/evenement/titres-evenements.php", { params });
+  }
+
   getThemesEvenements(theme: string = ""): Observable<string[]> {
     let params = new HttpParams();
 

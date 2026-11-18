@@ -34,6 +34,7 @@ export class ListeLivresComponent implements OnInit, OnChanges
   nomAuteur = input<string>( "" ) ;
   genre = input<string>( "" ) ;
   nomExposant = input<string>( "" ) ;
+  nomLieu = input<string>( "" ) ;
   titreEvenement = input<string>( "" ) ;
 
   protected listeLivres: Observable<Array<Livre>> | null = null ;
@@ -62,7 +63,8 @@ export class ListeLivresComponent implements OnInit, OnChanges
       this.nomAuteur(),
       this.genre(),
       this.nomExposant(),
-      this.titreEvenement()
+      this.titreEvenement(),
+      this.nomLieu()
     ) ;
   }
 

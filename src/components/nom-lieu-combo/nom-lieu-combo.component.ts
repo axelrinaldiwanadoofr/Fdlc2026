@@ -87,4 +87,10 @@ export class NomLieuComboComponent  implements OnInit
   {
     this.showList.set( false ) ;
   }
+
+  reset()
+  {
+    this.nom = "" ;
+    this.showList.set( false ) ;
+  }
 }

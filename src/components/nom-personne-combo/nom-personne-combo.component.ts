@@ -88,4 +88,10 @@ export class NomPersonneComboComponent  implements OnInit
   {
     this.showList.set( false ) ;
   }
+
+  reset()
+  {
+    this.nom = "" ;
+    this.showList.set( false ) ;
+  }
 }

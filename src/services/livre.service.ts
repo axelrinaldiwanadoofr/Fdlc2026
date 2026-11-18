@@ -20,7 +20,8 @@ export class LivreService
         nomAuteur: string = "",
         genre: string = "",
         nomExposant: string = "",
-        titreEvenement: string = ""
+        titreEvenement: string = "",
+        nomLieu: string = ""
     ): Observable<Livre[]>
     {
         let first = true ;
@@ -58,6 +59,13 @@ export class LivreService
         {
             url += (first) ? "?" : "&" ;
             url += "titreEvenement=" + encodeURIComponent( titreEvenement ) ;
+            first = false ;
+        }
+
+        if( nomLieu !== "" )
+        {
+            url += (first) ? "?" : "&" ;
+            url += "nomLieu=" + encodeURIComponent( nomLieu ) ;
             first = false ;
         }
 
