@@ -10,11 +10,13 @@
 }
 
 .selections {
+  // 5 filtres : thème, lieu, animateur sur une ligne, auteur et livre sur la suivante
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 8px;
 
-  ion-select { min-width: 0; }
+  ion-select { min-width: 0; grid-column: span 2; }
+  ion-select:nth-child(n + 4) { grid-column: span 3; }
 }
 
 .resultat {
@@ -37,9 +39,8 @@
 
 @media (max-width: 600px) {
   .selections { grid-template-columns: 1fr 1fr; }
+  .selections ion-select, .selections ion-select:nth-child(n + 4) { grid-column: auto; }
   .selections ion-select:last-child { grid-column: 1 / -1; }
 }
-
-ion-button { text-transform: none; }
 
 ion-button { text-transform: none; }

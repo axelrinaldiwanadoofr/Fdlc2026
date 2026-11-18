@@ -82,9 +82,31 @@
         </section>
       }
 
+      <!-- Invités (vue EvenementPersonne) : cités dans le descriptif ou auteurs d'un livre présenté -->
+      @if (e.invites && e.invites.length > 0) {
+        <section>
+          <h2>Invités</h2>
+          <ul class="livres">
+            @for (invite of e.invites; track invite.id) {
+              <li>
+                <a [routerLink]="['/page-personne', invite.id]">
+                  <ion-icon name="person-outline" aria-hidden="true"></ion-icon>
+                  <span>
+                    <strong>{{ invite.nom }}</strong>
+                    @if (invite.specialite) { <span class="auteurs">{{ invite.specialite }}</span> }
+                  </span>
+                  <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      <!-- Livres (vue EvenementLivre) : présentés pendant l'événement ou écrits par un invité -->
       @if (e.livres && e.livres.length > 0) {
         <section>
-          <h2>Livres présentés</h2>
+          <h2>Livres</h2>
           <ul class="livres">
             @for (livre of e.livres; track livre.id) {
               <li>
@@ -92,7 +114,7 @@
                   <ion-icon name="book-outline" aria-hidden="true"></ion-icon>
                   <span>
                     <strong>{{ livre.titre }}</strong>
-                    @if (livre.auteurs) { <span class="auteurs">{{ livre.auteurs }}</span> }
+                    <span class="auteurs">{{ livre.origine == 'présenté' ? "Présenté pendant l'événement" : "Livre d'un invité" }}</span>
                   </span>
                   <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
                 </a>

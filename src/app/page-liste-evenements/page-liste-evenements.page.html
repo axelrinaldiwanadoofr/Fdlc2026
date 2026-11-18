@@ -45,6 +45,24 @@
           <ion-select-option [value]="animateur.id">{{ animateur.nom }}</ion-select-option>
         }
       </ion-select>
+
+      <ion-select label="Auteur" labelPlacement="stacked" interface="popover" fill="outline"
+                  [value]="idAuteur()" (ionChange)="idAuteur.set( $event.detail.value ?? -1 )">
+        <ion-select-option [value]="-1">Tous les auteurs</ion-select-option>
+        @for( auteur of filtres()?.auteurs ?? []; track auteur.id )
+        {
+          <ion-select-option [value]="auteur.id">{{ auteur.nom }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-select label="Livre" labelPlacement="stacked" interface="popover" fill="outline"
+                  [value]="idLivre()" (ionChange)="idLivre.set( $event.detail.value ?? -1 )">
+        <ion-select-option [value]="-1">Tous les livres</ion-select-option>
+        @for( livre of filtres()?.livres ?? []; track livre.id )
+        {
+          <ion-select-option [value]="livre.id">{{ livre.titre }}</ion-select-option>
+        }
+      </ion-select>
     </div>
 
     @if( filtreActif() )
@@ -69,6 +87,8 @@
     [theme]="theme()"
     [numLieu]="numLieu()"
     [idAnimateur]="idAnimateur()"
+    [idPersonne]="idAuteur()"
+    [idLivre]="idLivre()"
     [messageVide]="filtreActif() ? 'Aucun événement ne correspond à ces critères.' : 'Aucun événement'"
     (total)="total.set( $event )">
   </app-liste-evenements>

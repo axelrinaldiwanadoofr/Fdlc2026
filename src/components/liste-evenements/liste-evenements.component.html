@@ -2,18 +2,18 @@
 {
   @if( onglets() )
   {
-    <!-- Onglets : Événements permanents / Samedi / Dimanche (collés en haut au défilement) -->
+    <!-- Onglets : Samedi / Dimanche / Événements permanents (collés en haut au défilement) -->
     <nav class="onglets">
       <ion-segment [value]="onglet()" (ionChange)="choisirOnglet($event)">
-        <ion-segment-button value="permanents">
-          <ion-label>Permanents <span class="compteur">{{ nbPermanents() }}</span></ion-label>
-        </ion-segment-button>
         @for( jour of p.jours; track jour.cle )
         {
           <ion-segment-button [value]="jour.cle">
             <ion-label>{{ jour.nomJour }} <span class="compteur">{{ jour.total }}</span></ion-label>
           </ion-segment-button>
         }
+        <ion-segment-button value="permanents">
+          <ion-label>Permanents <span class="compteur">{{ nbPermanents() }}</span></ion-label>
+        </ion-segment-button>
       </ion-segment>
     </nav>
 
@@ -35,11 +35,11 @@
   {
     <!-- Sans onglets : tout à la suite, sections vides masquées -->
     @if( p.total == 0 && messageVide() ) { <p class="vide">{{ messageVide() }}</p> }
-    <ng-container *ngTemplateOutlet="permanents; context: { $implicit: p }"></ng-container>
     @for( jour of p.jours; track jour.cle )
     {
       @if( jour.total > 0 ) { <ng-container *ngTemplateOutlet="journee; context: { $implicit: jour }"></ng-container> }
     }
+    <ng-container *ngTemplateOutlet="permanents; context: { $implicit: p }"></ng-container>
   }
 
   <!-- Événements pas encore programmés -->

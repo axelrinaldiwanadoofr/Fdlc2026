@@ -52,12 +52,15 @@ export class PageListeEvenementsPage {
   protected theme = signal<string>("");
   protected numLieu = signal<number>(-1);
   protected idAnimateur = signal<number>(-1);
+  protected idAuteur = signal<number>(-1);     // personne invitée ou dont un livre est présenté
+  protected idLivre = signal<number>(-1);
 
   // Nombre d'événements trouvés (renvoyé par le composant)
   protected total = signal<number | null>(null);
 
   protected filtreActif = computed(() =>
-    this.recherche().trim() !== "" || this.theme() !== "" || this.numLieu() !== -1 || this.idAnimateur() !== -1);
+    this.recherche().trim() !== "" || this.theme() !== "" || this.numLieu() !== -1 || this.idAnimateur() !== -1
+    || this.idAuteur() !== -1 || this.idLivre() !== -1);
 
   // Choix des listes déroulantes
   protected filtres = toSignal(
@@ -74,5 +77,7 @@ export class PageListeEvenementsPage {
     this.theme.set("");
     this.numLieu.set(-1);
     this.idAnimateur.set(-1);
+    this.idAuteur.set(-1);
+    this.idLivre.set(-1);
   }
 }

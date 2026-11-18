@@ -68,11 +68,12 @@ export class EvenementService {
     if ((criteres.numLieu ?? -1) !== -1) params = params.set("numLieu", criteres.numLieu!);
     if ((criteres.idAnimateur ?? -1) !== -1) params = params.set("idAnimateur", criteres.idAnimateur!);
     if ((criteres.idPersonne ?? -1) !== -1) params = params.set("idPersonne", criteres.idPersonne!);
+    if ((criteres.idLivre ?? -1) !== -1) params = params.set("idLivre", criteres.idLivre!);
 
     return this.http.get<Programme>("php/evenement/programme.php", { params });
   }
 
-  // Choix proposés par les filtres de la page des événements (thèmes, lieux, animateurs)
+  // Choix proposés par les filtres de la page des événements (thèmes, lieux, animateurs, auteurs, livres)
   getFiltresEvenements(): Observable<FiltresProgramme> {
     return this.http.get<FiltresProgramme>("php/evenement/filtres-evenements.php");
   }

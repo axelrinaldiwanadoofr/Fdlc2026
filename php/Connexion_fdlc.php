@@ -37,7 +37,10 @@
             "PersonneExposantExposerLieu" => "fdlc_PersonneExposantExposerLieu",
             "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant",
             "PersonneComplete" => "fdlc_PersonneComplete",
-            "EvenementLieuAnimateur" => "fdlc_EvenementLieuAnimateur"
+            "EvenementLieuAnimateur" => "fdlc_EvenementLieuAnimateur",
+            "EvenementProgramme" => "fdlc_EvenementProgramme",
+            "EvenementPersonne" => "fdlc_EvenementPersonne",
+            "EvenementLivre" => "fdlc_EvenementLivre"
          ) ;
 
         /**

@@ -28,7 +28,9 @@ export class Evenement
     public touteLaJournee?: boolean ;     // présent toute la journée (stands, expositions...)
     public heure?: string ;               // "10h30" ("" si toute la journée)
     public heureFin?: string ;            // "11h30" ("" si inconnue)
-    public livres?: { id: number, titre: string, auteurs: string }[] ;   // livres présentés (evenement-id.php)
+    // seulement dans evenement-id.php :
+    public invites?: { id: number, nom: string, specialite: string }[] ;   // invités / auteurs d'un livre présenté
+    public livres?: { id: number, titre: string, origine: string }[] ;     // "présenté" ou "invité" (livre d'un invité)
 
     constructor( 
         id: number = -1, 
