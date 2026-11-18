@@ -1,4 +1,4 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LivreService } from '../../services/livre.service';
@@ -42,7 +42,8 @@ import {
 export class PageLivrePage implements OnInit 
 {
   public id = input<number>( -1 ) ;
-  public livre: Livre | null = null ;
+  public livre = signal<Livre | null>( null ) ;
+  public message = signal( "Chargement des détails du livre..." ) ;
 
   constructor( private serviceLivre: LivreService ) {}
 
@@ -52,9 +53,13 @@ export class PageLivrePage implements OnInit
     if( bookId > 0 )
     {
       this.serviceLivre.getLivreById( bookId ).subscribe({
-        next: ( data ) => { this.livre = data ; },
-        error: ( err ) => { console.error( err ) ; }
+        next: ( data ) => {
+          this.livre.set( data ) ;
+          if( !data ) this.message.set( "Ce livre n'existe pas ou plus." ) ;
+        },
+        error: () => { this.message.set( "Impossible de charger le livre." ) ; }
       }) ;
     }
+    else this.message.set( "Ce livre n'existe pas ou plus." ) ;
   }
 }
