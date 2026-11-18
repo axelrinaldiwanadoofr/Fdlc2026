@@ -42,3 +42,5 @@ catch( PDOException $erreur )
 {
     echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
 }
+
+?>
