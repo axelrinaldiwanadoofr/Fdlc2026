@@ -8,19 +8,20 @@ try
 
     if( isset( $_GET["id"] ) )
     {
-        $sql = "select l.id, l.titre, l.resume, l.genre, e.nom as editeur "
-             . "from " . Connexion::$tables["livre"] . " l "
-             . "left join " . Connexion::$tables["exposant"] . " e on e.id = l.idEditeur "
-             . "where l.id = :id" ;
+        $sql = "select idLivre as id, titreLivre as titre, resumeLivre as resume, genreLivre as genre, "
+             . "nomEditeur as editeur, nom, prenom, nomExposant "
+             . "from " . Connexion::$tables["PersonneComplete"] . " "
+             . "where idLivre = :id limit 1" ;
 
         $cursor = $bd->prepare( $sql ) ;
-        $cursor->execute( [ "id" => $_GET["id"] ] ) ;
+        $cursor->execute( [ "id" => (int)$_GET["id"] ] ) ;
 
-        $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
+        $data = $cursor->fetch( PDO::FETCH_ASSOC ) ;
+        if( !$data ) $data = null ;
     }
     else
     {
-        $data = [] ;
+        $data = null ;
     }
 
     echo json_encode( $data ) ;
@@ -28,6 +29,7 @@ try
 catch( PDOException $erreur )
 {
     error_log( $erreur->getMessage() ) ;
+    http_response_code( 500 ) ;
     echo "Probleme d'acces à la BD" ;
 }
 

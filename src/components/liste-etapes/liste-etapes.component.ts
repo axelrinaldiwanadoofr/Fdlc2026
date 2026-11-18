@@ -97,7 +97,7 @@ export class ListeEtapesComponent  implements OnInit
   // Relit les etapes de la classe Etape
   rafraichit()
   {
-    this.etapes.set( [...Etape.lesEtapes] ) ;
+    this.etapes.set( Etape.lesEtapes.slice() ) ;
   }
 
   onSupprime( etape: Etape, sliding?: IonItemSliding )

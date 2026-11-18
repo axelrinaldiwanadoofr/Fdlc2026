@@ -93,8 +93,8 @@ export class PageConfigEvenementPage
   protected personnes = signal<Array<Personne>>( [] ) ;
 
   // Dates du festival pour les ion-datetime
-  protected readonly debutFestival = Etape.debutFestival ;
-  protected readonly finFestival = Etape.finFestival ;
+  protected debutFestival = Etape.debutFestival ;
+  protected finFestival = Etape.finFestival ;
 
   // Evenement en cours de modification (null = on affiche la liste)
   protected evenement = signal<Evenement | null>( null ) ;
@@ -103,7 +103,7 @@ export class PageConfigEvenementPage
   protected message = signal("") ;
   protected alerteSupprimer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
@@ -261,7 +261,7 @@ export class PageConfigEvenementPage
 
   onCocheLivre( livre: Livre, coche: boolean )
   {
-    if( coche ) this.idLivres.set( [...this.idLivres(), livre.id] ) ;
+    if( coche ) this.idLivres.set( this.idLivres().concat( livre.id ) ) ;
     else this.retireLivre( livre.id ) ;
   }
 

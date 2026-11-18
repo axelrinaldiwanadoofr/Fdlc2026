@@ -98,7 +98,7 @@ export class PageConfigPersonnePage
   protected filtre = signal("tous") ;
 
   // Spécialités des personnes qui font tourner le festival
-  protected readonly rolesStaff = [ "animateur", "modérateur", "présentateur", "organisateur", "bénévole" ] ;
+  protected rolesStaff = [ "animateur", "modérateur", "présentateur", "organisateur", "bénévole" ] ;
   protected recherche = signal("") ;
 
   // Personne en cours de modification (null = on affiche la liste)
@@ -114,12 +114,12 @@ export class PageConfigPersonnePage
   protected protege = signal(false) ;
   protected alerteSupprimer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
 
-  protected readonly champsCreneaux = [
+  protected champsCreneaux = [
     { champ: "samedi_am", nom: "Sam. matin" },
     { champ: "samedi_pm", nom: "Sam. après-midi" },
     { champ: "dimanche_am", nom: "Dim. matin" },

@@ -1,6 +1,7 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 import { Component, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent,
@@ -30,6 +31,7 @@ import { AccesCompteComponent } from '../../components/acces-compte/acces-compte
   templateUrl: './page-config-comptes.page.html',
   styleUrls: ['./page-config-comptes.page.scss'],
   imports: [
+    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,

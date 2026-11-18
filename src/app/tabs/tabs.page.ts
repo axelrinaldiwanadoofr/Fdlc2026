@@ -45,7 +45,7 @@ export class TabsPage implements AfterViewInit
   public numHall = input<number>( -1 ) ;
   public numLieu = input<number>( -1 ) ;
 
-  protected readonly halls = [1, 2, 3, 4, 5] ;
+  protected halls = [1, 2, 3, 4, 5] ;
   protected hallCourant: number = 1 ;
 
   // Pas de swipe quand le plan est zoomé, sinon on ne peut plus le faire défiler

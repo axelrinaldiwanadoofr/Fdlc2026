@@ -28,7 +28,7 @@
       </ion-segment>
     </ion-toolbar>
     <ion-toolbar>
-      <ion-searchbar placeholder="Numéro, nom ou type" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+      <ion-searchbar placeholder="Numéro, nom ou type" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
     </ion-toolbar>
   }
 </ion-header>

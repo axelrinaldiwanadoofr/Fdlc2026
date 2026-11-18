@@ -23,6 +23,7 @@
         <span class="role" [style.background]="compte.couleur">{{compte.role}}</span>
       </div>
       <ion-button fill="outline" size="small" (click)="ouvreChangementMdp()">Mon mot de passe</ion-button>
+      <ion-button fill="outline" size="small" [routerLink]="['/config-mes-donnees']">Mes données</ion-button>
       <ion-button fill="clear" size="small" color="medium" (click)="onDeconnexion()">Se déconnecter</ion-button>
     </div>
 
@@ -97,6 +98,7 @@
         <ion-note color="medium">Vous avez été déconnecté après 15 minutes d'inactivité</ion-note>
       }
       <ion-button expand="block" (click)="onConnexion()">Se connecter</ion-button>
+      <p class="rgpd">Réservé à l'équipe du festival. Les connexions sont enregistrées pour la sécurité du site. <a [routerLink]="['/donnees-personnelles']">Données personnelles</a></p>
     </ion-list>
   }
 

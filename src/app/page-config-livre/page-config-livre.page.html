@@ -28,7 +28,7 @@
       </ion-segment>
     </ion-toolbar>
     <ion-toolbar>
-      <ion-searchbar placeholder="Titre, auteur ou éditeur" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+      <ion-searchbar placeholder="Titre, auteur ou éditeur" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
     </ion-toolbar>
   }
 </ion-header>
@@ -104,7 +104,7 @@
             <ion-title>Éditeur</ion-title>
           </ion-toolbar>
           <ion-toolbar>
-            <ion-searchbar placeholder="Nom de l'exposant" [debounce]="200" (ionInput)="rechercheModal.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+            <ion-searchbar placeholder="Nom de l'exposant" [debounce]="200" [ngModel]="rechercheModal()" (ngModelChange)="rechercheModal.set( $event )"></ion-searchbar>
           </ion-toolbar>
         </ion-header>
         <ion-content>
@@ -135,7 +135,7 @@
             </ion-buttons>
           </ion-toolbar>
           <ion-toolbar>
-            <ion-searchbar placeholder="Nom de la personne" [debounce]="200" (ionInput)="rechercheModal.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+            <ion-searchbar placeholder="Nom de la personne" [debounce]="200" [ngModel]="rechercheModal()" (ngModelChange)="rechercheModal.set( $event )"></ion-searchbar>
           </ion-toolbar>
         </ion-header>
         <ion-content>

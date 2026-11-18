@@ -101,7 +101,7 @@ export class PageConfigPage
   // Nombres de la page de contrôle
   protected controle = signal<any>( null ) ;
 
-  private readonly sections = [
+  private sections = [
     { titre: "Le festival", pages: [
       new PageConfig( "Personnes", "Auteurs, invités et staff", "people-outline", "#2d3a8c", "/config-personne", "personnes.modifier", "personnesSansPhoto" ),
       new PageConfig( "Exposants", "Stands, éditeurs, doublons", "storefront-outline", "#2a9a6a", "/config-exposant", "exposants.modifier", "exposantsSansStand" ),
