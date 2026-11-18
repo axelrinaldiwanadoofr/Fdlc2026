@@ -23,7 +23,7 @@ import {
 export class ListeLivresComponent implements OnInit, OnChanges 
 {
   // Format de chaque ligne affichée
-  childHtml = input<string>( "<strong>$titre</strong> ($genre) - $prenom $nom, Éd. $editeur" ) ;
+  childHtml = input<string>( "<strong>$titre</strong>: - $prenom $nom, Éd. $editeur" ) ;
 
   // Route de la page à appeler quand on clique sur une ligne de la liste
   lienPage = input<string>( "/page-livre" ) ;
@@ -70,7 +70,7 @@ export class ListeLivresComponent implements OnInit, OnChanges
   itemText( livre: Livre ): string 
   {
     let childHtml = this.childHtml() ;
-    childHtml = childHtml.replace( "$id", livre.id.toString() ) ;
+    childHtml = childHtml.replace( "$id", livre.id? livre.id.toString() : "" ) ;
     childHtml = childHtml.replace( "$titre", livre.titre ) ;
     childHtml = childHtml.replace( "$editeur", livre.editeur ) ;
     childHtml = childHtml.replace( "$genre", livre.genre ) ;

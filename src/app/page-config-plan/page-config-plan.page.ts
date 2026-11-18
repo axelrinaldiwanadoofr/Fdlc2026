@@ -1,6 +1,8 @@
+// Auteur: Kevin MEYER - 04/11/2026
+
 import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -56,6 +58,7 @@ export class PageConfigPlanPage
   protected serviceLieu: LieuService ;
   protected serviceConfig: ConfigService ;
   protected router: Router ;
+  protected route: ActivatedRoute ;
 
   protected readonly halls = [1, 2, 3, 4, 5] ;
   protected hall = signal(1) ;
@@ -82,27 +85,40 @@ export class PageConfigPlanPage
 
   protected nbZones = computed( () => this.lieux().filter( l => l.x1 != null ).length ) ;
 
-  constructor( serviceLieu: LieuService, serviceConfig: ConfigService, router: Router )
+  constructor( serviceLieu: LieuService, serviceConfig: ConfigService, router: Router, route: ActivatedRoute )
   {
     this.serviceLieu = serviceLieu ;
     this.serviceConfig = serviceConfig ;
     this.router = router ;
+    this.route = route ;
   }
 
   // Sans mot de passe on retourne sur la page principale de config
   ionViewWillEnter()
   {
-    if( !this.serviceConfig.connecte() ) this.router.navigateByUrl( "/config" ) ;
+    if( !this.serviceConfig.connecte() )
+    {
+      this.router.navigateByUrl( "/config" ) ;
+      return ;
+    }
+
+    // ?hall=3&num=340 depuis la config des lieux
+    let parametres = this.route.snapshot.queryParamMap ;
+    if( parametres.has( "hall" ) ) this.chargeHall( Number( parametres.get( "hall" ) ), Number( parametres.get( "num" ) ?? -1 ) ) ;
     else this.chargeHall( this.hall() ) ;
   }
 
-  chargeHall( hall: number )
+  chargeHall( hall: number, num: number = -1 )
   {
     this.hall.set( hall ) ;
     this.largeur.set( 0 ) ;
     this.zone.set( null ) ;
     this.numChoisi = -1 ;
-    this.serviceLieu.getLieuxDuHall( hall ).subscribe( lieux => this.lieux.set( lieux ) ) ;
+    this.serviceLieu.getLieuxDuHall( hall ).subscribe( lieux =>
+    {
+      this.lieux.set( lieux ) ;
+      this.numChoisi = num ;
+    }) ;
   }
 
   onImageChargee( event: Event )
@@ -192,7 +208,7 @@ export class PageConfigPlanPage
 
   private enregistre( lieu: Lieu, message: string )
   {
-    this.serviceLieu.majZoneLieu( this.serviceConfig.mdp, lieu ).subscribe( {
+    this.serviceLieu.majZoneLieu( lieu ).subscribe( {
       next: () =>
       {
         this.zone.set( null ) ;
@@ -201,8 +217,8 @@ export class PageConfigPlanPage
       },
       error: erreur =>
       {
-        // 403 : mot de passe refusé par le serveur
-        if( erreur.status == 403 )
+        // 401 : session expirée, on revient à la connexion
+        if( erreur.status == 401 )
         {
           this.serviceConfig.deconnexion() ;
           this.router.navigateByUrl( "/config" ) ;

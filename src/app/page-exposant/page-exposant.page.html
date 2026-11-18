@@ -27,15 +27,26 @@
       <ion-item>
         <ion-label>
           <h2>{{exposant.nom}}</h2>
+          @if( exposant.libelleExposant != "" )
+          {
+            <h3>{{exposant.libelleExposant}}</h3>
+          }
           <p>Stand n° {{exposant.numLieu}}</p>
+          @if( exposant.numLieu.toString() != exposant.nomLieu )
+          {
+            <p>{{exposant.nomLieu}}</p>
+          }
         </ion-label>      
       </ion-item>
       <ion-item>
         <!-- ouvre le plan du hall sur le stand de l'exposant -->
-        <ion-button slot="start" fill="outline" [routerLink]="['/plans']" [queryParams]="{ numLieu: exposant.numLieu }">
-          <ion-icon slot="start" name="location-outline"></ion-icon>
-          Situer
-        </ion-button>
+        @if( exposant.numLieu )
+        {
+          <ion-button slot="start" fill="outline" [routerLink]="['/plans', exposant.hall]" [queryParams]="{ numLieu: exposant.numLieu }">
+            <ion-icon slot="start" name="location-outline"></ion-icon>
+            Situer
+          </ion-button>
+        }
         <app-ajouter-etape-button slot="end"
           [nom]="exposant.nom"
           [idExposant]="exposant.id"
@@ -43,4 +54,6 @@
       </ion-item>
     }
   </ion-list>
+
+  <app-personnes-stand [idExposant]="id()"></app-personnes-stand>
 </ion-content>

@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 04/11/2026
+
 import { Component, OnChanges, AfterViewInit, OnDestroy, ChangeDetectorRef, ElementRef, computed, input, output, signal, viewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { addIcons } from 'ionicons';
@@ -66,7 +68,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   // Lieu sur lequel on vient de cliquer (affiché en surbrillance avec un message)
   protected lieuClique = signal<Lieu | null>( null ) ;
 
-  // Bouton Situer : on zoome une seule fois sur le lieu demandé
+  // Bouton Situer : on montre le lieu demandé une seule fois
   private lieuxCharges: boolean = false ;
   private dejaSitue: boolean = false ;
   protected messageSituer = signal("") ;
@@ -75,6 +77,17 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   protected zones = computed( () => this.lieux().filter( l => l.x1 != null && l.x2 != null ) ) ;
 
   protected lieuSelectionne = computed( () => this.zones().find( l => l.num == this.numLieu() ) ) ;
+
+  // Pointe de la bulle ICI : en haut au milieu du lieu, ou plus bas s'il n'y a pas
+  // la place au dessus (la bulle fait environ 55 px de haut, plus le saut)
+  protected repere = computed( () =>
+  {
+    let lieu = this.lieuSelectionne() ;
+    if( !lieu ) return null ;
+
+    let y = lieu.y1 > 65 ? lieu.y1 : Math.max( ( lieu.y1 + lieu.y2 ) / 2, 65 ) ;
+    return { x: ( lieu.x1 + lieu.x2 ) / 2, y: y } ;
+  }) ;
 
   constructor( serviceLieu: LieuService, router: Router, cdr: ChangeDetectorRef )
   {
@@ -128,7 +141,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     this.situeLieu() ;
   }
 
-  // Bouton Situer de la page exposant : zoom sur le stand demandé (numLieu)
+  // Bouton Situer de la page exposant : affiche la bulle sur le stand demandé (numLieu)
   // Il faut que les lieux soient chargés et que le plan soit affiché
   private situeLieu()
   {
@@ -140,19 +153,8 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
     this.dejaSitue = true ;
 
-    if( lieu.x1 == null )
-    {
-      this.messageSituer.set( this.nomLieu( lieu ) + " n'est pas encore placé sur le plan" ) ;
-      return ;
-    }
-
-    // le centre du stand vient au centre de l'écran
-    this.pointX = ( lieu.x1 + lieu.x2 ) / 2 / this.largeur() ;
-    this.pointY = ( lieu.y1 + lieu.y2 ) / 2 / this.hauteur() ;
-
-    let cadre = this.cadre().nativeElement.getBoundingClientRect() ;
-    this.zoomeSur( 2, cadre.left + cadre.width / 2, cadre.top + cadre.height / 2 ) ;
-    this.onZoom.emit( true ) ;
+    // pas de zoom, la bulle ICI montre le stand
+    if( lieu.x1 == null ) this.messageSituer.set( this.nomLieu( lieu ) + " n'est pas encore placé sur le plan" ) ;
   }
 
   onClickZone( lieu: Lieu )

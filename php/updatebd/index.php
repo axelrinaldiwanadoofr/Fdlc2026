@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 
 <h1>Mise à jour de la base de données</h1>
 

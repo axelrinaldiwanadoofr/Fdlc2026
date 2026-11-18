@@ -22,37 +22,35 @@ export class EvenementService {
     return this.http.get<string[]>("php/evenement/themes-evenements.php", { params });
   }
 
+  // Critères vides ("" ou -1) ignorés, les autres se cumulent (AND)
   getTousLesEvenements(
     titre: string = "",
     debut: string = "",
+    jourdebut: string = "",
+    heuredebut: string = "",
     nomAnimateur: string = "",
-    titreLivre: string = ""
+    titreLivre: string = "",
+    numLieu: number = -1
   ): Observable<Evenement[]> {
     let first = true;
     let url = "php/evenement/tous-les-evenements.php";
 
-    if (titre !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "titre=" + titre;
-    }
+    const criteres: [string, string | number, boolean][] = [
+      ["titre", titre, titre !== ""],
+      ["debut", debut, debut !== ""],
+      ["jourdebut", jourdebut, jourdebut !== ""],
+      ["heuredebut", heuredebut, heuredebut !== ""],
+      ["nomAnimateur", nomAnimateur, nomAnimateur !== ""],
+      ["titreLivre", titreLivre, titreLivre !== ""],
+      ["numLieu", numLieu, numLieu !== -1],
+    ];
 
-    if (debut !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "debut=" + debut;
-    }
-
-    if (nomAnimateur !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "nomAnimateur=" + nomAnimateur;
-    }
-
-    if (titreLivre !== "") {
-      url += first ? "?" : "&";
-      first = false;
-      url += "titreLivre=" + titreLivre;
+    for (const [nom, valeur, renseigne] of criteres) {
+      if (renseigne) {
+        url += first ? "?" : "&";
+        first = false;
+        url += nom + "=" + encodeURIComponent(valeur);
+      }
     }
 
     return this.http.get<Evenement[]>(url);
@@ -60,7 +58,7 @@ export class EvenementService {
 
   getEvenementById(id: number = -1): Observable<Evenement[]> {
     let first = true;
-    let url = "php/evenement/evenement-by-id.php";
+    let url = "php/evenement/evenement-id.php";
 
     if (id !== -1) {
       url += first ? "?" : "&";
@@ -84,17 +82,16 @@ export class EvenementService {
   }
 
   // Ajoute (id = -1) ou modifie un evenement avec ses livres, renvoie l'id de l'evenement
-  majEvenement( mdp: string, evenement: Evenement, idLivres: number[] ): Observable<{ id: number }>
+  majEvenement( evenement: Evenement, idLivres: number[] ): Observable<{ id: number }>
   {
       return this.http.post<{ id: number }>( "php/evenement/maj-evenement.php", {
-          mdp: mdp,
           evenement: evenement,
           idLivres: idLivres
       } ) ;
   }
 
-  supprimeEvenement( mdp: string, id: number ): Observable<any>
+  supprimeEvenement( id: number ): Observable<any>
   {
-      return this.http.post( "php/evenement/supprime-evenement.php", { mdp: mdp, id: id } ) ;
+      return this.http.post( "php/evenement/supprime-evenement.php", { id: id } ) ;
   }
 }

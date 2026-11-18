@@ -1,4 +1,4 @@
-// Modèle de master, avec les champs de détail additionnels renvoyés par notre PHP.
+// Modèle commun des événements, compatible avec les pages et services existants.
 export class Evenement {
   public id: number = -1;
   public typeevenement: string = '';
@@ -11,12 +11,19 @@ export class Evenement {
   public idAnimateur: number = -1;
   public numLieu: number = -1;
 
-  // Compatibilité avec page-evenement et ses alias SQL (tous-les-evenements.php).
-    //update : 
-    public type?: string;
-    public idLieu?: number | null;
-    public lieu?: string | null;
-    public animateur?: string | null;
+  // Champs complémentaires de master (issus de vues et des pages de listes).
+  // Facultatifs pour rester compatibles avec les autres représentations d'événements.
+  public heuredebut?: string;
+  public jourdebut?: string;
+  public type?: string;
+  public nomLieu?: string;
+  public nomAnimateur?: string;
+  public prenomAnimateur?: string;
+
+  // Alias utilisés par notre page de détail et son endpoint PHP.
+  public idLieu?: number | null;
+  public lieu?: string | null;
+  public animateur?: string | null;
 
   constructor(
     id: number = -1,
@@ -40,5 +47,7 @@ export class Evenement {
     this.fin = fin;
     this.idAnimateur = idAnimateur;
     this.numLieu = numLieu;
+    this.heuredebut = debut ? debut.substring(11, 16) : '';
+    this.jourdebut = debut ? debut.substring(0, 10) : '';
   }
 }

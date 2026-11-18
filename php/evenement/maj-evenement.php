@@ -1,18 +1,14 @@
 <?php
 
+// Auteur: Kevin MEYER - 05/11/2026
+
 require_once "../Connexion.php" ;
-require_once "../config/mot-de-passe.php" ;
+require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
-$donnees = json_decode( file_get_contents( "php://input" ), true ) ;
-
-if( !motDePasseOk( $donnees["mdp"] ?? "" ) )
-{
-    http_response_code( 403 ) ;
-    echo json_encode( ["erreur" => "Mot de passe incorrect"] ) ;
-    exit ;
-}
+$compte = exigePermission( "evenements.modifier" ) ;
+$donnees = donneesPost() ;
 
 $evenement = $donnees["evenement"] ?? [] ;
 $idLivres = $donnees["idLivres"] ?? [] ;
@@ -56,13 +52,13 @@ try
         $id = (int)$bd->query( "select coalesce( max( id ), 0 ) + 1 from " . $tableEvenement )->fetchColumn() ;
 
         $sql = "insert into " . $tableEvenement
-             . " ( id, typeevenement, titre, stitre, public, commentaire, debut, fin, idAnimateur, numLieu )"
+             . " ( id, type, titre, stitre, public, commentaire, debut, fin, idAnimateur, numLieu )"
              . " values ( :id, :type, :titre, :stitre, :public, :commentaire, :debut, :fin, :idAnimateur, :numLieu )" ;
     }
     else
     {
         $sql = "update " . $tableEvenement
-             . " set typeevenement = :type, titre = :titre, stitre = :stitre, public = :public, commentaire = :commentaire,"
+             . " set type = :type, titre = :titre, stitre = :stitre, public = :public, commentaire = :commentaire,"
              . " debut = :debut, fin = :fin, idAnimateur = :idAnimateur, numLieu = :numLieu where id = :id" ;
     }
 
@@ -100,7 +96,8 @@ catch( Exception $erreur )
 {
     if( isset( $bd ) && $bd->inTransaction() ) $bd->rollBack() ;
     http_response_code( 500 ) ;
-    echo json_encode( ["erreur" => "Probleme d'acces à la BD " . $erreur->getMessage()], JSON_UNESCAPED_UNICODE ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

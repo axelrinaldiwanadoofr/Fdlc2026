@@ -63,7 +63,7 @@ export class TabsPage implements AfterViewInit
 
   ngAfterViewInit()
   {
-    // Hall demandé, sinon celui du lieu (premier chiffre du numero : 302 -> hall 3)
+    // Hall demandé, sinon on le devine avec le numero du lieu (302 -> hall 3)
     let hall = Number( this.numHall() ) ;
     if( !this.halls.includes( hall ) ) hall = Math.floor( Number( this.numLieu() ) / 100 ) ;
     if( !this.halls.includes( hall ) ) hall = 1 ;

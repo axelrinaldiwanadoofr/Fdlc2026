@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 <h1>Importation du fichier general auteurs</h1>
 <form enctype="multipart/form-data" action="import_fichier_general_auteurs_upload.php" method="POST">
   <!-- MAX_FILE_SIZE doit précéder le champ input de type file -->

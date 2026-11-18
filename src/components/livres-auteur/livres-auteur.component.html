@@ -1,0 +1,60 @@
+<!-- Auteur: Kevin MEYER - 09/11/2026 -->
+@if( chargement() )
+{
+  <div class="chargement">
+    <ion-spinner name="crescent"></ion-spinner>
+    <span>Recherche des livres...</span>
+  </div>
+}
+@else if( livres().length > 0 )
+{
+  <ion-list>
+    <ion-item-divider color="light">
+      <ion-label>Ses livres</ion-label>
+      <ion-note slot="end">{{livres().length}}</ion-note>
+    </ion-item-divider>
+  </ion-list>
+
+  <div class="grille">
+    @for( livre of livresAffiches(); track $index )
+    {
+      <div class="livre" [routerLink]="lien( livre )" [class.cliquable]="lien( livre ) != null">
+        <div class="couverture">
+          @if( livre.couvertures.length > 0 )
+          {
+            <img [src]="livre.couvertures[0]" [alt]="livre.titre" loading="lazy" (error)="imageSuivante( livre )">
+          }
+          @else
+          {
+            <div class="sans-image" title="Image du livre non disponible"></div>
+          }
+          @if( livre.auFestival )
+          {
+            <ion-badge color="primary">Au festival</ion-badge>
+          }
+        </div>
+        <p class="titre" [title]="livre.titre">{{livre.titre}}</p>
+        @if( livre.nomExposant )
+        {
+          <p class="details stand">Stand : {{livre.nomExposant}}</p>
+        }
+        @else
+        {
+          <p class="details">{{livre.annee}}@if( livre.annee && livre.editeur ) { | }{{livre.editeur}}</p>
+        }
+      </div>
+    }
+  </div>
+
+  @if( livres().length > nbAffiches() )
+  {
+    <ion-button fill="clear" expand="block" (click)="nbAffiches.set( livres().length )">
+      Voir les {{livres().length}} livres
+    </ion-button>
+  }
+
+  @if( auteur() )
+  {
+    <p class="info">Livres trouvés dans le catalogue de la Bibliothèque nationale de France</p>
+  }
+}

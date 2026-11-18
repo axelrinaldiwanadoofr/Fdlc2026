@@ -90,4 +90,35 @@ export class LivreService
     return this.http.get<Livre[]>("php/livre/titres-livres.php");
   }
 
+  // Récupérer les livres écrits par une personne à partir de son identifiant
+        getLivresByPersonne(idPersonne: number): Observable<Livre[]>
+        {
+            // Appel du fichier PHP existant avec le filtre idPersonne
+            // Le PHP utilise la vue SQL PersonneComplete
+            return this.http.get<Livre[]>(
+                "php/livre/tous-les-livres.php?idPersonne=" + idPersonne
+            );
+        }
+
+    // Page de config des livres
+
+    getConfigLivres(): Observable<Livre[]>
+    {
+        return this.http.get<Livre[]>( "php/livre/config-livres.php" ) ;
+    }
+
+    getConfigLivre( id: number ): Observable<{ livre: Livre, idPersonnes: number[] }>
+    {
+        return this.http.get<{ livre: Livre, idPersonnes: number[] }>( "php/livre/config-livre.php?id=" + id ) ;
+    }
+
+    majLivre( livre: Livre, idPersonnes: number[] ): Observable<any>
+    {
+        return this.http.post( "php/livre/maj-livre.php", { livre: livre, idPersonnes: idPersonnes } ) ;
+    }
+
+    supprimeLivre( id: number ): Observable<any>
+    {
+        return this.http.post( "php/livre/supprime-livre.php", { id: id } ) ;
+    }
 }

@@ -1,0 +1,32 @@
+// Auteur: Kevin MEYER - 16/11/2026
+
+.annonce
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    white-space: pre-line;
+    color: var(--ion-color-primary-contrast);
+    background: var(--ion-color-primary);
+}
+
+.annonce ion-icon
+{
+    flex-shrink: 0;
+    font-size: 1.4em;
+}
+
+.annonce-warning
+{
+    color: var(--ion-color-warning-contrast);
+    background: var(--ion-color-warning);
+}
+
+.annonce-danger
+{
+    color: var(--ion-color-danger-contrast);
+    background: var(--ion-color-danger);
+}

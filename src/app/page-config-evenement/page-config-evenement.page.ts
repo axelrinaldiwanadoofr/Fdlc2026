@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 05/11/2026
+
 import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -35,7 +37,7 @@ import { EvenementService } from '../../services/evenement.service';
 import { LieuService } from '../../services/lieu.service';
 import { LivreService } from '../../services/livre.service';
 import { PersonneService } from '../../services/personne.service';
-import { Evenement } from '../../modeles/Evenements';
+import { Evenement } from '../../modeles/Evenement';
 import { Etape } from '../../modeles/Etape';
 import { Lieu } from '../../modeles/Lieu';
 import { Livre } from '../../modeles/Livre';
@@ -205,7 +207,7 @@ export class PageConfigEvenementPage
       return ;
     }
 
-    this.serviceEvenement.majEvenement( this.serviceConfig.mdp, evenement, this.idLivres() ).subscribe( {
+    this.serviceEvenement.majEvenement( evenement, this.idLivres() ).subscribe( {
       next: () =>
       {
         this.message.set( "Evénement enregistré" ) ;
@@ -221,7 +223,7 @@ export class PageConfigEvenementPage
     let evenement = this.evenement() ;
     if( !evenement ) return ;
 
-    this.serviceEvenement.supprimeEvenement( this.serviceConfig.mdp, evenement.id ).subscribe( {
+    this.serviceEvenement.supprimeEvenement( evenement.id ).subscribe( {
       next: () =>
       {
         this.message.set( "Evénement supprimé" ) ;
@@ -234,8 +236,8 @@ export class PageConfigEvenementPage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;

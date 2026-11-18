@@ -10,7 +10,7 @@ try
     {
         $sql = "select l.id, l.titre, l.resume, l.genre, e.nom as editeur "
              . "from " . Connexion::$tables["livre"] . " l "
-             . "left join " . Connexion::$tables["editeur"] . " e on e.id = l.idEditeur "
+             . "left join " . Connexion::$tables["exposant"] . " e on e.id = l.idEditeur "
              . "where l.id = :id" ;
 
         $cursor = $bd->prepare( $sql ) ;
@@ -27,7 +27,8 @@ try
 }
 catch( PDOException $erreur )
 {
-    echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
+    error_log( $erreur->getMessage() ) ;
+    echo "Probleme d'acces à la BD" ;
 }
 
 ?>

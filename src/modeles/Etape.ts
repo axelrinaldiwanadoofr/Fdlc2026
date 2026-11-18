@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 02/11/2026
+
 export class Etape
 {
     // Cle du planning dans le LocalStorage

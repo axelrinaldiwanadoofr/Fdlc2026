@@ -1,0 +1,82 @@
+.profil
+{
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+}
+
+.profil h1
+{
+    margin: 0;
+    font-size: 1.4em;
+}
+
+.photo
+{
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ion-color-light);
+}
+
+.photo img
+{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+// même icône que les livres sans couverture
+.sans-image
+{
+    width: 50%;
+    aspect-ratio: 1;
+    background-color: var(--ion-color-medium);
+    -webkit-mask: url("../../assets/image-indisponible.png") center / contain no-repeat;
+    mask: url("../../assets/image-indisponible.png") center / contain no-repeat;
+}
+
+.specialite
+{
+    margin: 4px 0 0;
+    color: var(--ion-color-medium);
+}
+
+// auteur -> Auteur
+.specialite::first-letter
+{
+    text-transform: uppercase;
+}
+
+// garde les retours à la ligne de la base
+.biographie
+{
+    white-space: pre-line;
+}
+
+// présent en vert, absent barré
+.creneaux
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    margin-top: 4px;
+}
+
+.creneaux span
+{
+    text-decoration: line-through;
+    color: var(--ion-text-color);
+}
+
+.creneaux span.present
+{
+    text-decoration: none;
+    color: var(--ion-color-success);
+}

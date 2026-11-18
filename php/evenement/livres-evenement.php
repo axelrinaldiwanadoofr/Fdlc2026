@@ -1,5 +1,7 @@
 <?php
 
+// Auteur: Kevin MEYER - 05/11/2026
+
 require_once "../Connexion.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
@@ -29,7 +31,8 @@ try
 catch( Exception $erreur )
 {
     http_response_code( 500 ) ;
-    echo json_encode( ["erreur" => "Probleme d'acces à la BD " . $erreur->getMessage()], JSON_UNESCAPED_UNICODE ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

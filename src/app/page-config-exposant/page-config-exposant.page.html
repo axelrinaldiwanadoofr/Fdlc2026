@@ -1,0 +1,163 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configuration des exposants</ion-title>
+    @if( !exposant() )
+    {
+      <ion-buttons slot="end">
+        <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouvel exposant</ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+  @if( !exposant() )
+  {
+    <ion-toolbar>
+      <ion-segment [value]="filtre()" (ionChange)="filtre.set( $any($event.detail.value) )">
+        <ion-segment-button value="tous">
+          <ion-label>Tous</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="stand">
+          <ion-label>Sans stand</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="doublons">
+          <ion-label>Doublons</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar placeholder="Nom, stand ou type" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  @if( exposant(); as x )
+  {
+    <ion-list class="formulaire">
+      <ion-item>
+        <ion-input label="Nom *" labelPlacement="stacked" [(ngModel)]="x.nom" maxlength="50"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Libellé" labelPlacement="stacked" [(ngModel)]="x.libelleExposant" maxlength="200"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Type" labelPlacement="stacked" interface="popover" [(ngModel)]="x.type">
+          @for( type of types(); track type )
+          {
+            <ion-select-option [value]="type">{{type}}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Stand" labelPlacement="stacked" interface="alert" [(ngModel)]="x.numLieu">
+          <ion-select-option [value]="-1">Aucun stand</ion-select-option>
+          @for( lieu of lieux(); track lieu.num )
+          {
+            <ion-select-option [value]="lieu.num">{{ nomLieu( lieu ) }}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      @if( x.id > 0 )
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">
+            <p>{{x.nbPersonnes}} personne(s) sur le stand | {{x.nbLivres}} livre(s) édité(s)</p>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+
+    @if( erreur() != "" )
+    {
+      <ion-note color="danger" class="formulaire">{{erreur()}}</ion-note>
+    }
+
+    <div class="formulaire boutons">
+      <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler</ion-button>
+      @if( x.id > 0 )
+      {
+        <ion-button fill="outline" color="danger" [disabled]="x.nbLivres > 0" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+        <ion-button fill="outline" (click)="ouvreFusion()">Fusionner avec...</ion-button>
+      }
+      <ion-button (click)="onEnregistrer()">Enregistrer</ion-button>
+    </div>
+
+    <!-- Choix de l'exposant qu'on garde -->
+    <ion-modal [isOpen]="modalFusion()" (didDismiss)="modalFusion.set(false)">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button (click)="modalFusion.set(false)">Annuler</ion-button>
+            </ion-buttons>
+            <ion-title>Garder lequel ?</ion-title>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-searchbar placeholder="Nom ou stand" [debounce]="200" (ionInput)="rechercheFusion.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-list>
+            @for( g of exposantsFusion(); track g.id )
+            {
+              <ion-item button [detail]="false" (click)="onChoisirGarde( g )">
+                <ion-label>
+                  <h3>{{g.nom}}</h3>
+                  <p>{{ g.numLieu ? "Stand " + g.numLieu : "Sans stand" }} | {{g.nbPersonnes}} personne(s) | {{g.nbLivres}} livre(s)</p>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  }
+  @else
+  {
+    <ion-list class="liste">
+      @for( x of exposantsTrouves(); track x.id )
+      {
+        <ion-item button (click)="onModifier( x )">
+          <ion-label>
+            <h2>{{x.nom}}</h2>
+            <p>{{ x.numLieu ? "Stand " + x.numLieu : "Sans stand" }}{{ x.type ? " | " + x.type : "" }}</p>
+          </ion-label>
+          <ion-note slot="end">{{x.nbPersonnes}} pers. | {{x.nbLivres}} livres</ion-note>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">Aucun exposant trouvé</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-alert
+    [isOpen]="alerteSupprimer()"
+    (didDismiss)="alerteSupprimer.set(false)"
+    header="Supprimer l'exposant ?"
+    [message]="exposant()?.nom + ' sera supprimé et ses personnes retirées du stand'"
+    [buttons]="boutonsSupprimer">
+  </ion-alert>
+
+  <ion-alert
+    [isOpen]="exposantGarde() != null"
+    (didDismiss)="exposantGarde.set(null)"
+    header="Fusionner ?"
+    [message]="exposant()?.nom + ' sera supprimé, ses personnes et ses livres passent sur ' + exposantGarde()?.nom"
+    [buttons]="boutonsFusion">
+  </ion-alert>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2500"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

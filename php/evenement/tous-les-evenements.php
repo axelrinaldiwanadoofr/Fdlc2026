@@ -1,10 +1,85 @@
 <?php
+
+require_once "../Connexion.php" ;
+
+header( "Content-Type: application/json; charset=utf-8" ) ;
+
+// Liste des événements, triés par date de début
+// Paramètres GET optionnels (cumulés avec AND) :
+//   titre        : partie du titre
+//   debut        : début de la date/heure de début (ex : "2026-11-14")
+//   nomAnimateur : partie du nom de l'animateur
+//   titreLivre   : partie du titre d'un livre présenté pendant l'événement
+//   numLieu      : numéro du lieu où se déroule l'événement
+try
+{
+    $bd = Connexion::getInstance() ;
+
+    // dans la nouvelle base le type est dans la colonne type (typeevenement est vide)
+    $sql = "select 
+        id, 
+        type as typeevenement, 
+        titre, 
+        stitre,
+        public,
+        commentaire,
+        debut, 
+        date_format(debut, '%H:%i') as heuredebut,    
+        date_format(debut, '%Y-%m-%d') as jourdebut, 
+        idAnimateur, 
+        nomAnimateur,
+        prenomAnimateur,
+        specialiteAnimateur,
+        numLieu,
+        nomLieu,
+        theme
+        from " . Connexion::$tables["EvenementLieuAnimateur"] . " where 1 " ;
+
+    if( isset($_GET["titre"])) $sql .= " and titre like :titre " ;
+
+    if( isset($_GET["debut"])) $sql .= " and debut >= :debut " ;
+
+    if( isset($_GET["jourdebut"])) $sql .= " and date_format(debut, '%Y-%m-%d') = :jourdebut " ;
+
+    if( isset($_GET["heuredebut"])) $sql .= " and date_format(debut, '%H:%i') = :heuredebut " ;
+
+    if( isset($_GET["numLieu"])) $sql .= " and numLieu = :numLieu " ;
+
+    if( isset($_GET["nomAnimateur"]))
+    {
+        $sql .= " and  nomAnimateur like :nomAnimateur  " ;
+    }
+
+    $sql .= " order by debut, titre" ;
+
+    $cursor = $bd->prepare( $sql ) ;
+
+    if( isset($_GET["titre"])) $cursor->bindValue( ":titre", "%" . $_GET["titre"] . "%", PDO::PARAM_STR ) ;
+    if( isset($_GET["debut"])) $cursor->bindValue( ":debut", $_GET["debut"], PDO::PARAM_STR ) ;
+    if( isset($_GET["jourdebut"])) $cursor->bindValue( ":jourdebut", $_GET["jourdebut"], PDO::PARAM_STR ) ;
+    if( isset($_GET["heuredebut"])) $cursor->bindValue( ":heuredebut", $_GET["heuredebut"], PDO::PARAM_STR ) ;
+    if( isset($_GET["numLieu"])) $cursor->bindValue( ":numLieu", $_GET["numLieu"], PDO::PARAM_INT ) ;
+    if( isset($_GET["nomAnimateur"])) $cursor->bindValue( ":nomAnimateur", "%" . $_GET["nomAnimateur"] . "%", PDO::PARAM_STR ) ;
+
+    $cursor->execute() ;
+
+    echo json_encode( $cursor->fetchAll( PDO::FETCH_ASSOC ), JSON_UNESCAPED_UNICODE ) ;
+}
+catch( Exception $erreur )
+{
+    http_response_code( 500 ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
+}
+
+
 /**
  * GET /php/evenement/tous-les-evenements.php
  * Renvoie tous les événements au format JSON (tableau, y compris si vide).
  * Colonnes compatibles avec le modèle Evenement : id, titre, type,
  * debut, fin, commentaire, idLieu, idAnimateur, lieu, animateur.
  */
+/*
 header('Content-Type: application/json; charset=utf-8');
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
@@ -47,3 +122,6 @@ try {
     http_response_code(500);
     echo json_encode(['erreur' => 'Impossible de charger les événements'], JSON_UNESCAPED_UNICODE);
 }
+*/
+
+?>

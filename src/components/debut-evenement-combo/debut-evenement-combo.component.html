@@ -1,0 +1,22 @@
+<ion-input
+  [label]="label()"
+  placeholder="Taper le début de la date"
+  [(ngModel)]="debutSaisi"
+  (ionInput)="onDebutChanged($event)"
+  (click)="onInputClick($event)">
+</ion-input>
+@if(showList())
+{
+  <ion-card>
+    <ion-card-content>
+      <ion-list>
+        @for( debut of listeDebuts | async; track debut )
+        {
+          <ion-item (click)="onClickDebutSelected( debut )">
+            {{debut}}
+          </ion-item>
+        }
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+}

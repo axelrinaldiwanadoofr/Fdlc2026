@@ -1,0 +1,20 @@
+// Auteur: Kevin MEYER - 09/11/2026
+
+// phrase du bas : centree et sans grosse marge pour ne pas prendre trop de place
+.credits
+{
+    margin: 8px 16px;
+    text-align: center;
+}
+
+.config
+{
+    text-align: center;
+    margin-top: 16px;
+    opacity: 0.7;
+}
+
+.config ion-button
+{
+    text-transform: none;
+}

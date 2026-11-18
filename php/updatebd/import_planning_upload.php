@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 
 
 
@@ -241,7 +242,8 @@ if (is_uploaded_file($_FILES['userfile']['tmp_name']))
     }
     catch( PDOException $erreur )
     {
-        echo "Probleme d'acces à la BD " . $erreur->getMessage() ;
+        error_log( $erreur->getMessage() ) ;
+        echo "Probleme d'acces à la BD" ;
     }
 }
 

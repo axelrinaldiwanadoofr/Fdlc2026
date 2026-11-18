@@ -1,3 +1,5 @@
+// Auteur: Kevin MEYER - 02/11/2026
+
 import { Component, OnInit, computed, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
