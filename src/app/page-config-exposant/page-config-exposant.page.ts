@@ -87,12 +87,12 @@ export class PageConfigExposantPage
   protected rechercheFusion = signal("") ;
   protected exposantGarde = signal<Exposant | null>( null ) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
 
-  protected readonly boutonsFusion = [
+  protected boutonsFusion = [
     { text: "Annuler", role: "cancel" },
     { text: "Fusionner", role: "destructive", handler: () => this.onFusionner() }
   ] ;

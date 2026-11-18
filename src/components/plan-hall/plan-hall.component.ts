@@ -35,7 +35,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   // Page appelée quand on clique sur un stand, le num du lieu est ajouté à la fin
   public    lienPage = input<string>( "/page-lieu" ) ;
 
-  // Prévient le parent quand le plan est zoomé (pour bloquer le swipe entre les halls)
+  // Prévient le parent quand le plan est zoomé
   public    onZoom = output<boolean>() ;
 
   protected serviceLieu: LieuService ;
@@ -78,8 +78,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
   protected lieuSelectionne = computed( () => this.zones().find( l => l.num == this.numLieu() ) ) ;
 
-  // Pointe de la bulle ICI : en haut au milieu du lieu, ou plus bas s'il n'y a pas
-  // la place au dessus (la bulle fait environ 55 px de haut, plus le saut)
+  // Position de la pointe de la bulle ICI
   protected repere = computed( () =>
   {
     let lieu = this.lieuSelectionne() ;
@@ -110,7 +109,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   }
 
   // Recalcule la taille du plan quand le cadre change de taille
-  // (rotation de l'écran, fenêtre redimensionnée, onglet du hall affiché)
   ngAfterViewInit()
   {
     this.observateur = new ResizeObserver( () => this.calculeLargeurBase() ) ;
@@ -141,19 +139,16 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     this.situeLieu() ;
   }
 
-  // Bouton Situer de la page exposant : affiche la bulle sur le stand demandé (numLieu)
-  // Il faut que les lieux soient chargés et que le plan soit affiché
+  // Affiche la bulle ICI sur le stand demandé
   private situeLieu()
   {
     if( this.dejaSitue || !this.lieuxCharges || this.largeurBase() == 0 ) return ;
 
-    // le lieu n'est pas dans ce hall
     let lieu = this.lieux().find( l => l.num == this.numLieu() ) ;
     if( !lieu ) return ;
 
     this.dejaSitue = true ;
 
-    // pas de zoom, la bulle ICI montre le stand
     if( lieu.x1 == null ) this.messageSituer.set( this.nomLieu( lieu ) + " n'est pas encore placé sur le plan" ) ;
   }
 
@@ -201,7 +196,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   private zoomeSur( zoom: number, x: number, y: number )
   {
     this.zoom.set( Math.min( 3, Math.max( 1, zoom ) ) ) ;
-    // met à jour la taille du plan tout de suite
     this.cdr.detectChanges() ;
 
     let plan = this.plan().nativeElement.getBoundingClientRect() ;
@@ -218,7 +212,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     this.zoomDepart = this.zoom() ;
     let milieu = this.milieu( event ) ;
     this.retientPoint( milieu.x, milieu.y ) ;
-    // pas de changement de hall pendant le zoom
     this.onZoom.emit( true ) ;
   }
 
@@ -227,7 +220,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     if( event.touches.length != 2 || this.ecartDepart == 0 ) return ;
 
     event.preventDefault() ;
-    // le milieu des doigts suit aussi le déplacement de la main
     let milieu = this.milieu( event ) ;
     this.zoomeSur( this.zoomDepart * this.ecart( event ) / this.ecartDepart, milieu.x, milieu.y ) ;
   }
@@ -237,7 +229,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     if( this.ecartDepart == 0 || event.touches.length > 0 ) return ;
 
     this.ecartDepart = 0 ;
-    // apres la fin du swipe des tabs, sinon le hall change quand on dézoome
     setTimeout( () => this.onZoom.emit( this.zoom() > 1 ) ) ;
   }
 

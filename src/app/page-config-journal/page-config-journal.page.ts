@@ -1,6 +1,7 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 import { Component, computed, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
   IonContent,
@@ -24,6 +25,7 @@ import { ConfigService } from '../../services/config.service';
   templateUrl: './page-config-journal.page.html',
   styleUrls: ['./page-config-journal.page.scss'],
   imports: [
+    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,

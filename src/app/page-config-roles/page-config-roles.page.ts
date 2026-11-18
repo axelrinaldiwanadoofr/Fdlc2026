@@ -81,7 +81,7 @@ export class PageConfigRolesPage
   protected message = signal("") ;
   protected alerteSupprimer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;

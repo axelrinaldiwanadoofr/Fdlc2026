@@ -69,6 +69,6 @@ export class LivresAuteurComponent implements OnChanges
   imageSuivante( livre: LivreAuteur )
   {
     livre.couvertures = livre.couvertures.slice( 1 ) ;
-    this.livres.set( [...this.livres()] ) ;
+    this.livres.set( this.livres().slice() ) ;
   }
 }

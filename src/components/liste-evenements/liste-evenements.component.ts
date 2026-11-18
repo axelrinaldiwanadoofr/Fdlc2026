@@ -11,11 +11,8 @@ import { Lieu } from '../../modeles/Lieu';
 import { Personne } from '../../modeles/Personne';
 import {
   IonItem,
-  IonIcon,
   IonSegment,
 } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { chevronForward } from 'ionicons/icons';
 
 // Tables num lieu -> nom et id personne -> "Prénom Nom".
 // Chargées une seule fois et partagées par toutes les instances du composant
@@ -63,7 +60,6 @@ const MOIS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet",
   standalone: true,
   imports: [
     IonItem,
-    IonIcon,
     AsyncPipe,
     RouterLink,
   ],
@@ -103,8 +99,6 @@ export class ListeEvenementsComponent implements OnInit, OnChanges {
     private servicePersonne: PersonneService,
     private router: Router
   ) {
-    addIcons({ chevronForward });
-
     if (nomsLieux$ === null) {
       nomsLieux$ = this.serviceLieu.getTousLesLieux().pipe(
         map((lieux: Lieu[]) => new Map(lieux.map(l => [Number(l.num), l.nom] as [number, string]))),

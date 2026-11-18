@@ -7,7 +7,7 @@
     <ion-title>Journal</ion-title>
   </ion-toolbar>
   <ion-toolbar>
-    <ion-searchbar placeholder="Action, identifiant ou détail" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+    <ion-searchbar placeholder="Action, identifiant ou détail" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
   </ion-toolbar>
 </ion-header>
 
