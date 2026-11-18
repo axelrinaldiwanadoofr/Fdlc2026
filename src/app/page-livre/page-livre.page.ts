@@ -19,6 +19,11 @@ import {
   IonList,
   IonItem,
   IonLabel,
+  IonCard,
+  IonCardTitle,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardContent,
 } from '@ionic/angular';
 
 @Component({
@@ -36,6 +41,11 @@ import {
     IonList,
     IonItem,
     IonLabel,
+    IonCardTitle,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardContent,
+    IonCard,
     AsyncPipe
   ]
 })
