@@ -19,6 +19,7 @@ try
     if( !$moi["estRoot"] && (int)$role["niveau"] >= $moi["niveau"] ) refuse( "Ce rôle est égal ou supérieur au vôtre" ) ;
     if( $role["nbComptes"] > 0 ) refuse( "Ce rôle est encore donné à " . $role["nbComptes"] . " compte(s)", 400 ) ;
 
+    bd()->prepare( "delete from " . table( "permission" ) . " where idRole = :id" )->execute( ["id" => $id] ) ;
     bd()->prepare( "delete from " . table( "role" ) . " where id = :id" )->execute( ["id" => $id] ) ;
     journal( "Rôle supprimé", $role["nom"] ) ;
 

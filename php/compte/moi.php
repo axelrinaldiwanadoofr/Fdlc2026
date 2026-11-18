@@ -15,7 +15,7 @@ try
 catch( Exception $erreur )
 {
     error_log( $erreur->getMessage() ) ;
-    refuse( "Probleme d'acces à la BD", 500 ) ;
+    refuse( "Probleme d'acces à la BD (erreur " . $erreur->getCode() . ")", 500 ) ;
 }
 
 ?>

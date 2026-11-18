@@ -26,7 +26,7 @@ class Creneau
   }
 }
 
-// Personnes présentes sur le stand, auteurs et autres exposants du stand
+// Personnes présentes sur le stand et autres exposants du stand
 @Component({
   selector: 'app-personnes-stand',
   templateUrl: './personnes-stand.component.html',
@@ -81,12 +81,7 @@ export class PersonnesStandComponent implements OnChanges
     return null ;
   }
 
-  presents( creneau: Creneau ): PersonneStand[]
-  {
-    return this.personnes().filter( p => this.estPresent( p, creneau.champ ) ) ;
-  }
-
-  private estPresent( p: PersonneStand, champ: string ): boolean
+  estPresent( p: PersonneStand, champ: string ): boolean
   {
     if( champ == "samedi_am" ) return p.samedi_am == 1 ;
     if( champ == "samedi_pm" ) return p.samedi_pm == 1 ;
@@ -94,35 +89,31 @@ export class PersonnesStandComponent implements OnChanges
     return p.dimanche_pm == 1 ;
   }
 
-  noms( creneau: Creneau ): string
+  // Pendant le festival, les personnes présentes en ce moment passent en premier
+  protected personnesTriees = computed( () =>
   {
-    return this.presents( creneau ).map( p => p.prenom + " " + p.nom ).join( ", " ) ;
-  }
-
-  // créneaux avec les mêmes personnes sur une seule ligne
-  protected groupes = computed( () =>
-  {
-    let groupes: Array<{ quand: string, noms: string, creneaux: Creneau[] }> = [] ;
-    for( let creneau of this.creneaux )
-    {
-      let noms = this.noms( creneau ) ;
-      if( noms == "" ) continue ;
-
-      let groupe = groupes.find( g => g.noms == noms ) ;
-      if( groupe ) groupe.creneaux.push( creneau ) ;
-      else groupes.push( { quand: "", noms: noms, creneaux: [creneau] } ) ;
-    }
-
-    for( let groupe of groupes ) groupe.quand = this.quand( groupe.creneaux ) ;
-    return groupes ;
+    let creneau = this.creneauActuel ;
+    if( !creneau ) return this.personnes() ;
+    return this.personnes().slice().sort( ( a, b ) => Number( this.estPresent( b, creneau.champ ) ) - Number( this.estPresent( a, creneau.champ ) ) ) ;
   }) ;
 
-  private quand( creneaux: Creneau[] ): string
+  // ex : Samedi | Dimanche matin
+  quand( p: PersonneStand ): string
   {
-    let champs = creneaux.map( c => c.champ ).join( " " ) ;
-    if( creneaux.length == 4 ) return "Tout le week-end" ;
-    if( champs == "samedi_am samedi_pm" ) return "Samedi" ;
-    if( champs == "dimanche_am dimanche_pm" ) return "Dimanche" ;
-    return creneaux.map( c => c.nom ).join( " | " ) ;
+    let presents = this.creneaux.filter( c => this.estPresent( p, c.champ ) ) ;
+    let champs = presents.map( c => c.champ ).join( " " ) ;
+
+    if( presents.length == 4 ) return "Tout le week-end" ;
+    if( presents.length == 0 ) return "Horaires pas encore connus" ;
+
+    let jours: string[] = [] ;
+    for( let jour of ["samedi", "dimanche"] )
+    {
+      let nom = jour == "samedi" ? "Samedi" : "Dimanche" ;
+      if( champs.includes( jour + "_am" ) && champs.includes( jour + "_pm" ) ) jours.push( nom ) ;
+      else if( champs.includes( jour + "_am" ) ) jours.push( nom + " matin" ) ;
+      else if( champs.includes( jour + "_pm" ) ) jours.push( nom + " après-midi" ) ;
+    }
+    return jours.join( " | " ) ;
   }
 }

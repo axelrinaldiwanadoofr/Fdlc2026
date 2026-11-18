@@ -2,55 +2,24 @@
 @if( personnes().length > 0 )
 {
   <ion-list>
-    @if( creneauActuel )
-    {
-      <ion-item-divider color="light">
-        <ion-label>En ce moment sur le stand</ion-label>
-        <ion-note slot="end">{{creneauActuel.nom}}</ion-note>
-      </ion-item-divider>
-      @for( p of presents( creneauActuel ); track p.idPersonne )
-      {
-        <ion-item>
-          <ion-label>{{p.prenom}} {{p.nom}}</ion-label>
-        </ion-item>
-      }
-      @empty
-      {
-        <ion-item>
-          <ion-label color="medium">Personne pour le moment</ion-label>
-        </ion-item>
-      }
-    }
-    @else
-    {
-      <ion-item-divider color="light">
-        <ion-label>Présents sur le stand</ion-label>
-      </ion-item-divider>
-      @for( groupe of groupes(); track groupe.quand )
-      {
-        <ion-item>
-          <ion-label class="ion-text-wrap">
-            <h3>{{groupe.quand}}</h3>
-            <p>{{groupe.noms}}</p>
-          </ion-label>
-        </ion-item>
-      }
-    }
-
     <ion-item-divider color="light">
-      <ion-label>Auteurs du stand</ion-label>
-      <ion-note slot="end">{{personnes().length}}</ion-note>
+      <ion-label>Sur le stand</ion-label>
+      <ion-note slot="end">{{ creneauActuel ? creneauActuel.nom : personnes().length + " auteur(s)" }}</ion-note>
     </ion-item-divider>
-  </ion-list>
-
-  <div class="auteurs">
-    @for( p of personnes(); track p.idPersonne )
+    @for( p of personnesTriees(); track p.idPersonne )
     {
-      <ion-button fill="outline" size="small" [routerLink]="['/page-personne', p.idPersonne]">
-        {{p.prenom}} {{p.nom}}
-      </ion-button>
+      <ion-item button [routerLink]="['/page-personne', p.idPersonne]">
+        <ion-label>
+          <h3>{{p.prenom}} {{p.nom}}</h3>
+          <p>{{ quand( p ) }}</p>
+        </ion-label>
+        @if( creneauActuel && estPresent( p, creneauActuel.champ ) )
+        {
+          <ion-note slot="end" color="success">En ce moment</ion-note>
+        }
+      </ion-item>
     }
-  </div>
+  </ion-list>
 }
 
 @if( exposants().length > 0 )
