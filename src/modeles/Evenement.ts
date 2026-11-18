@@ -20,6 +20,16 @@ export class Evenement
     public nomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
     public prenomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
 
+    // Champs d'affichage calculés par le PHP (evenement-commun.php : programme.php, evenement-id.php)
+    public animateur?: string ;           // "Prénom Nom" de l'animateur
+    public hall?: number | null ;         // hall du lieu
+    public nomJour?: string ;             // "Samedi"
+    public dateJour?: string ;            // "21 novembre"
+    public touteLaJournee?: boolean ;     // présent toute la journée (stands, expositions...)
+    public heure?: string ;               // "10h30" ("" si toute la journée)
+    public heureFin?: string ;            // "11h30" ("" si inconnue)
+    public livres?: { id: number, titre: string, auteurs: string }[] ;   // livres présentés (evenement-id.php)
+
     constructor( 
         id: number = -1, 
         typeevenement: string = "", 

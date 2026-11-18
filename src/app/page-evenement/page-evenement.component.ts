@@ -7,10 +7,13 @@ import {
   IonBackButton,
   IonTitle,
   IonContent,
-  IonList,
-  IonItem,
-  IonLabel
+  IonIcon,
+  IonButton,
+  IonMenuButton,
 } from '@ionic/angular';
+import { RouterLink } from '@angular/router';
+import { addIcons } from 'ionicons';
+import { calendarOutline, locationOutline, micOutline, peopleOutline, bookOutline, mapOutline, chevronForward, arrowBack } from 'ionicons/icons';
 
 import { TitreLivreComboComponent } from '../../components/titre-livre-combo/titre-livre-combo.component';
 import { EvenementService } from '../../services/evenement.service';
@@ -27,9 +30,10 @@ import { Evenement } from '../../modeles/Evenement';
     IonBackButton,
     IonTitle,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
+    IonIcon,
+    IonButton,
+    IonMenuButton,
+    RouterLink,
     TitreLivreComboComponent
   ],
 })
@@ -44,7 +48,9 @@ export class PageEvenementComponent implements OnInit {
   // Conserve le test de communication avec la combobox.
   public titreChoisi: string = '';
 
-  constructor(private serviceEvenement: EvenementService) {}
+  constructor(private serviceEvenement: EvenementService) {
+    addIcons({ calendarOutline, locationOutline, micOutline, peopleOutline, bookOutline, mapOutline, chevronForward, arrowBack });
+  }
 
   ngOnInit(): void {
     const identifiant = Number(this.id());
@@ -52,8 +58,7 @@ export class PageEvenementComponent implements OnInit {
 
     this.message.set('Chargement de l’événement…');
 
-    // En attendant evenement-by-id.php (mission de Mathieu),
-    // on réutilise le service PHP de liste déjà développé.
+    // evenement-id.php renvoie l'événement mis en forme (jour, heures, lieu, animateur, livres présentés)
     this.serviceEvenement.getEvenementById( this.id() ).subscribe({
       next: liste => {
         const resultat = liste.find(e => Number(e.id) === identifiant) ?? null;

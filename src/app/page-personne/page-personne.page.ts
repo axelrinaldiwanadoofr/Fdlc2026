@@ -26,6 +26,7 @@ import { Exposant } from '../../modeles/Exposant';
 import { PersonneService } from '../../services/personne.service';
 import { ExposantService } from '../../services/exposant.service';
 import { LivresAuteurComponent } from '../../components/livres-auteur/livres-auteur.component';
+import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
 
 @Component({
   selector: 'app-page-personne',
@@ -47,7 +48,8 @@ import { LivresAuteurComponent } from '../../components/livres-auteur/livres-aut
     IonIcon,
     CommonModule,
     RouterLink,
-    LivresAuteurComponent
+    LivresAuteurComponent,
+    ListeEvenementsComponent
   ]
 })
 export class PagePersonnePage implements OnInit
@@ -59,6 +61,8 @@ export class PagePersonnePage implements OnInit
 
   // la photo n'a pas pu être chargée
   protected photoErreur = signal( false ) ;
+  // Nombre d'événements de la personne (renvoyé par app-liste-evenements), section masquée si 0
+  protected nbEvenements = signal( 0 ) ;
 
   // Stands où la personne est présente avec ses créneaux
   protected exposants: Observable<Exposant[]> | null = null ;
