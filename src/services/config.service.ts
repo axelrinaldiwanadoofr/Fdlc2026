@@ -121,6 +121,11 @@ export class ConfigService
 
     // Comptes et rôles
 
+    getMesDonnees(): Observable<any>
+    {
+        return this.http.get( "php/compte/mes-donnees.php" ) ;
+    }
+
     getComptes( idPersonne: number = -1 ): Observable<Compte[]>
     {
         return this.http.get<Compte[]>( "php/compte/comptes.php" + ( idPersonne > 0 ? "?idPersonne=" + idPersonne : "" ) ) ;

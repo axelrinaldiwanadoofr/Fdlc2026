@@ -43,6 +43,14 @@ export const routes: Routes = [
     loadComponent: () => import('./tabs/tabs.page').then(m => m.TabsPage)
   },
   {
+    path: 'config-mes-donnees',
+    loadComponent: () => import('./page-config-mes-donnees/page-config-mes-donnees.page').then(m => m.PageConfigMesDonneesPage)
+  },
+  {
+    path: 'donnees-personnelles',
+    loadComponent: () => import('./page-donnees-personnelles/page-donnees-personnelles.page').then(m => m.PageDonneesPersonnellesPage)
+  },
+  {
     path: 'config',
     loadComponent: () => import('./page-config/page-config.page').then(m => m.PageConfigPage)
   },

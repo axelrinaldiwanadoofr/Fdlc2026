@@ -23,6 +23,9 @@ const ESSAIS_MAX = 5 ;
 const MDP_ROOT_DEFAUT = "fdlc2026" ;
 const DUREE_BLOCAGE = 15 * 60 ;
 
+// Le journal est vidé de ses lignes de plus de 6 mois (RGPD)
+const JOURS_JOURNAL = 180 ;
+
 // Permissions rangées par groupe
 const PERMISSIONS = [
     "Le festival" => [
@@ -327,6 +330,7 @@ function journal( $action, $detail = "", $compte = null )
                 "detail" => mb_substr( $detail, 0, 255 ),
                 "ip" => $_SERVER["REMOTE_ADDR"] ?? null
             ] ) ;
+        bd()->exec( "delete from " . table( "journal" ) . " where date < now() - interval " . JOURS_JOURNAL . " day" ) ;
     }
     catch( Exception $erreur )
     {

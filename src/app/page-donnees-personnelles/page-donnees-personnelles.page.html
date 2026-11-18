@@ -1,0 +1,59 @@
+<!-- Auteur: Kevin MEYER - 18/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/page-a-propos"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Données personnelles</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list class="liste">
+    <ion-item-divider color="light" sticky>
+      <ion-label>Visiteurs du festival</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>L'application ne demande aucun compte aux visiteurs et n'utilise pas de cookies de suivi ni de statistiques.</p>
+        <p>Le planning "Mon planning" est enregistré uniquement sur votre appareil. Il n'est jamais envoyé sur notre serveur et vous pouvez le vider à tout moment.</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item-divider color="light" sticky>
+      <ion-label>Auteurs et exposants</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Les noms, photos, présentations, horaires et livres affichés servent à présenter le programme du festival.</p>
+        <p>Une personne qui ne souhaite plus apparaître dans l'application, ou qui veut faire corriger une information, peut le demander à l'organisation du festival.</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item-divider color="light" sticky>
+      <ion-label>Équipe du festival</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Pour chaque membre de l'équipe qui a un compte de configuration, l'application enregistre son identifiant, son mot de passe chiffré, son rôle et la date de sa dernière connexion.</p>
+        <p>Pour la sécurité du site, les connexions et les modifications sont notées dans un journal avec la date et l'adresse IP. Ce journal n'est visible que par les administrateurs et ses lignes sont effacées au bout de 6 mois.</p>
+        <p>Un seul cookie est utilisé, pendant la connexion, pour garder la session ouverte. Il est supprimé à la déconnexion.</p>
+        <p>Chaque membre peut voir tout ce qui est enregistré sur lui avec le bouton "Mes données" de la page de configuration. Un administrateur peut corriger ou supprimer un compte.</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item-divider color="light" sticky>
+      <ion-label>Vos droits</ion-label>
+    </ion-item-divider>
+    <ion-item>
+      <ion-label class="ion-text-wrap">
+        <p>Les données ne sont ni vendues ni transmises à d'autres organismes.</p>
+        <p>Vous pouvez demander à consulter, corriger ou supprimer les données qui vous concernent en contactant le lycée Camille Sée de Colmar, qui héberge l'application.</p>
+        <p>Si vous estimez que vos droits ne sont pas respectés, vous pouvez faire une réclamation auprès de la CNIL (cnil.fr).</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>
