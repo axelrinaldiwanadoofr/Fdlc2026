@@ -1,0 +1,62 @@
+<!-- Auteur: Kevin MEYER - 04/11/2026 -->
+<div class="boutons-zoom">
+  <ion-button size="small" (click)="changeZoom( 0.5 )" [disabled]="zoom() >= 3">
+    <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+  </ion-button>
+  <ion-button size="small" (click)="changeZoom( -0.5 )" [disabled]="zoom() <= 1">
+    <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
+  </ion-button>
+</div>
+
+<div class="cadre" #cadre
+     (touchstart)="onTouchStart($event)"
+     (touchmove)="onTouchMove($event)"
+     (touchend)="onTouchEnd($event)">
+  <div class="plan" #plan [style.width]="largeurBase() > 0 ? largeurBase() * zoom() + 'px' : '100%'">
+    <img [src]="'assets/plans/hall' + numHall() + '.png'" [alt]="'Plan du hall ' + numHall()" draggable="false" (load)="onImageChargee($event)">
+
+    @if( largeur() > 0 )
+    {
+      <svg [attr.viewBox]="'0 0 ' + largeur() + ' ' + hauteur()">
+        @for( lieu of zones(); track lieu.num )
+        {
+          <rect class="zone"
+            [class.selection]="lieu.num == numLieu()"
+            [class.clique]="lieu.num == lieuClique()?.num"
+            [attr.x]="lieu.x1" [attr.y]="lieu.y1"
+            [attr.width]="lieu.x2 - lieu.x1" [attr.height]="lieu.y2 - lieu.y1"
+            (click)="onClickZone( lieu )">
+            <title>{{ lieu.nom || lieu.num }}</title>
+          </rect>
+        }
+
+        <!-- bulle ICI au dessus du lieu recherché, la pointe de la bulle est en 0, 0 -->
+        @if( repere(); as r )
+        {
+          <g class="repere" [attr.transform]="'translate(' + r.x + ',' + r.y + ')'">
+            <g class="saut">
+              <path class="pointe" d="M -10 -19 L 10 -19 L 0 -3 Z" />
+              <rect x="-34" y="-54" width="68" height="36" rx="12" />
+              <text x="0" y="-36">ICI</text>
+            </g>
+          </g>
+        }
+      </svg>
+    }
+  </div>
+</div>
+
+<!-- en attendant la page d'information des lieux -->
+<ion-toast
+  [isOpen]="lieuClique() != null"
+  [message]="lieuClique() ? nomLieu( lieuClique()! ) + ' : page d\'information bientôt disponible' : ''"
+  [duration]="2000"
+  (didDismiss)="lieuClique.set(null)">
+</ion-toast>
+
+<ion-toast
+  [isOpen]="messageSituer() != ''"
+  [message]="messageSituer()"
+  [duration]="3000"
+  (didDismiss)="messageSituer.set('')">
+</ion-toast>

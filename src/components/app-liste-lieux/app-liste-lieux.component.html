@@ -1,0 +1,14 @@
+<ion-list>
+  @for( lieu of listeLieux | async; track lieu.num )
+  {
+    <ion-item>
+      <ion-label>
+        <strong>{{ lieu.nom }}</strong> {{ lieu.type }} (n° {{ lieu.num }})
+      </ion-label>
+    </ion-item>
+  }
+  @empty
+  {
+    <ion-item lines="none">Aucun lieu trouvé</ion-item>
+  }
+</ion-list>

@@ -1,14 +1,16 @@
-export class Livre
-{
-    public id: number = -1 ;
-    public titre: string = "" ;
-    public editeur: string = "" ;
-    public genre: string = "" ;
-    public datepublication: string = "" ;
-    public resume: string = "" ;
-    public nom: string = "" ;
-    public prenom: string = "" ;
-    public nomExposant: string = "" ;
+export class Livre {
+  public id: number = -1;
+  public titre: string = '';
+  public editeur: string = '';
+  public genre: string = '';
+  public datepublication: string = '';
+  public resume: string = '';
+  public nom: string = '';
+  public prenom: string = '';
+  public nomExposant: string = '';
+
+    // id de l'exposant qui édite le livre (page de config)
+    public idEditeur: number = -1 ;
 
     constructor(
         id: number = -1,

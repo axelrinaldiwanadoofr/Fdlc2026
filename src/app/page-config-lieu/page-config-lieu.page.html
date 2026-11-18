@@ -1,0 +1,135 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configuration des lieux</ion-title>
+    @if( !lieu() )
+    {
+      <ion-buttons slot="end">
+        <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouveau lieu</ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+  @if( !lieu() )
+  {
+    <ion-toolbar>
+      <ion-segment [value]="hall()" (ionChange)="hall.set( +$any($event.detail.value) )">
+        <ion-segment-button [value]="0">
+          <ion-label>Tous</ion-label>
+        </ion-segment-button>
+        @for( h of halls; track h )
+        {
+          <ion-segment-button [value]="h">
+            <ion-label>Hall {{h}}</ion-label>
+          </ion-segment-button>
+        }
+      </ion-segment>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar placeholder="Numéro, nom ou type" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  @if( lieu(); as l )
+  {
+    <ion-list class="formulaire">
+      <ion-item>
+        <ion-input type="number" label="Numéro *" labelPlacement="stacked" [(ngModel)]="l.num" [disabled]="!nouveau"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Nom" labelPlacement="stacked" placeholder="Vide = le numéro" [(ngModel)]="l.nom" maxlength="50"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Libellé" labelPlacement="stacked" [(ngModel)]="l.libelle" maxlength="100"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Hall *" labelPlacement="stacked" interface="popover" [(ngModel)]="l.hall">
+          @for( h of halls; track h )
+          {
+            <ion-select-option [value]="h">Hall {{h}}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Type *" labelPlacement="stacked" interface="popover" placeholder="Choisir un type" [(ngModel)]="l.type">
+          @for( type of types(); track type )
+          {
+            <ion-select-option [value]="type">{{type}}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      @if( !nouveau )
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">
+            <p>{{l.nbExposants}} exposant(s) | {{l.nbEvenements}} événement(s) | {{ l.x1 != null ? "placé sur le plan" : "pas encore sur le plan" }}</p>
+          </ion-label>
+        </ion-item>
+      }
+    </ion-list>
+
+    @if( erreur() != "" )
+    {
+      <ion-note color="danger" class="formulaire">{{erreur()}}</ion-note>
+    }
+
+    <div class="formulaire boutons">
+      <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler</ion-button>
+      @if( !nouveau )
+      {
+        <ion-button fill="outline" color="danger" [disabled]="l.nbExposants + l.nbEvenements > 0" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+        <ion-button fill="outline" (click)="onPlacer()">Placer sur le plan</ion-button>
+      }
+      <ion-button (click)="onEnregistrer()">Enregistrer</ion-button>
+    </div>
+  }
+  @else
+  {
+    <ion-list class="liste">
+      @for( l of lieuxTrouves(); track l.num )
+      {
+        <ion-item button (click)="onModifier( l )">
+          <ion-label>
+            <h2>{{l.num}} {{ l.nom && l.nom != l.num.toString() ? "| " + l.nom : "" }}</h2>
+            <p>{{l.type}} | Hall {{l.hall}} {{ l.libelle ? "| " + l.libelle : "" }}</p>
+          </ion-label>
+          <ion-note slot="end" [color]="l.x1 != null ? 'success' : 'medium'">{{ l.x1 != null ? "Sur le plan" : "Pas placé" }}</ion-note>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">Aucun lieu trouvé</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-alert
+    [isOpen]="alerteSupprimer()"
+    (didDismiss)="alerteSupprimer.set(false)"
+    header="Supprimer le lieu ?"
+    [message]="'Le lieu n° ' + lieu()?.num + ' sera supprimé'"
+    [buttons]="boutonsSupprimer">
+  </ion-alert>
+
+  <ion-alert
+    [isOpen]="alertePlacer()"
+    (didDismiss)="onFinAlertePlacer()"
+    header="Lieu créé"
+    message="Voulez-vous dessiner sa zone sur le plan maintenant ?"
+    [buttons]="boutonsPlacer">
+  </ion-alert>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

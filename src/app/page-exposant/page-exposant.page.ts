@@ -1,6 +1,12 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, OnChanges, input } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
+
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { addIcons } from 'ionicons';
+import { locationOutline } from 'ionicons/icons';
 import { 
   IonContent, 
   IonHeader, 
@@ -9,7 +15,17 @@ import {
   IonButtons,
   IonMenuButton,
   IonBackButton,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonButton,
+  IonIcon,
  } from '@ionic/angular';
+import { Observable } from 'rxjs';
+import { Exposant } from '../../modeles/Exposant';
+import { ExposantService } from '../../services/exposant.service';
+import { AjouterEtapeButtonComponent } from '../../components/ajouter-etape-button/ajouter-etape-button.component';
+import { PersonnesStandComponent } from '../../components/personnes-stand/personnes-stand.component';
 
 @Component({
   selector: 'app-page-exposant',
@@ -23,20 +39,33 @@ import {
     IonButtons,
     IonMenuButton,
     IonBackButton,
+    IonList,
+    IonItem,
+    IonLabel,
+    IonButton,
+    IonIcon,
+    RouterLink,
+    AsyncPipe,
     CommonModule, 
-    FormsModule]
+    FormsModule,
+    AjouterEtapeButtonComponent,
+    PersonnesStandComponent]
 })
 export class PageExposantPage implements OnInit 
 {
   public id = input<number>( -1 ) ;
 
-  constructor() 
+  protected exposants: Observable<Array<Exposant>> | null = null ;
+  protected serviceExposant: ExposantService ;
+
+  constructor( serviceExposant: ExposantService ) 
   { 
-
+    this.serviceExposant = serviceExposant ;
+    addIcons( { locationOutline } ) ;
   }
-
+  
   ngOnInit() 
   {
+    this.exposants = this.serviceExposant.getExposantById( this.id() ) ;
   }
-
 }

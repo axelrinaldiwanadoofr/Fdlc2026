@@ -10,25 +10,34 @@
 
         // Liste des alias de tables utilisée
         public static $tables = array(
-            "stand" => "stand",
-            "exposant" => "exposant",
-            "exposer" => "exposer",
-            "personne" => "personne",
-            "hall" => "hall",
-            "import" => "import",
-            "ecrire" => "ecrire",
-            "editeur" => "editeur",
-            "evenement" => "evenement",
-            "lieu" => "lieu",
-            "livre" => "livre",
-            "presenter" => "presenter",
-            "specialite" => "specialite",
-            "typelieu" => "typelieu",
-            "typeevenement" => "typeevenement",
-            "genre" => "genre",
-            "PersonneExposantExposer" => "PersonneExposantExposer",
-            "PersonneExposantExposerLieu" => "PersonneExposantExposerLieu",
-            "LivreEditeurPersonneExposant" => "LivreEditeurPersonneExposant"
+            "stand" => "fdlc_stand",
+            "exposant" => "fdlc_exposant",
+            "exposer" => "fdlc_exposer",
+            "personne" => "fdlc_personne",
+            "hall" => "fdlc_hall",
+            "import" => "fdlc_import",
+            "ecrire" => "fdlc_ecrire",
+            "editeur" => "fdlc_editeur",
+            "evenement" => "fdlc_evenement",
+            "lieu" => "fdlc_lieu",
+            "livre" => "fdlc_livre",
+            "presenter" => "fdlc_presenter",
+            "specialite" => "fdlc_specialite",
+            "typelieu" => "fdlc_typelieu",
+            "typeexposant" => "fdlc_typeexposant",
+            "annonce" => "fdlc_annonce",
+            "compte" => "fdlc_compte",
+            "role" => "fdlc_role",
+            "permission" => "fdlc_permission",
+            "journal" => "fdlc_journal",
+            "typeevenement" => "fdlc_typeevenement",
+            "genre" => "fdlc_genre",
+            "invite" => "fdlc_invite",
+            "PersonneExposantExposer" => "fdlc_PersonneExposantExposer",
+            "PersonneExposantExposerLieu" => "fdlc_PersonneExposantExposerLieu",
+            "LivreEditeurPersonneExposant" => "fdlc_LivreEditeurPersonneExposant",
+            "PersonneComplete" => "fdlc_PersonneComplete",
+            "EvenementLieuAnimateur" => "fdlc_EvenementLieuAnimateur"
          ) ;
 
         /**
@@ -37,16 +46,16 @@
         public static function getInstance()
         {
             $serveur = 'mysql:host=localhost:3306;';
-            $bdd = 'dbname=fdlc;charset=utf8mb4';   		
-            $user = 'fdlc' ; 
-            $mdp = 'fdlc' ;
+            $bdd = 'dbname=lyceecam_1';   		
+            $user = 'lyceecam' ; 
+            $mdp = 'hGMK5w7fvW77k4' ;
 
             if(!self::$connexion){
                 try {
                     self::$connexion = new PDO($serveur.$bdd, $user, $mdp); 
                     self::$connexion->query("SET CHARACTER SET utf8");
                 } catch (PDOException $e) {
-                        echo " Error connexion: " . $serveur . " " . $bdd . " " . $e->getMessage() ;
+                        error_log( $e->getMessage() ) ;
                         throw new Exception("Erreur à la connexion \n" . $e->getMessage());
                 }
             }

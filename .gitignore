@@ -1,9 +1,9 @@
 # Specifies intentionally untracked files to ignore when using Git
 # http://git-scm.com/docs/gitignore
 php/Connexion.php
-
-php/Connexion.php
+php/config/mot-de-passe.hash.php
 src/index.html
+src/assets/photos
 
 *~
 *.sw[mnpcod]
@@ -72,3 +72,4 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+.claude/

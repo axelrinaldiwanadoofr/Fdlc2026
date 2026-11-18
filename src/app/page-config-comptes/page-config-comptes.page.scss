@@ -1,0 +1,30 @@
+// Auteur: Kevin MEYER - 16/11/2026
+
+.liste
+{
+    display: block;
+    max-width: 760px;
+    margin: auto;
+}
+
+.avatar
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+}
+
+.role
+{
+    margin-left: 8px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.75em;
+    font-weight: bold;
+}

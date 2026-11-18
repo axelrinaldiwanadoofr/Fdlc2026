@@ -1,0 +1,175 @@
+// Auteur: Kevin MEYER - 05/11/2026
+
+.connexion
+{
+    max-width: 500px;
+    margin: auto;
+}
+
+.profil, .bandeau, .resume, .section, .grille, .vide
+{
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.resume
+{
+    --background: rgba(var(--ion-color-warning-rgb), 0.12);
+    border-radius: 12px;
+    margin-bottom: 8px;
+}
+
+.section
+{
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--ion-color-medium);
+}
+
+// 2 colonnes sur ordinateur, 1 sur téléphone
+.grille
+{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+}
+
+.tuile
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    width: 100%;
+    border: none;
+    font: inherit;
+    text-align: left;
+    color: inherit;
+    cursor: pointer;
+    background: var(--ion-color-light);
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.tuile:hover
+{
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.icone
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    color: white;
+    font-size: 22px;
+}
+
+.texte
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.texte span
+{
+    font-size: 0.85em;
+    color: var(--ion-color-medium);
+}
+
+
+.attente
+{
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+}
+
+.profil
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.avatar
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: white;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.qui
+{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+    flex: 1;
+}
+
+.role
+{
+    padding: 1px 8px;
+    border-radius: 6px;
+    color: white;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+.bandeau
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    background: rgba(var(--ion-color-warning-rgb), 0.15);
+    font-size: 0.9em;
+}
+
+.bandeau ion-icon
+{
+    flex-shrink: 0;
+    font-size: 1.4em;
+    color: var(--ion-color-warning-shade);
+}
+
+.bandeau a
+{
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.vide
+{
+    color: var(--ion-color-medium);
+}
+
+// fenetre de changement du mot de passe
+ion-modal.changement-mdp
+{
+    --width: min(400px, 100%);
+    --height: min(460px, 100%);
+}

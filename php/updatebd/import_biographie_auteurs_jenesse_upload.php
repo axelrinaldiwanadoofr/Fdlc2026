@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 
 
 <?php
@@ -29,7 +30,7 @@ if (is_uploaded_file($_FILES['userfile']['tmp_name']))
       $cursor = $db->prepare( $sql ) ;
 
       // Mise à jour de la biographie
-      $sqlUpdate = "update personne set biographie = :biographie where id=:id" ;
+      $sqlUpdate = "update " . Connexion::$tables["personne"] . " set biographie = :biographie where id=:id" ;
       $cursorUpdate = $db->prepare( $sqlUpdate ) ;
 
       foreach( $lignes as $ligne )

@@ -2,7 +2,7 @@ import { Component, OnInit, viewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {Observable} from "rxjs" ;
-import { ExposantService } from '../../servcies/exopsant.service';
+import { ExposantService } from '../../services/exposant.service';
 import {Exposant} from "../../modeles/Exposant" ;
 import {ListeExposantComponent} from "../../components/liste-exposant/liste-exposant.component"
 import { 
@@ -23,6 +23,7 @@ import {
 
 import {NomLieuComboComponent} from "../../components/nom-lieu-combo/nom-lieu-combo.component" ;
 import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
+import {NomExposantComboComponent} from "../../components/nom-exposant-combo/nom-exposant-combo.component" ;
 
 @Component({
   selector: 'app-liste-exposants-page',
@@ -46,7 +47,8 @@ import { NomPersonneComboComponent } from '../../components/nom-personne-combo/n
     FormsModule,
     IonAccordionGroup,
     NomLieuComboComponent,
-    NomPersonneComboComponent
+    NomPersonneComboComponent,
+    NomExposantComboComponent
 ]
 })
 export class ListeExposantsPagePage implements OnInit 
@@ -55,14 +57,17 @@ export class ListeExposantsPagePage implements OnInit
   protected listeExposant = viewChild(ListeExposantComponent);
   protected nomLieuCombo = viewChild(NomLieuComboComponent);
   protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
+  protected nomExposantCombo = viewChild(NomExposantComboComponent);
 
   // Valeurs récupérées des web component de filtration
   public flt_nomAuteur: string = "" ;
   public flt_nomLieu: string = "" ;
+  public flt_nomExposant: string = "" ;
 
   // Critères de rechercher d'un ensemble d'exposant
   public nomAuteur: string = "" ;
   public nomLieu: string = "" ;
+  public nomExposant: string = "" ;
 
   constructor() 
   { 
@@ -82,6 +87,11 @@ export class ListeExposantsPagePage implements OnInit
     this.flt_nomLieu = nom ;
   }
 
+  onExposantSelected( nom: string )
+  {
+    this.flt_nomExposant = nom ;
+  }
+
   fermeRechercherFiltrer()
   {
     // Referme l'accordion group
@@ -93,9 +103,10 @@ export class ListeExposantsPagePage implements OnInit
   {
     this.nomAuteur = this.flt_nomAuteur ;
     this.nomLieu = this.flt_nomLieu ;
-
+    this.nomExposant = this.flt_nomExposant ;
     // Masque les listes de recherche 
     this.nomLieuCombo()?.masqueListe() ;
     this.nomPersonneCombo()?.masqueListe() ;
+    this.nomExposantCombo()?.masqueListe() ;
   }
 }

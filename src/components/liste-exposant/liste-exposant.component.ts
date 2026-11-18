@@ -2,7 +2,7 @@ import { Component, OnInit, OnChanges, input } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import {Observable} from "rxjs" ;
-import { ExposantService } from '../../servcies/exopsant.service';
+import { ExposantService } from '../../services/exposant.service';
 import {Exposant} from "../../modeles/Exposant" ;
 import { 
   IonList,
@@ -56,9 +56,26 @@ export class ListeExposantComponent  implements OnInit, OnChanges
   {
     let childHtml = this.childHtml() ;
     childHtml = childHtml.replace("$id", exposant.id.toString() ) ;
-    childHtml = childHtml.replace("$nom", exposant.nom ) ;
-    childHtml = childHtml.replace("$nomLieu", exposant.nomLieu ) ;
+    childHtml = childHtml.replace("$nom", this.texte( exposant.nom ) ) ;
+    childHtml = childHtml.replace("$type", exposant.type ) ;
+    childHtml = childHtml.replace("$nomLieu", this.texte( exposant.nomLieu ) ) ;
+    childHtml = childHtml.replace("$numLieu", exposant.numLieu.toString() ) ;
+    childHtml = childHtml.replace("$stand", this.texte( this.stand( exposant ) ) ) ;
     return childHtml ;
+  }
+
+  // Les noms viennent de la base : on les affiche comme du texte, pas comme du html
+  texte( valeur: string ) : string
+  {
+    return ( valeur ?? "" ).replace( /&/g, "&amp;" ).replace( /</g, "&lt;" ).replace( />/g, "&gt;" ) ;
+  }
+
+  // Numéro du stand suivi de son nom quand il en a un (ex : 328 | ADEB)
+  stand( exposant: Exposant ) : string
+  {
+    let stand = exposant.numLieu.toString() ;
+    if( exposant.nomLieu && exposant.nomLieu != stand ) stand += " | " + exposant.nomLieu ;
+    return stand ;
   }
 
 }

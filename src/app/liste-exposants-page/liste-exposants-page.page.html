@@ -1,12 +1,13 @@
+
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>Liste des exposants</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>    
+    </ion-buttons>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>    
+    </ion-buttons>
   </ion-toolbar>
   <ion-accordion-group id="liste-exposants-page-accordion">
     <ion-accordion value="first">
@@ -16,9 +17,15 @@
       <div class="ion-padding" slot="content">
         <ion-list>
           <ion-item>
+            <app-nom-exposant-combo 
+              label="Exposant:"
+              (onExposantSelected)="onExposantSelected( $event )">
+            </app-nom-exposant-combo>
+          </ion-item>
+          <ion-item>
             <app-nom-lieu-combo
               label="Stand:"
-              typeLieu="stand"
+              [avecExposant]="true"
               (onLieuSelected)="onLieuSelected( $event )"></app-nom-lieu-combo>
           </ion-item>
           <ion-item>
@@ -41,7 +48,7 @@
     </ion-header>
     <app-liste-exposant 
       id="listeExposant" 
-      childHtml="<strong>$nom</strong> : stand n° $nomLieu"
+      childHtml="<strong>$nom</strong> : stand n° $stand"
       lienPage="/page-exposant"
       [nomPersonne]="nomAuteur"
       [nomLieu]="nomLieu"></app-liste-exposant>

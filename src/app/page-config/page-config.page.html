@@ -1,0 +1,148 @@
+<!-- Auteur: Kevin MEYER - 05/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configuration</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  @if( !serviceConfig.pret() )
+  {
+    <div class="attente"><ion-spinner></ion-spinner></div>
+  }
+  @else if( serviceConfig.compte(); as compte )
+  {
+    <div class="profil">
+      <div class="avatar" [style.background]="compte.couleur">{{ initiale( compte.nom ) }}</div>
+      <div class="qui">
+        <strong>{{compte.nom}}</strong>
+        <span class="role" [style.background]="compte.couleur">{{compte.role}}</span>
+      </div>
+      <ion-button fill="outline" size="small" (click)="ouvreChangementMdp()">Mon mot de passe</ion-button>
+      <ion-button fill="clear" size="small" color="medium" (click)="onDeconnexion()">Se déconnecter</ion-button>
+    </div>
+
+    @if( compte.rootParDefaut )
+    {
+      <div class="bandeau">
+        <ion-icon name="warning-outline"></ion-icon>
+        <span>Le mot de passe par défaut du compte root n'a pas encore été changé.
+          @if( compte.estRoot )
+          {
+            <a (click)="ouvreChangementMdp()">Le changer maintenant</a>
+          }
+        </span>
+      </div>
+    }
+
+    @if( totalAFaire() > 0 )
+    {
+      <ion-item class="resume" button lines="none" [routerLink]="['/config-controle']">
+        <ion-icon slot="start" name="checkmark-done-outline" color="warning"></ion-icon>
+        <ion-label>
+          <h2>{{totalAFaire()}} points à vérifier avant le festival</h2>
+          <p>Voir le détail dans le contrôle des données</p>
+        </ion-label>
+      </ion-item>
+    }
+
+    @for( section of sectionsVisibles(); track section.titre )
+    {
+      <h3 class="section">{{section.titre}}</h3>
+      <div class="grille">
+        @for( page of section.pages; track page.titre )
+        {
+          <button class="tuile" (click)="ouvre( page )">
+            <div class="icone" [style.background]="page.couleur">
+              <ion-icon [name]="page.icone"></ion-icon>
+            </div>
+            <div class="texte">
+              <strong>{{page.titre}}</strong>
+              <span>{{page.texte}}</span>
+            </div>
+            @if( page.alerte && nombre( page.alerte ) > 0 )
+            {
+              <ion-badge color="warning">{{ nombre( page.alerte ) }}</ion-badge>
+            }
+          </button>
+        }
+      </div>
+    }
+    @empty
+    {
+      <p class="vide">Votre rôle ne donne accès à aucune page de configuration pour l'instant.</p>
+    }
+  }
+  @else
+  {
+    <ion-list class="connexion">
+      <ion-item>
+        <ion-input label="Identifiant" labelPlacement="stacked" autocomplete="username" [(ngModel)]="identifiant"
+                   (keyup.enter)="onConnexion()"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="password" label="Mot de passe" labelPlacement="stacked" autocomplete="current-password" [(ngModel)]="mdp"
+                   (keyup.enter)="onConnexion()"></ion-input>
+      </ion-item>
+      @if( erreurConnexion() != "" )
+      {
+        <ion-note color="danger">{{erreurConnexion()}}</ion-note>
+      }
+      @else if( serviceConfig.deconnecteParInactivite() )
+      {
+        <ion-note color="medium">Vous avez été déconnecté après 15 minutes d'inactivité</ion-note>
+      }
+      <ion-button expand="block" (click)="onConnexion()">Se connecter</ion-button>
+    </ion-list>
+  }
+
+  <ion-modal [isOpen]="modalMdp()" [backdropDismiss]="!changementObligatoire()" (didDismiss)="onFermeChangementMdp()" class="changement-mdp">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button (click)="modalMdp.set(false)">{{ changementObligatoire() ? "Se déconnecter" : "Annuler" }}</ion-button>
+          </ion-buttons>
+          <ion-title>{{ changementObligatoire() ? "Choisissez votre mot de passe" : "Mon mot de passe" }}</ion-title>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        @if( changementObligatoire() )
+        {
+          <ion-note color="medium">Ce mot de passe vous a été donné par un administrateur. Choisissez-en un à vous pour continuer.</ion-note>
+        }
+        <ion-list>
+          @if( !changementObligatoire() || ancienMdp == "" )
+          {
+            <ion-item>
+              <ion-input type="password" label="Mot de passe actuel" labelPlacement="stacked" autocomplete="current-password" [(ngModel)]="ancienMdp"></ion-input>
+            </ion-item>
+          }
+          <ion-item>
+            <ion-input type="password" label="Nouveau (10 caractères minimum)" labelPlacement="stacked" autocomplete="new-password" [(ngModel)]="nouveauMdp"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-input type="password" label="Confirmation" labelPlacement="stacked" autocomplete="new-password" [(ngModel)]="confirmationMdp"
+                       (keyup.enter)="onChangerMdp()"></ion-input>
+          </ion-item>
+        </ion-list>
+        @if( erreurChangement() != "" )
+        {
+          <ion-note color="danger">{{erreurChangement()}}</ion-note>
+        }
+        <ion-button expand="block" (click)="onChangerMdp()">Valider</ion-button>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

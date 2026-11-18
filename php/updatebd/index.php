@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 
 <h1>Mise à jour de la base de données</h1>
 
@@ -26,8 +27,8 @@
 </p>
 
 <p>
-    <form action="import_planning_samedi.php" method="POST">
-        <button type="submit" name="mon_bouton" value="valider">Importer le planning du samedi"</button>
+    <form action="import_planning.php" method="POST">
+        <button type="submit" name="mon_bouton" value="valider">Importer le planning"</button>
     </form>
 </p>
 

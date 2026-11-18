@@ -1,25 +1,22 @@
 <?php
 
+// Auteur: Kevin MEYER - 16/11/2026
+
 require_once "../Connexion.php" ;
+
+header( "Content-Type: application/json; charset=utf-8" ) ;
 
 try
 {
     $bd = Connexion::getInstance() ;
-
-    $sql = "select distinct genre from " . Connexion::$tables["genre"] . " order by genre" ;
-
-    $cursor = $bd->prepare( $sql ) ;
-    $cursor->execute() ;
-
-    $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
-
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode( $data ) ;
-
+    $cursor = $bd->query( "select genre from " . Connexion::$tables["genre"] . " order by genre" ) ;
+    echo json_encode( $cursor->fetchAll( PDO::FETCH_ASSOC ), JSON_UNESCAPED_UNICODE ) ;
 }
-catch( PDOException $erreur )
+catch( Exception $erreur )
 {
-    echo "Probleme d'acces a la BD " . $erreur->getMessage() ;
+    http_response_code( 500 ) ;
+    error_log( $erreur->getMessage() ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

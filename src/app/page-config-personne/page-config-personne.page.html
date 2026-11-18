@@ -1,0 +1,318 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configuration des personnes</ion-title>
+    @if( !personne() )
+    {
+      <ion-buttons slot="end">
+        <ion-button fill="outline" (click)="modalRoles.set(true)">Spécialités</ion-button>
+        <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouvelle personne</ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+  @if( !personne() )
+  {
+    <ion-toolbar>
+      <ion-segment [value]="filtre()" (ionChange)="filtre.set( $any($event.detail.value) )">
+        <ion-segment-button value="tous">
+          <ion-label>Toutes</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="staff">
+          <ion-label>Staff</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="stand">
+          <ion-label>Sur un stand</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="photo">
+          <ion-label>Sans photo</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar placeholder="Nom ou prénom" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  @if( personne(); as p )
+  {
+    <div class="formulaire photo">
+      <ion-avatar>
+        @if( p.photo && !photoErreur() )
+        {
+          <img [src]="p.photo" alt="" (error)="photoErreur.set( true )">
+        }
+        @else
+        {
+          <div class="sans-image"></div>
+        }
+      </ion-avatar>
+      <div>
+        <ion-button size="small" fill="outline" [disabled]="envoiEnCours()" (click)="fichierPhoto.click()">
+          {{ envoiEnCours() ? "Envoi..." : "Changer la photo" }}
+        </ion-button>
+        @if( p.photo )
+        {
+          <ion-button size="small" fill="clear" color="medium" (click)="onRetirerPhoto()">Retirer</ion-button>
+        }
+      </div>
+      <input #fichierPhoto type="file" accept="image/jpeg,image/png,image/webp" hidden (change)="onPhotoChoisie( $event )">
+    </div>
+
+    <ion-list class="formulaire">
+      <ion-item>
+        <ion-select label="Civilité" labelPlacement="stacked" interface="popover" [(ngModel)]="p.civilite">
+          <ion-select-option [value]="null">Aucune</ion-select-option>
+          <ion-select-option value="M.">M.</ion-select-option>
+          <ion-select-option value="Mme">Mme</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Prénom" labelPlacement="stacked" [(ngModel)]="p.prenom" maxlength="50"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Nom *" labelPlacement="stacked" [(ngModel)]="p.nom" maxlength="50"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Spécialité" labelPlacement="stacked" interface="popover" [(ngModel)]="p.specialite">
+          @for( specialite of specialites(); track specialite )
+          {
+            <ion-select-option [value]="specialite">{{specialite}}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Public" labelPlacement="stacked" interface="popover" [(ngModel)]="p.type">
+          <ion-select-option value="P">Adulte (P)</ion-select-option>
+          <ion-select-option value="J">Jeunesse (J)</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-textarea label="Biographie" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="p.biographie" maxlength="1000"></ion-textarea>
+      </ion-item>
+
+      <ion-item-divider color="light">
+        <ion-label>Présence sur les stands</ion-label>
+        <ion-button slot="end" size="small" fill="clear" (click)="ouvreChoix( 'stand' )">Ajouter</ion-button>
+      </ion-item-divider>
+      @for( c of creneaux(); track c.idExposant )
+      {
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            <h3>{{c.nomExposant}}</h3>
+            <p>Stand n° {{c.numLieu}}</p>
+            <div class="creneaux">
+              @for( cr of champsCreneaux; track cr.champ )
+              {
+                <ion-checkbox labelPlacement="end" [checked]="estPresent( c, cr.champ )"
+                              (ionChange)="onCocheCreneau( c, cr.champ, $event.detail.checked )">{{cr.nom}}</ion-checkbox>
+              }
+            </div>
+          </ion-label>
+          <ion-button slot="end" fill="clear" color="medium" (click)="retireStand( c.idExposant )">
+            <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">Sur aucun stand</ion-label>
+        </ion-item>
+      }
+
+      <ion-item-divider color="light">
+        <ion-label>Livres écrits ({{idLivres().length}})</ion-label>
+        <ion-button slot="end" size="small" fill="clear" (click)="ouvreChoix( 'livres' )">Choisir</ion-button>
+      </ion-item-divider>
+    </ion-list>
+
+    @if( idLivres().length > 0 )
+    {
+      <div class="formulaire livres-choisis">
+        @for( id of idLivres(); track id )
+        {
+          <ion-chip (click)="retireLivre( id )">
+            <ion-label>{{ titreLivre( id ) }}</ion-label>
+            <ion-icon name="close-circle"></ion-icon>
+          </ion-chip>
+        }
+      </div>
+    }
+
+    @if( erreur() != "" )
+    {
+      <ion-note color="danger" class="formulaire">{{erreur()}}</ion-note>
+    }
+
+    @if( p.id > 0 && serviceConfig.peut( 'comptes.gerer' ) )
+    {
+      <app-acces-compte class="formulaire" [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom"></app-acces-compte>
+    }
+
+    @if( protege() )
+    {
+      <ion-note color="medium" class="formulaire">Cette personne a un rôle égal ou supérieur au vôtre : vous ne pouvez pas la modifier.</ion-note>
+    }
+
+    <div class="formulaire boutons">
+      <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler</ion-button>
+      @if( p.id > 0 && serviceConfig.peut( 'personnes.supprimer' ) )
+      {
+        <ion-button fill="outline" color="danger" [disabled]="protege()" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+      }
+      <ion-button [disabled]="envoiEnCours() || protege()" (click)="onEnregistrer()">Enregistrer</ion-button>
+    </div>
+
+    <!-- Choix d'un stand -->
+    <ion-modal [isOpen]="modalStand()" (didDismiss)="modalStand.set(false)">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button (click)="modalStand.set(false)">Annuler</ion-button>
+            </ion-buttons>
+            <ion-title>Ajouter un stand</ion-title>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-searchbar placeholder="Numéro ou exposant" [debounce]="200" (ionInput)="rechercheModal.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-list>
+            @for( x of exposantsTrouves(); track x.id )
+            {
+              <ion-item button [detail]="false" (click)="onChoisirStand( x )">
+                <ion-label>{{x.nom}}</ion-label>
+                <ion-note slot="end">{{x.numLieu}}</ion-note>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
+    <!-- Choix des livres -->
+    <ion-modal [isOpen]="modalLivres()" (didDismiss)="modalLivres.set(false)">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Livres écrits ({{idLivres().length}})</ion-title>
+            <ion-buttons slot="end">
+              <ion-button [strong]="true" (click)="modalLivres.set(false)">OK</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-searchbar placeholder="Titre ou auteur" [debounce]="200" (ionInput)="rechercheModal.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-list>
+            @for( livre of livresTrouves(); track livre.id )
+            {
+              <ion-item>
+                <ion-checkbox justify="start" labelPlacement="end" [checked]="estChoisi( livre )"
+                              (ionChange)="onCocheLivre( livre, $event.detail.checked )">
+                  <div class="titre-livre">{{livre.titre}}</div>
+                  <div class="auteur">{{livre.nom}}</div>
+                </ion-checkbox>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  }
+  @else
+  {
+    <ion-list class="liste">
+      @for( p of personnesTrouvees(); track p.id )
+      {
+        <ion-item button (click)="onModifier( p )">
+          <ion-avatar slot="start">
+            @if( p.photo )
+            {
+              <img [src]="p.photo" alt="" loading="lazy" (error)="p.photo = ''">
+            }
+            @else
+            {
+              <div class="sans-image"></div>
+            }
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ nomPersonne( p ) }}</h2>
+            <p>
+              @if( rolesStaff.includes( p.specialite ) )
+              {
+                <span class="staff">staff</span>
+              }
+              {{p.specialite}}{{ p.type == "J" ? " | jeunesse" : "" }}{{ p.stands ? " | stand " + p.stands : "" }}
+            </p>
+          </ion-label>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">Aucune personne trouvée</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <!-- Gestion des spécialités -->
+  <ion-modal [isOpen]="modalRoles()" (didDismiss)="modalRoles.set(false)">
+    <ng-template>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Spécialités</ion-title>
+          <ion-buttons slot="end">
+            <ion-button [strong]="true" (click)="modalRoles.set(false)">OK</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content>
+        <ion-list>
+          @for( specialite of specialites(); track specialite )
+          {
+            <ion-item>
+              <ion-label>{{specialite}}</ion-label>
+              <ion-note slot="end">{{ nbAvecRole( specialite ) }}</ion-note>
+              <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="majRole( specialite, true )">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-button>
+            </ion-item>
+          }
+          <ion-item>
+            <ion-input placeholder="Nouvelle spécialité" maxlength="20" [(ngModel)]="nouveauRole" (keyup.enter)="onAjouterRole()"></ion-input>
+            <ion-button slot="end" (click)="onAjouterRole()">Ajouter</ion-button>
+          </ion-item>
+        </ion-list>
+        @if( erreur() != "" )
+        {
+          <ion-note color="danger" class="ion-padding">{{erreur()}}</ion-note>
+        }
+      </ion-content>
+    </ng-template>
+  </ion-modal>
+
+  <ion-alert
+    [isOpen]="alerteSupprimer()"
+    (didDismiss)="alerteSupprimer.set(false)"
+    header="Supprimer la personne ?"
+    [message]="personne()?.prenom + ' ' + personne()?.nom + ' sera retiré(e) des stands et de ses livres'"
+    [buttons]="boutonsSupprimer">
+  </ion-alert>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

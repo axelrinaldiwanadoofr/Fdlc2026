@@ -1,0 +1,190 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Configuration des livres</ion-title>
+    @if( !livre() )
+    {
+      <ion-buttons slot="end">
+        <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouveau livre</ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+  @if( !livre() )
+  {
+    <ion-toolbar>
+      <ion-segment [value]="filtre()" (ionChange)="filtre.set( $any($event.detail.value) )">
+        <ion-segment-button value="tous">
+          <ion-label>Tous</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="editeur">
+          <ion-label>Sans éditeur</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="auteur">
+          <ion-label>Sans auteur</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-searchbar placeholder="Titre, auteur ou éditeur" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+    </ion-toolbar>
+  }
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  @if( livre(); as l )
+  {
+    <ion-list class="formulaire">
+      <ion-item>
+        <ion-input label="Titre *" labelPlacement="stacked" [(ngModel)]="l.titre" maxlength="80"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Genre" labelPlacement="stacked" interface="popover" [(ngModel)]="l.genre">
+          <ion-select-option [value]="null">Aucun</ion-select-option>
+          @for( genre of genres(); track genre )
+          {
+            <ion-select-option [value]="genre">{{genre}}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      <ion-item button [detail]="true" (click)="ouvreChoix( 'editeur' )">
+        <ion-label>
+          <p>Éditeur</p>
+          <h3>{{ nomEditeur( l.idEditeur ) }}</h3>
+        </ion-label>
+      </ion-item>
+      <ion-item button [detail]="true" (click)="ouvreChoix( 'auteurs' )">
+        <ion-label>
+          <p>Auteurs</p>
+          <h3>{{ idPersonnes().length == 0 ? "Aucun auteur" : idPersonnes().length + " auteur(s)" }}</h3>
+        </ion-label>
+      </ion-item>
+      @if( idPersonnes().length > 0 )
+      {
+        <div class="choisis">
+          @for( id of idPersonnes(); track id )
+          {
+            <ion-chip (click)="retireAuteur( id )">
+              <ion-label>{{ nomAuteur( id ) }}</ion-label>
+              <ion-icon name="close-circle"></ion-icon>
+            </ion-chip>
+          }
+        </div>
+      }
+      <ion-item>
+        <ion-textarea label="Résumé" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="l.resume" maxlength="1000"></ion-textarea>
+      </ion-item>
+    </ion-list>
+
+    @if( erreur() != "" )
+    {
+      <ion-note color="danger" class="formulaire">{{erreur()}}</ion-note>
+    }
+
+    <div class="formulaire boutons">
+      <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler</ion-button>
+      @if( l.id > 0 )
+      {
+        <ion-button fill="outline" color="danger" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+      }
+      <ion-button (click)="onEnregistrer()">Enregistrer</ion-button>
+    </div>
+
+    <!-- Choix de l'éditeur -->
+    <ion-modal [isOpen]="modalEditeur()" (didDismiss)="modalEditeur.set(false)">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-buttons slot="start">
+              <ion-button (click)="modalEditeur.set(false)">Annuler</ion-button>
+            </ion-buttons>
+            <ion-title>Éditeur</ion-title>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-searchbar placeholder="Nom de l'exposant" [debounce]="200" (ionInput)="rechercheModal.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-list>
+            <ion-item button [detail]="false" (click)="onChoisirEditeur( -1 )">
+              <ion-label color="medium">Aucun éditeur</ion-label>
+            </ion-item>
+            @for( x of exposantsTrouves(); track x.id )
+            {
+              <ion-item button [detail]="false" (click)="onChoisirEditeur( x.id )">
+                <ion-label>{{x.nom}}</ion-label>
+                <ion-note slot="end">{{ x.numLieu ? "Stand " + x.numLieu : "" }}</ion-note>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+
+    <!-- Choix des auteurs -->
+    <ion-modal [isOpen]="modalAuteurs()" (didDismiss)="modalAuteurs.set(false)">
+      <ng-template>
+        <ion-header>
+          <ion-toolbar>
+            <ion-title>Auteurs ({{idPersonnes().length}})</ion-title>
+            <ion-buttons slot="end">
+              <ion-button [strong]="true" (click)="modalAuteurs.set(false)">OK</ion-button>
+            </ion-buttons>
+          </ion-toolbar>
+          <ion-toolbar>
+            <ion-searchbar placeholder="Nom de la personne" [debounce]="200" (ionInput)="rechercheModal.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+          </ion-toolbar>
+        </ion-header>
+        <ion-content>
+          <ion-list>
+            @for( p of personnesTrouvees(); track p.id )
+            {
+              <ion-item>
+                <ion-checkbox justify="start" labelPlacement="end" [checked]="estAuteur( p )"
+                              (ionChange)="onCocheAuteur( p, $event.detail.checked )">{{ nomPersonne( p ) }}</ion-checkbox>
+              </ion-item>
+            }
+          </ion-list>
+        </ion-content>
+      </ng-template>
+    </ion-modal>
+  }
+  @else
+  {
+    <ion-list class="liste">
+      @for( l of livresTrouves(); track l.id )
+      {
+        <ion-item button (click)="onModifier( l )">
+          <ion-label class="ion-text-wrap">
+            <h2>{{l.titre || "(sans titre)"}}</h2>
+            <p>{{ l.nom || "Sans auteur" }} | {{ l.editeur || "Sans éditeur" }}{{ l.genre ? " | " + l.genre : "" }}</p>
+          </ion-label>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">Aucun livre trouvé</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-alert
+    [isOpen]="alerteSupprimer()"
+    (didDismiss)="alerteSupprimer.set(false)"
+    header="Supprimer le livre ?"
+    [message]="livre()?.titre + ' sera retiré de ses auteurs et des événements'"
+    [buttons]="boutonsSupprimer">
+  </ion-alert>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

@@ -6,23 +6,29 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $id = isset($_GET["id"]) ? intval($_GET["id"]) : 0 ;
+    if( isset( $_GET["id"] ) )
+    {
+        $sql = "select l.id, l.titre, l.resume, l.genre, e.nom as editeur "
+             . "from " . Connexion::$tables["livre"] . " l "
+             . "left join " . Connexion::$tables["exposant"] . " e on e.id = l.idEditeur "
+             . "where l.id = :id" ;
 
-    $sql = "select distinct id, titre, resume, genre, editeur, nom, prenom, nomExposant from " . Connexion::$tables["LivreEditeurPersonneExposant"] . " where id = :id limit 1" ;
+        $cursor = $bd->prepare( $sql ) ;
+        $cursor->execute( [ "id" => $_GET["id"] ] ) ;
 
-    $cursor = $bd->prepare( $sql ) ;
-    $cursor->bindValue( ":id", $id, PDO::PARAM_INT ) ;
-    $cursor->execute() ;
+        $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
+    }
+    else
+    {
+        $data = [] ;
+    }
 
-    $data = $cursor->fetch( PDO::FETCH_ASSOC ) ;
-
-    header('Content-Type: application/json; charset=utf-8');
     echo json_encode( $data ) ;
-
 }
 catch( PDOException $erreur )
 {
-    echo "Probleme d'acces a la BD " . $erreur->getMessage() ;
+    error_log( $erreur->getMessage() ) ;
+    echo "Probleme d'acces à la BD" ;
 }
 
 ?>

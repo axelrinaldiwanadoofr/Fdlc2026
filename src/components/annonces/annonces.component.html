@@ -1,0 +1,8 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+@for( annonce of annonces(); track annonce.id )
+{
+  <div class="annonce" [class]="'annonce-' + annonce.couleur">
+    <ion-icon name="megaphone-outline"></ion-icon>
+    <span>{{annonce.texte}}</span>
+  </div>
+}

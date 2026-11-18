@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import {Observable} from "rxjs" ;
 import { FormsModule } from '@angular/forms';
 
-import {LieuService } from '../../servcies/lieu.service';
+import {LieuService } from '../../services/lieu.service';
 import {Lieu} from "../../modeles/Lieu" ;
 
 import { 
@@ -43,6 +43,7 @@ export class NomLieuComboComponent  implements OnInit
   // Communication avec Web component parent
   public    label = input("Lieu") ;
   public    typeLieu = input("") ;
+  public    avecExposant = input(false) ;
   public    onLieuSelected = output<string>() ;
 
   constructor( serviceLieu: LieuService ) 
@@ -52,14 +53,14 @@ export class NomLieuComboComponent  implements OnInit
 
   ngOnInit() 
   {
-    this.listeLieux = this.serviceLieu.getTousLesLieux( "", this.typeLieu() ) ;
+    this.listeLieux = this.serviceLieu.getTousLesLieux( "", this.typeLieu(), this.avecExposant() ) ;
   }
 
   // Exécuté quand l'utilisateur modifie le nom dans l'ion-input
   onNomChanged( event: any )
   {
     // Raffraichit la liste à chaque frappe d'une touche
-    this.listeLieux = this.serviceLieu.getTousLesLieux( this.nom, this.typeLieu() ) ;
+    this.listeLieux = this.serviceLieu.getTousLesLieux( this.nom, this.typeLieu(), this.avecExposant() ) ;
     this.showList.set( true ) ;
     // Envoie l'événement onLieuSelected au web component parent 
     this.onLieuSelected.emit( this.nom ) ;
