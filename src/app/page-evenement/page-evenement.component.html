@@ -113,14 +113,4 @@
       <ion-button fill="outline" routerLink="/page-liste-evenements" routerDirection="back">Retour au programme</ion-button>
     </div>
   }
-
-
-  <app-titre-livre-combo
-    (titreSelectionne)="titreChoisi = $event">
-  </app-titre-livre-combo>
-
-
-  @if (titreChoisi) {
-    <p>Vous avez sélectionné : {{ titreChoisi }}</p>
-  }
 </ion-content>

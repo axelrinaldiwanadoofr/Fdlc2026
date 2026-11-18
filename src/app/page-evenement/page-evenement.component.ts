@@ -15,7 +15,6 @@ import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
 import { calendarOutline, locationOutline, micOutline, peopleOutline, bookOutline, mapOutline, chevronForward, arrowBack } from 'ionicons/icons';
 
-import { TitreLivreComboComponent } from '../../components/titre-livre-combo/titre-livre-combo.component';
 import { EvenementService } from '../../services/evenement.service';
 import { Evenement } from '../../modeles/Evenement';
 
@@ -34,7 +33,6 @@ import { Evenement } from '../../modeles/Evenement';
     IonButton,
     IonMenuButton,
     RouterLink,
-    TitreLivreComboComponent
   ],
 })
 export class PageEvenementComponent implements OnInit {
@@ -44,9 +42,6 @@ export class PageEvenementComponent implements OnInit {
   // La page affiche UN événement, et non toute la liste.
   public evenement = signal<Evenement | null>(null);
   public message = signal('Choisissez un événement depuis la liste des événements.');
-
-  // Conserve le test de communication avec la combobox.
-  public titreChoisi: string = '';
 
   constructor(private serviceEvenement: EvenementService) {
     addIcons({ calendarOutline, locationOutline, micOutline, peopleOutline, bookOutline, mapOutline, chevronForward, arrowBack });
