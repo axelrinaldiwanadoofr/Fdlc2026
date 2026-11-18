@@ -27,12 +27,29 @@ export class EvenementService
         return this.http.get<string[]>( "php/evenement/themes-evenements.php", { params } ) ;
     }
 
-    getTousLesEvenements(): Observable<Evenement[]> {
-    return this.http.get<Evenement[]>(
-        'php/evenement/tous-les-evenements.php'
-    );
+    getTousLesEvenements(): Observable<Evenement[]> 
+    {
+      return this.http.get<Evenement[]>(
+        'php/evenement/tous-les-evenements.php' );
     }
 
+    getEvenementById( id: number ): Observable<Evenement[]> 
+    {
+      return this.http.get<Evenement[]>(
+        'php/evenement/evenement-id.php?id=' + id );
+    }
 
+    getEvenementsByTheme( theme: string ): Observable<Evenement[]> 
+    {
+      return this.http.get<Evenement[]>(
+        'php/evenement/evenements-theme.php?theme=' + encodeURIComponent(theme) );
+    }
 
-}
+    getTitresEvenements(): Observable<string[]> 
+    {
+        return this.http.get<string[]>(
+        'http://localhost/Fdlc2026/php/evenement/titres-evenements.php' );
+    }
+
+ }
+
