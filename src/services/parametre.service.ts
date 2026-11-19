@@ -19,6 +19,7 @@ export class ParametreService
         fin: "2026-11-22",
         lieu: "Parc des Expositions de Colmar",
         lienLycee: "https://lyceecamilleseecolmar.fr",
+        siteFestival: "",
         contact: "le lycée Camille Sée de Colmar, qui héberge l'application",
         professeur: "M. Axel RINALDI",
         etudiants: "Don-Divin KISSANGOU MABIALA\nÉlodie VERMOYAL-DESAPHY\nKevin MEYER\nKenisha HAAS\nLiam EHRHARD\nMathieu SIMON\n"
@@ -32,6 +33,7 @@ export class ParametreService
 
     public dates = computed( () => this.texteDates( this.reglages().debut, this.reglages().fin ) ) ;
     public affiche = computed( () => this.reglages().affiche || "assets/afficheFdlc2026.jpg" ) ;
+    public jours = computed( () => this.listeJours( this.reglages().debut, this.reglages().fin ) ) ;
     public etudiants = computed( () => this.reglages().etudiants.split( "\n" ).map( ( e: string ) => e.trim() ).filter( ( e: string ) => e != "" ) ) ;
 
     constructor( http: HttpClient )
@@ -85,6 +87,24 @@ export class ParametreService
     {
         let morceaux = texte.split( "-" ) ;
         return new Date( Number( morceaux[0] ), Number( morceaux[1] ) - 1, Number( morceaux[2] ) ) ;
+    }
+
+    // jours du festival pour les listes de choix : [{ date: "2026-11-21", nom: "Samedi 21" }...]
+    listeJours( debut: string, fin: string ): any[]
+    {
+        let jours = [] ;
+        let format = new Intl.DateTimeFormat( "fr-FR", { weekday: "long", day: "numeric" } ) ;
+        let jour = this.date( debut ) ;
+        let dernier = this.date( fin ) ;
+
+        while( jour <= dernier && jours.length < 10 )
+        {
+            let nom = format.format( jour ) ;
+            let date = jour.getFullYear() + "-" + String( jour.getMonth() + 1 ).padStart( 2, "0" ) + "-" + String( jour.getDate() ).padStart( 2, "0" ) ;
+            jours.push( { date: date, nom: nom.charAt( 0 ).toUpperCase() + nom.slice( 1 ) } ) ;
+            jour.setDate( jour.getDate() + 1 ) ;
+        }
+        return jours ;
     }
 
     // "21 et 22 novembre 2026", "21 novembre 2026" ou "30 novembre au 2 décembre 2026"

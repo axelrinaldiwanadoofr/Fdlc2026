@@ -1,0 +1,51 @@
+<!-- Auteur: Kevin MEYER - 19/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Partager l'appli</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="partage">
+    <div class="carte">
+      <h1>{{ serviceParametre.reglages().titre }}</h1>
+      <p>Faites scanner ce code avec l'appareil photo d'un téléphone pour ouvrir l'application.</p>
+      <svg class="qr" [attr.viewBox]="'0 0 ' + taille + ' ' + taille" role="img" aria-label="QR code de l'application">
+        <rect [attr.width]="taille" [attr.height]="taille" fill="#fff"></rect>
+        <path [attr.d]="chemin" fill="#1c1f3a"></path>
+      </svg>
+      <p class="adresse">{{ adresseCourte }}</p>
+    </div>
+
+    <div class="boutons">
+      @if( partageDisponible )
+      {
+        <ion-button expand="block" (click)="onPartager()">
+          <ion-icon slot="start" name="share-social-outline"></ion-icon>
+          Envoyer le lien
+        </ion-button>
+      }
+      <ion-button expand="block" fill="outline" (click)="onCopier()">
+        <ion-icon slot="start" name="copy-outline"></ion-icon>
+        Copier le lien
+      </ion-button>
+      <ion-button expand="block" fill="clear" (click)="onTelecharger()">
+        <ion-icon slot="start" name="download-outline"></ion-icon>
+        Télécharger le QR code
+      </ion-button>
+    </div>
+  </div>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

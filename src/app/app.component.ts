@@ -16,7 +16,7 @@ import {
   IonRouterOutlet } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { homeOutline, calendarOutline, storefrontOutline, peopleOutline, locationOutline, bookOutline,
-         starOutline, mapOutline, informationCircleOutline } from 'ionicons/icons';
+         starOutline, mapOutline, shareSocialOutline, informationCircleOutline } from 'ionicons/icons';
 import { ParametreService } from '../services/parametre.service';
 
 @Component({
@@ -52,6 +52,7 @@ export class AppComponent
     { titre: "Liste des livres", lien: "/liste-livres-page", icone: "book-outline" },
     { titre: "Mon planning", lien: "/page-planning-personnel", icone: "star-outline" },
     { titre: "Plan du salon", lien: "/plans", icone: "map-outline" },
+    { titre: "Partager l'appli", lien: "/partager", icone: "share-social-outline" },
     { titre: "À propos", lien: "/a-propos", icone: "information-circle-outline" }
   ] ;
 
@@ -61,7 +62,7 @@ export class AppComponent
   {
     this.serviceParametre = serviceParametre ;
     addIcons( { homeOutline, calendarOutline, storefrontOutline, peopleOutline, locationOutline, bookOutline,
-                starOutline, mapOutline, informationCircleOutline } ) ;
+                starOutline, mapOutline, shareSocialOutline, informationCircleOutline } ) ;
 
     // Ionic cache l'ancienne page (aria-hidden) : on retire le focus du lien cliqué avant de changer de page
     router.events.subscribe( evenement =>

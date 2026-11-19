@@ -22,6 +22,12 @@
         {{ serviceParametre.reglages().titre }}, les {{ serviceParametre.dates() }} au {{ serviceParametre.reglages().lieu }}
       </ion-label>
     </ion-item>
+    @if( serviceParametre.reglages().siteFestival )
+    {
+      <ion-item [href]="serviceParametre.reglages().siteFestival" target="_blank" rel="noopener" detail="true">
+        <ion-label>Site officiel du festival</ion-label>
+      </ion-item>
+    }
 
     <ion-item-divider color="light" sticky>
       <ion-label>Étudiants</ion-label>

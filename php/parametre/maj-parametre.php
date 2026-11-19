@@ -13,7 +13,7 @@ function valeurValide( $cle, $valeur )
     if( !is_string( $valeur ) ) return false ;
     if( $cle == "accueil" ) return in_array( $valeur, ["ancien", "nouveau"] ) ;
     if( $cle == "debut" || $cle == "fin" ) return preg_match( "/^\d{4}-\d{2}-\d{2}$/", $valeur ) == 1 ;
-    if( $cle == "lienLycee" ) return $valeur == "" || preg_match( "/^https?:\/\/\S+$/", $valeur ) == 1 ;
+    if( $cle == "lienLycee" || $cle == "siteFestival" ) return $valeur == "" || preg_match( "/^https?:\/\/\S+$/", $valeur ) == 1 ;
     if( $cle == "affiche" || preg_match( "/^plan[1-9]$/", $cle ) ) return $valeur == "" || preg_match( "/^assets\/reglages\/[\w.-]+$/", $valeur ) == 1 ;
     if( in_array( $cle, ["titre", "lieu", "contact", "professeur"] ) ) return mb_strlen( $valeur ) <= 200 ;
     if( $cle == "etudiants" ) return mb_strlen( $valeur ) <= 3000 ;

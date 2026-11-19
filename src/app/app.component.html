@@ -21,6 +21,10 @@
     <ion-footer class="pied-menu">
       <p class="dates">{{ serviceParametre.dates() }}</p>
       <p>{{ serviceParametre.reglages().lieu }}</p>
+      @if( serviceParametre.reglages().siteFestival )
+      {
+        <a [href]="serviceParametre.reglages().siteFestival" target="_blank" rel="noopener">Site officiel du festival</a>
+      }
       <ion-menu-toggle auto-hide="false">
         <a routerLink="/donnees-personnelles">Données personnelles</a>
       </ion-menu-toggle>

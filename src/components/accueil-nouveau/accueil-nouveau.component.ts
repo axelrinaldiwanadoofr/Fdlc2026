@@ -4,7 +4,7 @@ import { Component, OnInit, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } from 'ionicons/icons';
+import { calendarOutline, mapOutline, peopleOutline, starOutline, shareSocialOutline, chevronForward, openOutline } from 'ionicons/icons';
 
 import { AnnoncesComponent } from '../annonces/annonces.component';
 import { EvenementService } from '../../services/evenement.service';
@@ -42,7 +42,7 @@ export class AccueilNouveauComponent implements OnInit
   {
     this.serviceEvenement = serviceEvenement ;
     this.serviceParametre = serviceParametre ;
-    addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } ) ;
+    addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, shareSocialOutline, chevronForward, openOutline } ) ;
   }
 
   // texte de la puce en haut a gauche selon le jour

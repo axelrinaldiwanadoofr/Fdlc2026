@@ -56,7 +56,7 @@ export class PageConfigReglagesPage
 
   protected valeurs = signal<any>( null ) ;
   protected halls = [1, 2, 3, 4, 5] ;
-  protected cles = ["titre", "debut", "fin", "lieu", "affiche", "plan1", "plan2", "plan3", "plan4", "plan5", "professeur", "etudiants", "lienLycee", "contact"] ;
+  protected cles = ["titre", "debut", "fin", "lieu", "affiche", "plan1", "plan2", "plan3", "plan4", "plan5", "professeur", "etudiants", "lienLycee", "siteFestival", "contact"] ;
 
   // image en cours d'envoi ("affiche", "plan2"...)
   protected envoi = signal( "" ) ;
@@ -152,9 +152,10 @@ export class PageConfigReglagesPage
       this.erreur.set( "Le dernier jour doit être après le premier" ) ;
       return ;
     }
-    if( valeurs.lienLycee != "" && !/^https?:\/\/\S+$/.test( valeurs.lienLycee ) )
+    if( ( valeurs.lienLycee != "" && !/^https?:\/\/\S+$/.test( valeurs.lienLycee ) ) ||
+        ( valeurs.siteFestival != "" && !/^https?:\/\/\S+$/.test( valeurs.siteFestival ) ) )
     {
-      this.erreur.set( "Le lien du lycée doit commencer par https://" ) ;
+      this.erreur.set( "Les liens doivent commencer par https://" ) ;
       return ;
     }
 
