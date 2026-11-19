@@ -27,7 +27,7 @@ export class AccueilNouveauComponent implements OnInit
   protected serviceEvenement: EvenementService ;
   protected evenements = signal<Evenement[]>( [] ) ;
   protected charge = signal( false ) ;
-  protected joursAvant: number = 0 ;
+  protected moment: string[] = [] ;
 
   protected liens = [
     { titre: "Programme", icone: "calendar-outline", couleur: "#1f8a5b", lien: "/page-liste-evenements" },
@@ -40,15 +40,21 @@ export class AccueilNouveauComponent implements OnInit
   {
     this.serviceEvenement = serviceEvenement ;
     addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward } ) ;
-    this.joursAvant = this.calculeJoursAvant() ;
+    this.moment = this.calculeMoment() ;
   }
 
-  // nombre de jours avant le samedi du festival (0 ou moins a partir du samedi)
-  calculeJoursAvant(): number
+  // texte de la puce en haut a gauche selon le jour
+  calculeMoment(): string[]
   {
     let aujourdhui = new Date() ;
     aujourdhui.setHours( 0, 0, 0, 0 ) ;
-    return Math.round( ( new Date( 2026, 10, 21 ).getTime() - aujourdhui.getTime() ) / 86400000 ) ;
+    let jours = Math.round( ( new Date( 2026, 10, 21 ).getTime() - aujourdhui.getTime() ) / 86400000 ) ;
+
+    if( jours > 1 ) return ["Ouverture", "dans " + jours + " jours"] ;
+    if( jours == 1 ) return ["Ouverture", "demain"] ;
+    if( jours == 0 ) return ["Ouvert aujourd'hui", "samedi 21"] ;
+    if( jours == -1 ) return ["Ouvert aujourd'hui", "dimanche 22"] ;
+    return ["Merci de votre visite", "à l'année prochaine"] ;
   }
 
   // les 4 prochains événements a partir de maintenant
