@@ -31,6 +31,9 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   // Lieu à mettre en évidence sur le plan (-1 = aucun)
   public    numLieu = input<number>( -1 ) ;
 
+  // Petit plan dans une autre page : sans l'aide ni le message "pas encore placé"
+  public    compact = input<boolean>( false ) ;
+
   // Page appelée quand on clique sur un stand, le num du lieu est ajouté à la fin
   public    lienPage = input<string>( "/page-lieu" ) ;
 
@@ -171,7 +174,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
     this.dejaSitue = true ;
 
-    if( lieu.x1 == null ) this.messageSituer.set( this.nomLieu( lieu ) + " n'est pas encore placé sur le plan" ) ;
+    if( lieu.x1 == null && !this.compact() ) this.messageSituer.set( this.nomLieu( lieu ) + " n'est pas encore placé sur le plan" ) ;
   }
 
   onClickZone( lieu: Lieu )

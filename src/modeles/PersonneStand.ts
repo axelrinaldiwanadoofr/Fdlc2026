@@ -6,6 +6,7 @@ export class PersonneStand
     public idPersonne: number = -1 ;
     public prenom: string = "" ;
     public nom: string = "" ;
+    public photo: string | null = null ;
     public samedi_am: number = 0 ;
     public samedi_pm: number = 0 ;
     public dimanche_am: number = 0 ;

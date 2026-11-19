@@ -3,11 +3,14 @@
 import { Component, OnChanges, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
-import { IonList, IonItemDivider, IonItem, IonLabel, IonNote, IonButton } from '@ionic/angular';
+import { IonList, IonItemDivider, IonItem, IonLabel, IonNote, IonButton, IonAvatar, IonIcon } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { personOutline } from 'ionicons/icons';
 
 import { PersonneStand } from '../../modeles/PersonneStand';
 import { Exposant } from '../../modeles/Exposant';
 import { ExposantService } from '../../services/exposant.service';
+import { ParametreService } from '../../services/parametre.service';
 
 // un créneau de présence sur un stand
 class Creneau
@@ -38,38 +41,61 @@ class Creneau
     IonLabel,
     IonNote,
     IonButton,
+    IonAvatar,
+    IonIcon,
     RouterLink
   ],
 })
 export class PersonnesStandComponent implements OnChanges
 {
-  public idExposant = input.required<number>() ;
+  // stand d'un exposant, ou un lieu entier (page du lieu)
+  public idExposant = input<number>( -1 ) ;
+  public numLieu = input<number>( -1 ) ;
 
   protected personnes = signal<PersonneStand[]>( [] ) ;
   protected exposants = signal<Exposant[]>( [] ) ;
 
-  protected creneaux: Creneau[] = [
-    new Creneau( "samedi_am", "Samedi matin", "2026-11-21T09:00", "2026-11-21T13:00" ),
-    new Creneau( "samedi_pm", "Samedi après-midi", "2026-11-21T13:00", "2026-11-21T19:00" ),
-    new Creneau( "dimanche_am", "Dimanche matin", "2026-11-22T09:00", "2026-11-22T13:00" ),
-    new Creneau( "dimanche_pm", "Dimanche après-midi", "2026-11-22T13:00", "2026-11-22T19:00" ),
-  ] ;
+  protected creneaux: Creneau[] = [] ;
 
   // créneau en cours pendant le festival, sinon null
   protected creneauActuel: Creneau | null = null ;
 
   protected serviceExposant: ExposantService ;
+  protected serviceParametre: ParametreService ;
 
-  constructor( serviceExposant: ExposantService )
+  constructor( serviceExposant: ExposantService, serviceParametre: ParametreService )
   {
     this.serviceExposant = serviceExposant ;
+    this.serviceParametre = serviceParametre ;
+    addIcons( { personOutline } ) ;
   }
 
   ngOnChanges()
   {
+    this.creneaux = this.creeCreneaux() ;
     this.creneauActuel = this.trouveCreneau( new Date() ) ;
+
+    if( this.numLieu() != -1 )
+    {
+      this.serviceExposant.getPersonnesLieu( this.numLieu() ).subscribe( personnes => this.personnes.set( personnes ) ) ;
+      return ;
+    }
     this.serviceExposant.getPersonnesExposant( this.idExposant() ).subscribe( personnes => this.personnes.set( personnes ) ) ;
     this.serviceExposant.getExposantsStand( this.idExposant() ).subscribe( exposants => this.exposants.set( exposants ) ) ;
+  }
+
+  // matin et après-midi des deux jours du festival (dates de la page Réglages)
+  private creeCreneaux(): Creneau[]
+  {
+    let jours = this.serviceParametre.jours() ;
+    let samedi = jours[0]?.date ?? this.serviceParametre.reglages().debut ;
+    let dimanche = jours[1]?.date ?? samedi ;
+    return [
+      new Creneau( "samedi_am", "Samedi matin", samedi + "T09:00", samedi + "T13:00" ),
+      new Creneau( "samedi_pm", "Samedi après-midi", samedi + "T13:00", samedi + "T19:00" ),
+      new Creneau( "dimanche_am", "Dimanche matin", dimanche + "T09:00", dimanche + "T13:00" ),
+      new Creneau( "dimanche_pm", "Dimanche après-midi", dimanche + "T13:00", dimanche + "T19:00" )
+    ] ;
   }
 
   private trouveCreneau( date: Date ): Creneau | null

@@ -9,6 +9,16 @@
     @for( p of personnesTriees(); track p.idPersonne )
     {
       <ion-item button [routerLink]="['/page-personne', p.idPersonne]">
+        <ion-avatar slot="start">
+          @if( p.photo )
+          {
+            <img [src]="p.photo" alt="" loading="lazy">
+          }
+          @else
+          {
+            <ion-icon name="person-outline"></ion-icon>
+          }
+        </ion-avatar>
         <ion-label>
           <h3>{{p.prenom}} {{p.nom}}</h3>
           <p>{{ quand( p ) }}</p>

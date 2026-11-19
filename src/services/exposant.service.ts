@@ -72,6 +72,12 @@ export class ExposantService
     }
 
     // Autres exposants qui partagent le stand
+    // Personnes présentes sur un lieu, tous exposants confondus
+    getPersonnesLieu( num: number ): Observable<PersonneStand[]>
+    {
+        return this.http.get<PersonneStand[]>( "php/exposant/personnes-exposant.php?num=" + num ) ;
+    }
+
     getExposantsStand( id: number ): Observable<Exposant[]>
     {
         return this.http.get<Exposant[]>( "php/exposant/exposants-stand.php?id=" + id ) ;

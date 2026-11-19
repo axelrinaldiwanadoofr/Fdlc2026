@@ -13,3 +13,17 @@
     margin: 0;
     text-transform: none;
 }
+
+ion-avatar
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--ion-color-light);
+}
+
+ion-avatar ion-icon
+{
+    font-size: 20px;
+    color: var(--ion-color-medium);
+}
