@@ -28,16 +28,6 @@
             <ion-input label="Titre de l'événement" labelPlacement="stacked" [(ngModel)]="saisieTitreEvenement" (keyup.enter)="onFiltrer()"></ion-input>
           </ion-item>
           <ion-item>
-            <ion-input label="Spécialité" labelPlacement="stacked" [(ngModel)]="saisieSpecialite" (keyup.enter)="onFiltrer()"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-input label="Nom de l'exposant" labelPlacement="stacked" [(ngModel)]="saisieNomExposant" (keyup.enter)="onFiltrer()"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-input label="Titre de l'événement" labelPlacement="stacked" [(ngModel)]="saisieTitreEvenement" (keyup.enter)="onFiltrer()"></ion-input>
-          </ion-item>
-          <ion-item>
-
             <ion-button (click)="onFiltrer()">Filtrer</ion-button>
             <ion-button fill="outline" (click)="reinitialiser()">Réinitialiser</ion-button>
           </ion-item>
