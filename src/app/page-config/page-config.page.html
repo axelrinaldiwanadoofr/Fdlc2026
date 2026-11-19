@@ -16,85 +16,80 @@
   }
   @else if( serviceConfig.compte(); as compte )
   {
-    <div class="profil">
-      <div class="avatar" [style.background]="compte.couleur">{{ initiale( compte.nom ) }}</div>
-      <div class="qui">
-        <strong>{{compte.nom}}</strong>
-        <span class="role" [style.background]="compte.couleur">{{compte.role}}</span>
-      </div>
-      <ion-button fill="outline" size="small" (click)="ouvreChangementMdp()">Mon mot de passe</ion-button>
-      <ion-button fill="outline" size="small" [routerLink]="['/config-mes-donnees']">Mes données</ion-button>
-      <ion-button fill="clear" size="small" color="medium" (click)="onDeconnexion()">Se déconnecter</ion-button>
-    </div>
-
-    @if( compte.rootParDefaut )
-    {
-      <div class="bandeau">
-        <ion-icon name="warning-outline"></ion-icon>
-        <span>Le mot de passe par défaut du compte root n'a pas encore été changé.
-          @if( compte.estRoot )
-          {
-            <a (click)="ouvreChangementMdp()">Le changer maintenant</a>
-          }
-        </span>
-      </div>
-    }
-
-    @if( totalAFaire() > 0 )
-    {
-      <ion-item class="resume" button lines="none" [routerLink]="['/config-controle']">
-        <ion-icon slot="start" name="checkmark-done-outline" color="warning"></ion-icon>
-        <ion-label>
-          <h2>{{totalAFaire()}} points à vérifier avant le festival</h2>
-          <p>Voir le détail dans le contrôle des données</p>
-        </ion-label>
-      </ion-item>
-    }
-
-    @for( section of sectionsVisibles(); track section.titre )
-    {
-      <h3 class="section">{{section.titre}}</h3>
-      <div class="grille">
-        @for( page of section.pages; track page.titre )
-        {
-          <button class="tuile" (click)="ouvre( page )">
-            <div class="icone" [style.background]="page.couleur">
-              <ion-icon [name]="page.icone"></ion-icon>
-            </div>
-            <div class="texte">
-              <strong>{{page.titre}}</strong>
-              <span>{{page.texte}}</span>
-            </div>
-            @if( page.alerte && nombre( page.alerte ) > 0 )
-            {
-              <ion-badge color="warning">{{ nombre( page.alerte ) }}</ion-badge>
-            }
-          </button>
-        }
-      </div>
-    }
-    @empty
-    {
-      <p class="vide">Votre rôle ne donne accès à aucune page de configuration pour l'instant.</p>
-    }
-
-    @if( serviceConfig.peut( "accueil.modifier" ) )
-    {
-      <h3 class="section">Le site</h3>
-      <div class="grille">
-        <div class="tuile reglage">
-          <div class="icone site">
-            <ion-icon name="home-outline"></ion-icon>
-          </div>
-          <div class="texte">
-            <strong>Nouvelle page d'accueil</strong>
-            <span>{{ serviceParametre.accueil() == "nouveau" ? "Affichée pour tous les visiteurs" : "L'ancienne page est affichée" }}</span>
-          </div>
-          <ion-toggle class="interrupteur" aria-label="Nouvelle page d'accueil" [checked]="serviceParametre.accueil() == 'nouveau'"
-                      (ionChange)="onChangeAccueil( $event )"></ion-toggle>
+    <div class="page">
+      <div class="profil">
+        <div class="avatar" [style.background]="compte.couleur">{{ initiale( compte.nom ) }}</div>
+        <div class="qui">
+          <strong>{{compte.nom}}</strong>
+          <span [style.color]="compte.couleur">{{compte.role}}</span>
         </div>
       </div>
-    }
+      <div class="actions">
+        <button (click)="ouvreChangementMdp()">Mon mot de passe</button>
+        <a [routerLink]="['/config-mes-donnees']">Mes données</a>
+        <button class="sortie" (click)="onDeconnexion()">Se déconnecter</button>
+      </div>
+
+      @if( compte.rootParDefaut )
+      {
+        <p class="bandeau">
+          Le mot de passe par défaut du compte root n'a pas encore été changé.
+          @if( compte.estRoot )
+          {
+            <a (click)="ouvreChangementMdp()">Le changer</a>
+          }
+        </p>
+      }
+
+      @if( totalAFaire() > 0 )
+      {
+        <a class="bandeau" [routerLink]="['/config-controle']">
+          {{totalAFaire()}} points à vérifier avant le festival
+        </a>
+      }
+
+      @for( section of sectionsVisibles(); track section.titre )
+      {
+        <h2>{{section.titre}}</h2>
+        <div class="bloc">
+          @for( page of section.pages; track page.titre )
+          {
+            <button class="ligne" (click)="ouvre( page )">
+              <ion-icon [name]="page.icone" [style.color]="page.couleur"></ion-icon>
+              <span class="texte">
+                <strong>{{page.titre}}</strong>
+                <span>{{page.texte}}</span>
+              </span>
+              @if( page.alerte && nombre( page.alerte ) > 0 )
+              {
+                <span class="nombre">{{ nombre( page.alerte ) }}</span>
+              }
+              <ion-icon class="suite" name="chevron-forward"></ion-icon>
+            </button>
+          }
+        </div>
+      }
+      @empty
+      {
+        <p class="vide">Votre rôle ne donne accès à aucune page de configuration pour l'instant.</p>
+      }
+
+      @if( serviceConfig.peut( "accueil.modifier" ) )
+      {
+        <h2>Le site</h2>
+        <div class="bloc">
+          <div class="ligne">
+            <ion-icon name="home-outline" color="primary"></ion-icon>
+            <span class="texte">
+              <strong>Nouvelle page d'accueil</strong>
+              <span>{{ serviceParametre.accueil() == "nouveau" ? "Affichée pour tous les visiteurs" : "L'ancienne page est affichée" }}</span>
+            </span>
+            <ion-toggle class="interrupteur" aria-label="Nouvelle page d'accueil" [checked]="serviceParametre.accueil() == 'nouveau'"
+                        (ionChange)="onChangeAccueil( $event )"></ion-toggle>
+          </div>
+        </div>
+      }
+    </div>
   }
   @else
   {

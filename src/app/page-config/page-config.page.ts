@@ -12,21 +12,19 @@ import {
   IonBackButton,
   IonList,
   IonItem,
-  IonLabel,
   IonInput,
   IonButton,
   IonNote,
   IonToast,
   IonModal,
   IonIcon,
-  IonBadge,
   IonSpinner,
   IonToggle,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
          checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
-         warningOutline, homeOutline } from 'ionicons/icons';
+         homeOutline, chevronForward } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { ParametreService } from '../../services/parametre.service';
@@ -68,15 +66,13 @@ class PageConfig
     IonBackButton,
     IonList,
     IonItem,
-    IonLabel,
-    IonInput,
+      IonInput,
     IonButton,
     IonNote,
     IonToast,
     IonModal,
     IonIcon,
-    IonBadge,
-    IonSpinner,
+      IonSpinner,
     IonToggle,
     FormsModule,
     RouterLink
@@ -148,7 +144,7 @@ export class PageConfigPage
     this.router = router ;
     addIcons( { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
                 checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
-                warningOutline, homeOutline } ) ;
+                homeOutline, chevronForward } ) ;
 
     effect( () =>
     {

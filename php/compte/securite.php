@@ -9,7 +9,7 @@ require_once __DIR__ . "/../Connexion.php" ;
 // Tables ajoutées depuis la base de départ : si un Connexion.php ne les a pas,
 // elles prennent le même préfixe que la table personne (fdlc_compte...)
 $prefixeTables = substr( Connexion::$tables["personne"], 0, -strlen( "personne" ) ) ;
-foreach( ["compte", "role", "permission", "journal", "annonce", "typeexposant", "invite"] as $nomTable )
+foreach( ["compte", "role", "permission", "journal", "annonce", "typeexposant", "invite", "parametre"] as $nomTable )
 {
     if( !isset( Connexion::$tables[$nomTable] ) ) Connexion::$tables[$nomTable] = $prefixeTables . $nomTable ;
 }
