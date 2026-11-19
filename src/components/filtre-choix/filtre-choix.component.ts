@@ -1,6 +1,8 @@
 import { Component, computed, input, output, signal } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import {
   IonModal,
+  IonPopover,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -23,9 +25,9 @@ export interface OptionFiltre {
 }
 
 // Web component : filtre à choix unique avec recherche dans la liste.
-// Affiche un champ compact (libellé + valeur choisie) ; au clic, une fenêtre
-// s'ouvre avec une barre de recherche (accents et majuscules ignorés) et la liste.
-// Sur téléphone la fenêtre s'ouvre par le bas (feuille), sur ordinateur au centre.
+// Affiche une pastille compacte (« Auteur ▾ », ou « Auteur : Ian Manook ✕ » quand un choix est fait) ;
+// au clic, une liste défilante s'ouvre avec une recherche (accents et majuscules ignorés).
+// Sur téléphone la liste s'ouvre dans une feuille par le bas, sur ordinateur en menu déroulant.
 //
 // Inputs :
 //   label       : nom du filtre ("Auteur")
@@ -33,7 +35,6 @@ export interface OptionFiltre {
 //   valeur      : valeur choisie (valeurVide = aucun filtre)
 //   valeurVide  : valeur "pas de filtre" ("" ou -1)
 //   libelleVide : choix "pas de filtre" dans la liste ("Tous les auteurs")
-//   libelleChampVide : texte du champ fermé sans filtre ("Tous" : le nom du filtre est déjà au-dessus)
 // Output :
 //   valeurChange : nouvelle valeur choisie
 //
@@ -46,7 +47,7 @@ export interface OptionFiltre {
   templateUrl: './filtre-choix.component.html',
   styleUrls: ['./filtre-choix.component.scss'],
   standalone: true,
-  imports: [IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent,
+  imports: [NgTemplateOutlet, IonModal, IonPopover, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent,
             IonSearchbar, IonList, IonItem, IonLabel, IonIcon],
 })
 export class FiltreChoixComponent {
@@ -55,20 +56,20 @@ export class FiltreChoixComponent {
   valeur = input<string | number>("");
   valeurVide = input<string | number>("");
   libelleVide = input<string>("Tous");
-  libelleChampVide = input<string>("Tous");
 
   valeurChange = output<string | number>();
 
   protected ouvert = signal(false);
   protected recherche = signal("");
-  // Sur téléphone : feuille qui monte du bas
+  // Sur téléphone : feuille qui monte du bas ; sur ordinateur : menu déroulant sous la pastille
   protected feuille = signal(false);
+  protected evenementOuverture: Event | undefined;
 
   protected actif = computed(() => this.valeur() !== this.valeurVide());
 
   protected libelleChoisi = computed(() => {
-    if (!this.actif()) return this.libelleChampVide();
-    return this.options().find(o => o.valeur === this.valeur())?.libelle ?? this.libelleChampVide();
+    if (!this.actif()) return this.libelleVide();
+    return this.options().find(o => o.valeur === this.valeur())?.libelle ?? String(this.valeur());
   });
 
   // Options contenant tous les mots tapés
@@ -85,10 +86,15 @@ export class FiltreChoixComponent {
     addIcons({ chevronDown, closeCircle, checkmark });
   }
 
-  protected ouvrir() {
+  protected ouvrir(event: Event) {
     this.recherche.set("");
+    this.evenementOuverture = event;
     this.feuille.set(window.innerWidth < 768);
     this.ouvert.set(true);
+  }
+
+  protected fermer() {
+    this.ouvert.set(false);
   }
 
   // On peut taper directement : le curseur est placé dans la recherche à l'ouverture
@@ -99,7 +105,7 @@ export class FiltreChoixComponent {
 
   protected choisir(valeur: string | number) {
     this.valeurChange.emit(valeur);
-    this.ouvert.set(false);
+    this.fermer();
   }
 
   protected effacer(event: Event) {
