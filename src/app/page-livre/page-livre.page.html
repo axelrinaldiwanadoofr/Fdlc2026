@@ -24,13 +24,60 @@
         }
       </ion-card-header>
       <ion-card-content>
-        <p><strong>Auteur :</strong> {{livre.prenom}} {{livre.nom}}</p>
-        @if( livre.nomExposant ) { <p><strong>Exposant / Stand :</strong> {{livre.nomExposant}}</p> }
+
+        <!-- Auteur(s) : un clic ouvre la page personne (la flèche indique le lien) -->
+        @if( liens().auteurs.length > 0 ) {
+          <p><strong>{{ liens().auteurs.length > 1 ? 'Auteurs' : 'Auteur' }} :</strong></p>
+          <ion-list>
+            @for( a of liens().auteurs; track a.id ) {
+              <ion-item [routerLink]="['/page-personne', a.id]" [detail]="true">
+                <ion-label>{{a.prenom}} {{a.nom}}</ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        } @else {
+          <p><strong>Auteur :</strong> {{livre.prenom}} {{livre.nom}}</p>
+        }
+
+        <!-- Exposant / stand : un clic ouvre la page exposant -->
+        @if( liens().exposants.length > 0 ) {
+          <p><strong>Exposant / Stand :</strong></p>
+          <ion-list>
+            @for( x of liens().exposants; track x.id ) {
+              <ion-item [routerLink]="['/page-exposant', x.id]" [detail]="true">
+                <ion-label>
+                  <h3>{{x.nom}}</h3>
+                  @if( x.numLieu ) { <p>Stand n° {{x.numLieu}}</p> }
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        } @else if( livre.nomExposant ) {
+          <p><strong>Exposant / Stand :</strong> {{livre.nomExposant}}</p>
+        }
+
         @if( livre.resume ) {
           <hr>
           <p><strong>Résumé :</strong></p>
           <p>{{livre.resume}}</p>
         }
+
+        <!-- Événements où le livre est présenté -->
+        @if( liens().evenements.length > 0 ) {
+          <hr>
+          <p><strong>Événements associés :</strong></p>
+          <ion-list>
+            @for( e of liens().evenements; track e.id ) {
+              <ion-item [routerLink]="['/page-evenement', e.id]" [detail]="true">
+                <ion-label class="ion-text-wrap">
+                  <h3>{{e.titre}}</h3>
+                  <p>{{ formatDate( e.debut ) }}@if( e.type ) { · {{e.type}} }</p>
+                </ion-label>
+              </ion-item>
+            }
+          </ion-list>
+        }
+
       </ion-card-content>
     </ion-card>
   } @else {
