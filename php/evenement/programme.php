@@ -8,60 +8,41 @@ header( "Content-Type: application/json; charset=utf-8" ) ;
 // Programme du festival (samedi et dimanche), déjà regroupé pour l'affichage
 // par le web component app-liste-evenements :
 // {
-//   permanents: [ { cle, nomJour, date, evenements: [ev...] } ],   // toute la journée (stands, expositions...), par jour
 //   jours:      [ { cle, nomJour, date, total,
 //                   creneaux: [ { heure, evenements: [ev...] } ] } ],  // à horaire, triés par heure
+//   permanents: [ { cle, nomJour, date, evenements: [ev...] } ],   // toute la journée (stands, expositions...), par jour
 //   sansDate:   [ev...],                                           // pas encore programmés
 //   total
 // }
 // Tous les jours du festival sont toujours renvoyés (même vides) : les onglets restent stables.
 //
-// Paramètres GET optionnels (cumulés avec AND) :
-//   recherche   : auteur, titre, mot du descriptif, lieu, animateur, livre...
-//   theme       : type d'événement exact
-//   numLieu     : numéro du lieu
-//   idAnimateur : id de la personne qui anime
-//   idPersonne  : événements d'une personne (anime, livre présenté ou citée dans le texte)
+// Paramètres GET optionnels (cumulés avec AND, voir sqlCriteres) :
+//   recherche, theme, numLieu, idAnimateur,
+//   idPersonne : personne liée (anime, livre présenté, invitée) -> filtre « Auteur »
+//   idLivre    : livre lié (présenté ou écrit par un invité)    -> filtre « Livre »
 try
 {
     $bd = Connexion::getInstance() ;
 
-    $recherche = trim( $_GET["recherche"] ?? "" ) ;
-    $theme = trim( $_GET["theme"] ?? "" ) ;
-    $numLieu = filter_input( INPUT_GET, "numLieu", FILTER_VALIDATE_INT ) ;
-    $idAnimateur = filter_input( INPUT_GET, "idAnimateur", FILTER_VALIDATE_INT ) ;
-    $idPersonne = filter_input( INPUT_GET, "idPersonne", FILTER_VALIDATE_INT ) ;
-
     // ---------- Jours du festival (même sans événement pour ces filtres) ----------
 
-    $permanents = [] ;
     $jours = [] ;
-    $dates = $bd->query( "select distinct date( ev.debut ) as d from " . Connexion::$tables["evenement"] . " as ev"
-                       . " where ev.debut is not null " . sqlPendantLeFestival() . " order by d" )->fetchAll( PDO::FETCH_COLUMN ) ;
+    $permanents = [] ;
+    $dates = $bd->query( "select distinct jourdebut from " . vue( "EvenementProgramme" )
+                       . " where pendantFestival and jourdebut is not null order by jourdebut" )->fetchAll( PDO::FETCH_COLUMN ) ;
     foreach( $dates as $d )
     {
         $jour = formaterEvenement( [ "id" => 0, "debut" => $d . " 00:00:00" ] ) ;
-        $permanents[$d] = [ "cle" => $d, "nomJour" => $jour["nomJour"], "date" => $jour["dateJour"], "evenements" => [] ] ;
         $jours[$d] = [ "cle" => $d, "nomJour" => $jour["nomJour"], "date" => $jour["dateJour"], "total" => 0, "creneaux" => [] ] ;
+        $permanents[$d] = [ "cle" => $d, "nomJour" => $jour["nomJour"], "date" => $jour["dateJour"], "evenements" => [] ] ;
     }
 
     // ---------- Événements filtrés ----------
 
-    $sql = sqlEvenements() . sqlPendantLeFestival() ;
-    if( $recherche !== "" ) $sql .= sqlRecherche() ;
-    if( $theme !== "" ) $sql .= " and ev.type = :theme " ;
-    if( $numLieu ) $sql .= " and ev.numLieu = :numLieu " ;
-    if( $idAnimateur ) $sql .= " and ev.idAnimateur = :idAnimateur " ;
-    if( $idPersonne ) $sql .= sqlPersonne() ;
-    $sql .= " order by ev.debut, ev.titre" ;
-
-    $cursor = $bd->prepare( $sql ) ;
-    if( $recherche !== "" ) $cursor->bindValue( ":recherche", texteLike( $recherche ), PDO::PARAM_STR ) ;
-    if( $theme !== "" ) $cursor->bindValue( ":theme", $theme, PDO::PARAM_STR ) ;
-    if( $numLieu ) $cursor->bindValue( ":numLieu", $numLieu, PDO::PARAM_INT ) ;
-    if( $idAnimateur ) $cursor->bindValue( ":idAnimateur", $idAnimateur, PDO::PARAM_INT ) ;
-    if( $idPersonne ) $cursor->bindValue( ":idPersonne", $idPersonne, PDO::PARAM_INT ) ;
-    $cursor->execute() ;
+    $criteres = sqlCriteres( lireCriteres() ) ;
+    $cursor = $bd->prepare( "select * from " . vue( "EvenementProgramme" ) . " as ev where ev.pendantFestival "
+                          . $criteres["sql"] . " order by ev.debut, ev.titre" ) ;
+    $cursor->execute( $criteres["valeurs"] ) ;
 
     $sansDate = [] ;
     $total = 0 ;
@@ -93,8 +74,8 @@ try
     }
 
     echo json_encode( [
-        "permanents" => array_values( $permanents ),
         "jours" => array_values( $jours ),
+        "permanents" => array_values( $permanents ),
         "sansDate" => $sansDate,
         "total" => $total,
     ], JSON_UNESCAPED_UNICODE ) ;

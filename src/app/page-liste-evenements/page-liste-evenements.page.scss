@@ -2,44 +2,87 @@
   max-width: 800px;
   margin: 0 auto;
   padding: 8px 16px 4px;
+}
+
+// Recherche + bouton Filtres sur une ligne
+.barre {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 
   ion-searchbar {
+    flex: 1;
+    min-width: 0;
     padding: 0;
-    margin-bottom: 8px;
   }
 }
 
-.selections {
+.bouton-filtres {
+  flex-shrink: 0;
+  margin: 0;
+  height: 40px;
+  text-transform: none;
+  --border-radius: 8px;
+}
+
+.pastille-nb {
+  margin-left: 6px;
+  min-width: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: var(--ion-color-primary, #3880ff);
+  color: var(--ion-color-primary-contrast, #fff);
+  font-size: 0.75rem;
+  line-height: 20px;
+  text-align: center;
+}
+
+// Bouton plein (panneau ouvert) : pastille en couleurs inversées
+.bouton-filtres[fill="solid"] .pastille-nb {
+  background: var(--ion-color-primary-contrast, #fff);
+  color: var(--ion-color-primary, #3880ff);
+}
+
+// Panneau rangé par défaut : 3 filtres par ligne sur ordinateur, 2 sur téléphone
+.panneau {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-
-  ion-select { min-width: 0; }
+  margin-top: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--ion-background-color-step-50, var(--ion-color-step-50, #f4f4f4));
+  border: 1px solid var(--ion-border-color, var(--ion-background-color-step-150, #d9d9d9));
 }
 
-.resultat {
+.actifs {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 4px;
-  font-size: 0.9rem;
-  color: var(--ion-text-color-step-400, #666);
-}
+  gap: 2px 4px;
+  margin-top: 8px;
 
-.message {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 32px 16px;
-  text-align: center;
-  color: var(--ion-text-color-step-400, #666);
+  ion-chip { margin: 0; max-width: 100%; }
+  ion-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nom-filtre { opacity: 0.75; }
+
+  .resultat {
+    margin-left: auto;
+    font-size: 0.85rem;
+    color: var(--ion-text-color-step-400, #666);
+  }
+
+  ion-button { margin: 0; text-transform: none; }
 }
 
 @media (max-width: 600px) {
-  .selections { grid-template-columns: 1fr 1fr; }
-  .selections ion-select:last-child { grid-column: 1 / -1; }
+  .panneau { grid-template-columns: 1fr 1fr; padding: 10px; }
+  .panneau app-filtre-choix:last-child:nth-child(odd) { grid-column: 1 / -1; }
 }
 
-ion-button { text-transform: none; }
-
-ion-button { text-transform: none; }
+// Téléphone : le bouton ne garde que l'icône (et le nombre de filtres), la recherche prend la place
+@media (max-width: 480px) {
+  .texte-bouton { display: none; }
+  .bouton-filtres { --padding-start: 10px; --padding-end: 8px; }
+  .bouton-filtres ion-icon[slot="start"] { margin-inline-end: 0; }
+}
