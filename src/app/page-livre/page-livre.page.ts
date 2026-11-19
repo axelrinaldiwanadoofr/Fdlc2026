@@ -1,10 +1,9 @@
 import { Component, OnInit, input, signal } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
-import { Observable } from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 
 import { LivreService } from '../../services/livre.service';
+import { LivresAuteurService } from '../../services/livres-auteur.service';
 import { Livre } from '../../modeles/Livre';
 
 import {
@@ -50,7 +49,6 @@ interface LiensLivre { auteurs: AuteurLivre[]; exposants: ExposantLivre[]; evene
     IonCardSubtitle,
     IonCardContent,
     IonCard,
-    AsyncPipe,
     RouterLink
   ]
 })
@@ -63,12 +61,16 @@ export class PageLivrePage implements OnInit
   // Auteurs, exposants et événements liés au livre
   public liens = signal<LiensLivre>( { auteurs: [], exposants: [], evenements: [] } ) ;
 
-  protected livres: Observable<Array<Livre>> | null = null;
-  protected serviceLivre: LivreService ;
+  // Couvertures trouvées à la BnF (null pendant la recherche)
+  public couvertures = signal<string[] | null>( null ) ;
 
-  constructor( serviceLivre: LivreService, private http: HttpClient )
+  protected serviceLivre: LivreService ;
+  protected serviceLivresAuteur: LivresAuteurService ;
+
+  constructor( serviceLivre: LivreService, serviceLivresAuteur: LivresAuteurService, private http: HttpClient )
   {
     this.serviceLivre = serviceLivre ;
+    this.serviceLivresAuteur = serviceLivresAuteur ;
   }
 
   ngOnInit()
@@ -85,11 +87,33 @@ export class PageLivrePage implements OnInit
       }) ;
 
       this.http.get<LiensLivre>( 'php/livre/liens-livre.php?id=' + bookId ).subscribe({
-        next: ( data ) => { if( data && data.auteurs ) this.liens.set( data ) ; },
-        error: () => { /* on garde l'affichage simple si les liens ne se chargent pas */ }
+        next: ( data ) => {
+          if( data && data.auteurs ) this.liens.set( data ) ;
+          this.chargeCouverture( bookId ) ;
+        },
+        error: () => { this.couvertures.set( [] ) ; }
       }) ;
     }
     else this.message.set( "Ce livre n'existe pas ou plus." ) ;
+  }
+
+  // Même recherche que sur la page de l'auteur : catalogue BnF puis Open Library
+  chargeCouverture( idLivre: number )
+  {
+    const auteur = this.liens().auteurs[0] ;
+    if( !auteur )
+    {
+      this.couvertures.set( [] ) ;
+      return ;
+    }
+
+    this.serviceLivresAuteur.getCouvertures( idLivre, auteur.id, auteur.prenom, auteur.nom ).subscribe( couvertures => this.couvertures.set( couvertures ) ) ;
+  }
+
+  // Image introuvable : on essaie la suivante
+  imageSuivante()
+  {
+    this.couvertures.set( ( this.couvertures() ?? [] ).slice( 1 ) ) ;
   }
 
   // Met une date SQL ("2026-11-21 10:30:00") en forme lisible

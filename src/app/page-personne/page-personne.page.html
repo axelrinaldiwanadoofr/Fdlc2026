@@ -16,6 +16,7 @@
 <ion-content>
   @if( personne | async; as p )
   {
+    <div class="page">
     <div class="profil">
       <div class="photo">
         @if( p.photo && !photoErreur() )
@@ -95,6 +96,7 @@
     </app-liste-evenements>
 
     <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
+    </div>
   }
   @else
   {
