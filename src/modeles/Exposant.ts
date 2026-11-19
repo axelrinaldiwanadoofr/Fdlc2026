@@ -5,6 +5,12 @@ export class Exposant
     public numLieu: number = -1 ;
     public nomLieu: string = "" ;
     public hall: number = -1 ;
+    public libelleExposant: string = "" ;
+    public type: string = "" ; // Type d'exposant (ex: "Auteur", "Maison d'édition", etc.)
+
+    // Remplis seulement par la page de config des exposants
+    public nbPersonnes: number = 0 ;
+    public nbLivres: number = 0 ;
 
     // Créneaux de présence de la personne chez cet exposant
     // 1 : présent, 0 : absent
@@ -19,6 +25,7 @@ export class Exposant
         nom: string = "",
         numLieu: number = -1,
         nomLieu: string = "",
+        libelle: string = "",
         samedi_am: number | null = null,
         samedi_pm: number | null = null,
         dimanche_am: number | null = null,
@@ -29,7 +36,7 @@ export class Exposant
         this.nom = nom ;
         this.numLieu = numLieu ;
         this.nomLieu = nomLieu ;
-
+        this.libelleExposant = libelle ;
         // Initialisation des créneaux de présence
         this.samedi_am = samedi_am ;
         this.samedi_pm = samedi_pm ;

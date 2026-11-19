@@ -34,7 +34,7 @@ export class ExposantCardComponent implements OnInit {
   constructor(private serviceExposant: ExposantService) {}
 
   ngOnInit() {
-    this.exposants = this.serviceExposant.getExposantParId(this.id);
+    this.exposants = this.serviceExposant.getExposantById(this.id);
   }
 
 }

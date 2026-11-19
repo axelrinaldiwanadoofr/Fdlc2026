@@ -35,3 +35,18 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 @import '@ionic/angular/css/palettes/dark.system.css';
+
+/* Interrupteurs oui / non en vert et rouge (comptes, rôles et permissions) */
+ion-toggle.interrupteur
+{
+  --track-background: #e5484d;
+  --track-background-checked: #2a9a6a;
+  --handle-background: #ffffff;
+  --handle-background-checked: #ffffff;
+}
+
+/* Ionic colore en vert (success) un champ déjà rempli et valide : on garde la couleur principale */
+ion-input, ion-textarea, ion-select, ion-item
+{
+  --highlight-color-valid: var(--ion-color-primary);
+}

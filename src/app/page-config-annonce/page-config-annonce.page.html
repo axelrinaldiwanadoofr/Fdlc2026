@@ -1,0 +1,97 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Annonces de l'accueil</ion-title>
+    @if( !annonce() )
+    {
+      <ion-buttons slot="end">
+        <ion-button fill="solid" color="primary" (click)="onNouvelle()">Nouvelle annonce</ion-button>
+      </ion-buttons>
+    }
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  @if( annonce(); as a )
+  {
+    <ion-list class="formulaire">
+      <ion-item>
+        <ion-textarea label="Texte *" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="a.texte" maxlength="300"
+                      placeholder="ex : L'atelier BD de 14h est déplacé en salle Riesling"></ion-textarea>
+      </ion-item>
+      <ion-item>
+        <ion-select label="Niveau" labelPlacement="stacked" interface="popover" [(ngModel)]="a.couleur">
+          @for( c of couleurs; track c.valeur )
+          {
+            <ion-select-option [value]="c.valeur">{{c.nom}}</ion-select-option>
+          }
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-input type="datetime-local" label="Afficher à partir de" labelPlacement="stacked" [(ngModel)]="a.debut"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input type="datetime-local" label="Jusqu'à" labelPlacement="stacked" [(ngModel)]="a.fin"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-toggle [checked]="a.active == 1" (ionChange)="a.active = $event.detail.checked ? 1 : 0">Active</ion-toggle>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-note>Sans date, l'annonce reste affichée tant qu'elle est active.</ion-note>
+      </ion-item>
+    </ion-list>
+
+    @if( erreur() != "" )
+    {
+      <ion-note color="danger" class="formulaire">{{erreur()}}</ion-note>
+    }
+
+    <div class="formulaire boutons">
+      <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler</ion-button>
+      @if( a.id > 0 )
+      {
+        <ion-button fill="outline" color="danger" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+      }
+      <ion-button (click)="onEnregistrer()">Enregistrer</ion-button>
+    </div>
+  }
+  @else
+  {
+    <ion-list class="liste">
+      @for( a of annonces(); track a.id )
+      {
+        <ion-item button (click)="onModifier( a )">
+          <ion-label class="ion-text-wrap">
+            <h2>{{a.texte}}</h2>
+            <p>{{ nomCouleur( a.couleur ) }}</p>
+          </ion-label>
+          <ion-note slot="end" [color]="etat( a ) == 'Affichée' ? 'success' : 'medium'">{{ etat( a ) }}</ion-note>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item lines="none">
+          <ion-label color="medium">Aucune annonce</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  }
+
+  <ion-alert
+    [isOpen]="alerteSupprimer()"
+    (didDismiss)="alerteSupprimer.set(false)"
+    header="Supprimer l'annonce ?"
+    [buttons]="boutonsSupprimer">
+  </ion-alert>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

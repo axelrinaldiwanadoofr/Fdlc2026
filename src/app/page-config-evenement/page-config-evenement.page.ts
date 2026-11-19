@@ -37,7 +37,7 @@ import { EvenementService } from '../../services/evenement.service';
 import { LieuService } from '../../services/lieu.service';
 import { LivreService } from '../../services/livre.service';
 import { PersonneService } from '../../services/personne.service';
-import { Evenement } from '../../modeles/Evenements';
+import { Evenement } from '../../modeles/Evenement';
 import { Etape } from '../../modeles/Etape';
 import { Lieu } from '../../modeles/Lieu';
 import { Livre } from '../../modeles/Livre';
@@ -93,8 +93,8 @@ export class PageConfigEvenementPage
   protected personnes = signal<Array<Personne>>( [] ) ;
 
   // Dates du festival pour les ion-datetime
-  protected readonly debutFestival = Etape.debutFestival ;
-  protected readonly finFestival = Etape.finFestival ;
+  protected debutFestival = Etape.debutFestival ;
+  protected finFestival = Etape.finFestival ;
 
   // Evenement en cours de modification (null = on affiche la liste)
   protected evenement = signal<Evenement | null>( null ) ;
@@ -103,7 +103,7 @@ export class PageConfigEvenementPage
   protected message = signal("") ;
   protected alerteSupprimer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
@@ -207,7 +207,7 @@ export class PageConfigEvenementPage
       return ;
     }
 
-    this.serviceEvenement.majEvenement( this.serviceConfig.mdp, evenement, this.idLivres() ).subscribe( {
+    this.serviceEvenement.majEvenement( evenement, this.idLivres() ).subscribe( {
       next: () =>
       {
         this.message.set( "Evénement enregistré" ) ;
@@ -223,7 +223,7 @@ export class PageConfigEvenementPage
     let evenement = this.evenement() ;
     if( !evenement ) return ;
 
-    this.serviceEvenement.supprimeEvenement( this.serviceConfig.mdp, evenement.id ).subscribe( {
+    this.serviceEvenement.supprimeEvenement( evenement.id ).subscribe( {
       next: () =>
       {
         this.message.set( "Evénement supprimé" ) ;
@@ -236,8 +236,8 @@ export class PageConfigEvenementPage
 
   private erreurServeur( erreur: any )
   {
-    // 403 : mot de passe refusé par le serveur
-    if( erreur.status == 403 )
+    // 401 : session expirée, on revient à la connexion
+    if( erreur.status == 401 )
     {
       this.serviceConfig.deconnexion() ;
       this.router.navigateByUrl( "/config" ) ;
@@ -261,7 +261,7 @@ export class PageConfigEvenementPage
 
   onCocheLivre( livre: Livre, coche: boolean )
   {
-    if( coche ) this.idLivres.set( [...this.idLivres(), livre.id] ) ;
+    if( coche ) this.idLivres.set( this.idLivres().concat( livre.id ) ) ;
     else this.retireLivre( livre.id ) ;
   }
 

@@ -1,0 +1,42 @@
+<!-- Auteur: Kevin MEYER - 12/11/2026 -->
+@if( personnes().length > 0 )
+{
+  <ion-list>
+    <ion-item-divider color="light">
+      <ion-label>Sur le stand</ion-label>
+      <ion-note slot="end">{{ creneauActuel ? creneauActuel.nom : personnes().length + " auteur(s)" }}</ion-note>
+    </ion-item-divider>
+    @for( p of personnesTriees(); track p.idPersonne )
+    {
+      <ion-item button [routerLink]="['/page-personne', p.idPersonne]">
+        <ion-label>
+          <h3>{{p.prenom}} {{p.nom}}</h3>
+          <p>{{ quand( p ) }}</p>
+        </ion-label>
+        @if( creneauActuel && estPresent( p, creneauActuel.champ ) )
+        {
+          <ion-note slot="end" color="success">En ce moment</ion-note>
+        }
+      </ion-item>
+    }
+  </ion-list>
+}
+
+@if( exposants().length > 0 )
+{
+  <ion-list>
+    <ion-item-divider color="light">
+      <ion-label>Aussi sur ce stand</ion-label>
+      <ion-note slot="end">{{exposants().length}}</ion-note>
+    </ion-item-divider>
+  </ion-list>
+
+  <div class="auteurs">
+    @for( x of exposants(); track x.id )
+    {
+      <ion-button fill="outline" size="small" [routerLink]="['/page-exposant', x.id]">
+        {{x.nom}}
+      </ion-button>
+    }
+  </div>
+}

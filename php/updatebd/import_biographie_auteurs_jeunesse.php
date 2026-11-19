@@ -1,3 +1,4 @@
+<?php require_once __DIR__ . "/../config/garde.php" ; ?>
 <h1>Importation du fichier biographie auteurs jeunesse</h1>
 <form enctype="multipart/form-data" action="import_biographie_auteurs_jenesse_upload.php" method="POST">
   <!-- MAX_FILE_SIZE doit précéder le champ input de type file -->

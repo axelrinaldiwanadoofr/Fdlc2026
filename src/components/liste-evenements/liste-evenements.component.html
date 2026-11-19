@@ -1,17 +1,132 @@
-<ion-list>
-  @for( evenement of listeEvenements | async; track evenement.id )
+@if( programme(); as p )
+{
+  @if( onglets() )
   {
-    @if( lienPage() != "" )
+    <!-- Onglets : Événements permanents / Samedi / Dimanche (collés en haut au défilement) -->
+    <nav class="onglets">
+      <ion-segment [value]="onglet()" (ionChange)="choisirOnglet($event)">
+        <ion-segment-button value="permanents">
+          <ion-label>Permanents <span class="compteur">{{ nbPermanents() }}</span></ion-label>
+        </ion-segment-button>
+        @for( jour of p.jours; track jour.cle )
+        {
+          <ion-segment-button [value]="jour.cle">
+            <ion-label>{{ jour.nomJour }} <span class="compteur">{{ jour.total }}</span></ion-label>
+          </ion-segment-button>
+        }
+      </ion-segment>
+    </nav>
+
+    @if( onglet() == "permanents" )
     {
-      <ion-item [routerLink]="[lienPage(), evenement.id]" [innerHTML]="itemText(evenement)"></ion-item>
+      <ng-container *ngTemplateOutlet="permanents; context: { $implicit: p }"></ng-container>
+      @if( nbPermanents() == 0 && messageVide() ) { <p class="vide">{{ messageVide() }}</p> }
     }
-    @else
+    @for( jour of p.jours; track jour.cle )
     {
-      <ion-item [innerHTML]="itemText(evenement)"></ion-item>
+      @if( jour.cle == onglet() )
+      {
+        <ng-container *ngTemplateOutlet="journee; context: { $implicit: jour }"></ng-container>
+        @if( jour.total == 0 && messageVide() ) { <p class="vide">{{ messageVide() }}</p> }
+      }
     }
   }
-  @empty
+  @else
   {
-    <ion-item lines="none">Aucun événement</ion-item>
+    <!-- Sans onglets : tout à la suite, sections vides masquées -->
+    @if( p.total == 0 && messageVide() ) { <p class="vide">{{ messageVide() }}</p> }
+    <ng-container *ngTemplateOutlet="permanents; context: { $implicit: p }"></ng-container>
+    @for( jour of p.jours; track jour.cle )
+    {
+      @if( jour.total > 0 ) { <ng-container *ngTemplateOutlet="journee; context: { $implicit: jour }"></ng-container> }
+    }
   }
-</ion-list>
+
+  <!-- Événements pas encore programmés -->
+  @if( p.sansDate.length > 0 && ( !onglets() || onglet() == "permanents" ) )
+  {
+    <section class="bloc">
+      <h2 class="entete"><span class="nom">Date à définir</span></h2>
+      <div class="cartes seules">
+        @for( evenement of p.sansDate; track evenement.id )
+        {
+          <ng-container *ngTemplateOutlet="carte; context: { $implicit: evenement }"></ng-container>
+        }
+      </div>
+    </section>
+  }
+}
+@else if( programme() === null )
+{
+  <p class="vide">Les événements n'ont pas pu être chargés.</p>
+}
+@else
+{
+  <p class="vide">Chargement…</p>
+}
+
+<!-- Événements permanents (stands, expositions...), un bloc par jour -->
+<ng-template #permanents let-p>
+  @for( jour of p.permanents; track jour.cle )
+  {
+    @if( jour.evenements.length > 0 )
+    {
+      <section class="bloc">
+        <h2 class="entete">
+          <span class="nom">{{ onglets() ? jour.nomJour : "Toute la journée" }}</span>
+          <span class="date">{{ onglets() ? jour.date : jour.nomJour + " " + jour.date }}</span>
+          <span class="nb">{{ pluriel(jour.evenements.length, "événement") }}</span>
+        </h2>
+        <div class="cartes seules">
+          @for( evenement of jour.evenements; track evenement.id )
+          {
+            <ng-container *ngTemplateOutlet="carte; context: { $implicit: evenement }"></ng-container>
+          }
+        </div>
+      </section>
+    }
+  }
+</ng-template>
+
+<!-- Un jour : frise horaire, l'heure en gros à gauche et les événements du créneau à droite -->
+<ng-template #journee let-jour>
+  <section class="bloc">
+    <h2 class="entete">
+      <span class="nom">{{ jour.nomJour }}</span>
+      <span class="date">{{ jour.date }}</span>
+      <span class="nb">{{ pluriel(jour.total, "événement") }}</span>
+    </h2>
+    <ol class="frise">
+      @for( creneau of jour.creneaux; track creneau.heure )
+      {
+        <li class="creneau">
+          <div class="heure"><span>{{ creneau.heure }}</span></div>
+          <div class="cartes">
+            @for( evenement of creneau.evenements; track evenement.id )
+            {
+              <ng-container *ngTemplateOutlet="carte; context: { $implicit: evenement }"></ng-container>
+            }
+          </div>
+        </li>
+      }
+    </ol>
+  </section>
+</ng-template>
+
+<!-- Carte d'un événement -->
+<ng-template #carte let-evenement>
+  <a class="carte" [class.cliquable]="lienPage() != ''" [routerLink]="lien(evenement)">
+    <div class="contenu">
+      @if( evenement.type ) { <p class="type">{{ evenement.type }}</p> }
+      <h3 class="titre">{{ evenement.titre }}</h3>
+      @if( evenement.stitre ) { <p class="sous-titre">{{ evenement.stitre }}</p> }
+      <p class="meta">
+        @if( evenement.nomLieu ) { <span><ion-icon name="location-outline" aria-hidden="true"></ion-icon>{{ evenement.nomLieu }}</span> }
+        @if( evenement.animateur ) { <span><ion-icon name="mic-outline" aria-hidden="true"></ion-icon>{{ evenement.animateur }}</span> }
+        @if( evenement.heureFin ) { <span><ion-icon name="time-outline" aria-hidden="true"></ion-icon>jusqu'à {{ evenement.heureFin }}</span> }
+      </p>
+      @if( evenement.commentaire ) { <p class="description">{{ evenement.commentaire }}</p> }
+    </div>
+    @if( lienPage() != "" ) { <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon> }
+  </a>
+</ng-template>

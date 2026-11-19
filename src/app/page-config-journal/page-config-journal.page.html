@@ -1,0 +1,34 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Journal</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar placeholder="Action, identifiant ou détail" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list class="liste">
+    @for( l of lignesTrouvees(); track $index )
+    {
+      <ion-item>
+        <ion-label class="ion-text-wrap">
+          <h3 [class.echec]="estEchec( l.action )">{{l.action}}</h3>
+          <p>{{ l.identifiant || "?" }}{{ l.detail ? " | " + l.detail : "" }}</p>
+        </ion-label>
+        <ion-note slot="end">{{ date( l.date ) }}<br>{{l.ip}}</ion-note>
+      </ion-item>
+    }
+    @empty
+    {
+      <ion-item lines="none">
+        <ion-label color="medium">Rien dans le journal</ion-label>
+      </ion-item>
+    }
+  </ion-list>
+  <p class="info">Les actions de plus de 6 mois sont effacées automatiquement.</p>
+</ion-content>

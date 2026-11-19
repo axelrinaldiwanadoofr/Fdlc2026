@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from "rxjs" ;
 
-import { DebutEvenementService } from '../../servcies/debut-evenement.service';
+import { DebutEvenementService } from '../../services/debut-evenement.service';
 
 import {
   IonInput,

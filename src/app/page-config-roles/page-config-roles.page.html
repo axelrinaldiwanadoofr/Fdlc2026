@@ -1,0 +1,116 @@
+<!-- Auteur: Kevin MEYER - 16/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Rôles et permissions</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="page">
+
+    <div class="liste-roles">
+      <ion-list>
+        <ion-item lines="none" class="root">
+          <span slot="start" class="pastille root"></span>
+          <ion-label>Root</ion-label>
+          <ion-icon slot="end" name="lock-closed-outline" color="medium"></ion-icon>
+        </ion-item>
+        @for( r of rolesFixes(); track r.id )
+        {
+          <ion-item button [detail]="false" [class.choisi]="role()?.id == r.id" (click)="choisir( r )">
+            <span slot="start" class="pastille" [style.background]="r.couleur"></span>
+            <ion-label>
+              <h3>{{r.nom}}</h3>
+              <p>{{r.nbComptes}} compte(s)</p>
+            </ion-label>
+            <ion-icon slot="end" name="lock-closed-outline" color="medium"></ion-icon>
+          </ion-item>
+        }
+        <ion-reorder-group [disabled]="false" (ionReorderEnd)="onDeplace( $event )">
+          @for( r of rolesDeplacables(); track r.id )
+          {
+            <ion-item button [detail]="false" [class.choisi]="role()?.id == r.id" (click)="choisir( r )">
+              <span slot="start" class="pastille" [style.background]="r.couleur"></span>
+              <ion-label>
+                <h3>{{r.nom}}</h3>
+                <p>{{r.nbComptes}} compte(s)</p>
+              </ion-label>
+              <ion-reorder slot="end" aria-label="Glisser pour changer la position"></ion-reorder>
+            </ion-item>
+          }
+        </ion-reorder-group>
+      </ion-list>
+      <ion-button expand="block" fill="outline" (click)="onNouveau()">
+        <ion-icon slot="start" name="add-outline"></ion-icon>
+        Créer un rôle
+      </ion-button>
+      <p class="aide">Glissez un rôle avec la poignée pour le monter ou le descendre : plus il est haut, plus il a de pouvoir.
+        Un rôle ne gère que les comptes et les rôles placés en dessous de lui.</p>
+    </div>
+
+    @if( role(); as r )
+    {
+      <div class="detail">
+        <ion-list>
+          <ion-item>
+            <ion-input label="Nom" labelPlacement="stacked" maxlength="40" [disabled]="!r.modifiable" [(ngModel)]="r.nom" (ionInput)="touche()"></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label>Couleur</ion-label>
+            <input slot="end" type="color" aria-label="Couleur du rôle" [disabled]="!r.modifiable" [(ngModel)]="r.couleur" (input)="touche()">
+          </ion-item>
+
+          @for( g of groupes(); track g.nom )
+          {
+            <ion-item-divider color="light">
+              <ion-label>{{g.nom}}</ion-label>
+            </ion-item-divider>
+            @for( p of g.permissions; track p.code )
+            {
+              <ion-item>
+                <ion-toggle class="interrupteur" justify="space-between" [checked]="estAutorisee( p.code )" [disabled]="!peutDonner( p.code )"
+                            (ionChange)="onBascule( p.code, $event.detail.checked )">{{p.texte}}</ion-toggle>
+              </ion-item>
+            }
+          }
+        </ion-list>
+
+        @if( r.id > 0 && r.modifiable )
+        {
+          <ion-button fill="clear" color="danger" [disabled]="r.nbComptes > 0" (click)="alerteSupprimer.set(true)">Supprimer ce rôle</ion-button>
+          @if( r.nbComptes > 0 )
+          {
+            <ion-note>Donné à {{r.nbComptes}} compte(s) : changez-les de rôle avant de le supprimer.</ion-note>
+          }
+        }
+      </div>
+    }
+  </div>
+
+  @if( modifie() || erreur() != "" )
+  {
+    <div class="barre">
+      <span>{{ erreur() != "" ? erreur() : "Modifications non enregistrées" }}</span>
+      <ion-button fill="clear" color="light" (click)="onAnnuler()">Annuler</ion-button>
+      <ion-button color="success" (click)="onEnregistrer()">Enregistrer</ion-button>
+    </div>
+  }
+
+  <ion-alert
+    [isOpen]="alerteSupprimer()"
+    (didDismiss)="alerteSupprimer.set(false)"
+    header="Supprimer le rôle ?"
+    [message]="role()?.nom + ' sera supprimé avec ses permissions'"
+    [buttons]="boutonsSupprimer">
+  </ion-alert>
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

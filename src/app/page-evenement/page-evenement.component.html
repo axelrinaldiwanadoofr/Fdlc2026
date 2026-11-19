@@ -1,0 +1,111 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/page-liste-evenements"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Détail de l'événement</ion-title>
+    <ion-buttons slot="end"><ion-menu-button></ion-menu-button></ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  @if (evenement(); as e) {
+    <article class="fiche">
+      <header class="entete">
+        @if (e.type) { <p class="type">{{ e.type }}</p> }
+        <h1>{{ e.titre }}</h1>
+        @if (e.stitre) { <p class="sous-titre">{{ e.stitre }}</p> }
+      </header>
+
+      <!-- Quand / où / avec qui -->
+      <ul class="infos">
+        <li>
+          <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+          <div>
+            @if (e.nomJour) {
+              <strong>{{ e.nomJour }} {{ e.dateJour }}</strong>
+              <span class="horaire">
+                @if (e.touteLaJournee) { Toute la journée }
+                @else { {{ e.heure }}@if (e.heureFin) { – {{ e.heureFin }} } }
+              </span>
+            } @else {
+              <strong>Date à définir</strong>
+            }
+          </div>
+        </li>
+
+        <li>
+          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+          <div>
+            @if (e.numLieu != -1) {
+              <a [routerLink]="['/page-lieu', e.numLieu]"><strong>{{ e.nomLieu || 'Lieu n° ' + e.numLieu }}</strong></a>
+              @if (e.hall) { <span class="horaire">Hall {{ e.hall }}</span> }
+            } @else {
+              <strong>Lieu non précisé</strong>
+            }
+          </div>
+        </li>
+
+        @if (e.idAnimateur != -1 && e.animateur) {
+          <li>
+            <ion-icon name="mic-outline" aria-hidden="true"></ion-icon>
+            <div>
+              <span class="libelle">Animé par</span>
+              <a [routerLink]="['/page-personne', e.idAnimateur]"><strong>{{ e.animateur }}</strong></a>
+            </div>
+          </li>
+        }
+
+        @if (e.public) {
+          <li>
+            <ion-icon name="people-outline" aria-hidden="true"></ion-icon>
+            <div>
+              <span class="libelle">Public</span>
+              <strong>{{ e.public }}</strong>
+            </div>
+          </li>
+        }
+      </ul>
+
+      @if (e.hall && e.numLieu != -1) {
+        <ion-button class="bouton-plan" fill="outline" expand="block"
+                    [routerLink]="['/plans', e.hall]" [queryParams]="{ numLieu: e.numLieu }">
+          <ion-icon slot="start" name="map-outline"></ion-icon>
+          Voir sur le plan
+        </ion-button>
+      }
+
+      @if (e.commentaire) {
+        <section>
+          <h2>Présentation</h2>
+          <p class="description">{{ e.commentaire }}</p>
+        </section>
+      }
+
+      @if (e.livres && e.livres.length > 0) {
+        <section>
+          <h2>Livres présentés</h2>
+          <ul class="livres">
+            @for (livre of e.livres; track livre.id) {
+              <li>
+                <a [routerLink]="['/page-livre', livre.id]">
+                  <ion-icon name="book-outline" aria-hidden="true"></ion-icon>
+                  <span>
+                    <strong>{{ livre.titre }}</strong>
+                    @if (livre.auteurs) { <span class="auteurs">{{ livre.auteurs }}</span> }
+                  </span>
+                  <ion-icon class="chevron" name="chevron-forward" aria-hidden="true"></ion-icon>
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    </article>
+  } @else {
+    <div class="message">
+      <p>{{ message() }}</p>
+      <ion-button fill="outline" routerLink="/page-liste-evenements" routerDirection="back">Retour au programme</ion-button>
+    </div>
+  }
+</ion-content>

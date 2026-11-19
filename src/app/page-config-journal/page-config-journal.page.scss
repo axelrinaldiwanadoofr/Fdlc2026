@@ -1,0 +1,27 @@
+// Auteur: Kevin MEYER - 16/11/2026
+
+.liste
+{
+    display: block;
+    max-width: 760px;
+    margin: auto;
+}
+
+.info
+{
+    max-width: 760px;
+    margin: 12px auto;
+    font-size: 0.85em;
+    color: var(--ion-color-medium);
+}
+
+.echec
+{
+    color: var(--ion-color-danger);
+}
+
+ion-note
+{
+    font-size: 0.8em;
+    text-align: right;
+}

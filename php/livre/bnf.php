@@ -5,14 +5,14 @@
 // Fonctions pour interroger la BnF
 // Une seule requete a la fois avec une pause d'1 seconde, sinon la BnF bloque l'adresse du serveur
 
-function dossierCache( string $nom ): string
+function dossierCache( $nom )
 {
     $dossier = sys_get_temp_dir() . "/" . $nom ;
     if( !is_dir( $dossier ) ) mkdir( $dossier ) ;
     return $dossier ;
 }
 
-function telecharge( string $url ): string | false
+function telecharge( $url )
 {
     // si la BnF nous a bloqué on attend 30 minutes avant de réessayer
     $pause = sys_get_temp_dir() . "/fdlc2026-bnf-pause" ;
@@ -35,7 +35,7 @@ function telecharge( string $url ): string | false
 }
 
 // XML des livres imprimés d'un auteur, gardé 7 jours en cache
-function xmlBnf( string $prenom, string $nom ): string | false
+function xmlBnf( $prenom, $nom )
 {
     $fichier = dossierCache( "fdlc2026-bnf" ) . "/" . md5( mb_strtolower( $nom . " " . $prenom ) ) . ".xml" ;
 

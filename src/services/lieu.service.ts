@@ -16,7 +16,13 @@ export class LieuService
         this.http = http ;
     }
 
-    getTousLesLieux( nom: string="", type: string = "" ): Observable<Lieu[]>
+    getTousLesLieux(
+        nom: string="",
+        type: string = "",
+        avecExposant: boolean = false,
+        nomExposant: string = "",
+        nomPersonne: string = "",
+        titreEvenement: string = "" ): Observable<Lieu[]>
     {
         let first = true ;
         let url: string = "php/lieu/tous-les-lieux.php" ;
@@ -32,6 +38,34 @@ export class LieuService
         {
             url += (first)? "?" : "&" ;
             url += "type=" + encodeURIComponent( type ) ;
+            first = false ;
+        }
+
+        if( avecExposant )
+        {
+            url += (first)? "?" : "&" ;
+            url += "avecExposant=1" ;
+            first = false ;
+        }
+
+        if( nomExposant != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "nomExposant=" + encodeURIComponent( nomExposant ) ;
+            first = false ;
+        }
+
+        if( nomPersonne != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "nomPersonne=" + encodeURIComponent( nomPersonne ) ;
+            first = false ;
+        }
+
+        if( titreEvenement != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "titreEvenement=" + encodeURIComponent( titreEvenement ) ;
             first = false ;
         }
 
@@ -58,10 +92,9 @@ export class LieuService
     }
 
     // Enregistre la zone d'un lieu sur le plan, x1 = null pour la supprimer
-    majZoneLieu( mdp: string, lieu: Lieu ): Observable<any>
+    majZoneLieu( lieu: Lieu ): Observable<any>
     {
         return this.http.post( "php/lieu/maj-zone-lieu.php", {
-            mdp: mdp,
             num: lieu.num,
             hall: lieu.hall,
             x1: lieu.x1,
@@ -69,6 +102,23 @@ export class LieuService
             x2: lieu.x2,
             y2: lieu.y2
         } ) ;
+    }
+
+    // Lieux pour la page de config, avec le nombre d'exposants et d'événements
+    getConfigLieux(): Observable<Lieu[]>
+    {
+        return this.http.get<Lieu[]>( "php/lieu/config-lieux.php" ) ;
+    }
+
+    // Crée (nouveau = true) ou modifie un lieu
+    majLieu( lieu: Lieu, nouveau: boolean ): Observable<any>
+    {
+        return this.http.post( "php/lieu/maj-lieu.php", { lieu: lieu, nouveau: nouveau } ) ;
+    }
+
+    supprimeLieu( num: number ): Observable<any>
+    {
+        return this.http.post( "php/lieu/supprime-lieu.php", { num: num } ) ;
     }
 
     getLieuByNum( num: number ): Observable<Lieu[]>

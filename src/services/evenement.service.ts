@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { Evenement } from "../modeles/Evenement";
+import { CriteresProgramme, FiltresProgramme, Programme } from "../modeles/Programme";
 
 
 @Injectable( {
@@ -26,6 +27,8 @@ export class EvenementService {
   getTousLesEvenements(
     titre: string = "",
     debut: string = "",
+    jourdebut: string = "",
+    heuredebut: string = "",
     nomAnimateur: string = "",
     titreLivre: string = "",
     numLieu: number = -1
@@ -36,6 +39,8 @@ export class EvenementService {
     const criteres: [string, string | number, boolean][] = [
       ["titre", titre, titre !== ""],
       ["debut", debut, debut !== ""],
+      ["jourdebut", jourdebut, jourdebut !== ""],
+      ["heuredebut", heuredebut, heuredebut !== ""],
       ["nomAnimateur", nomAnimateur, nomAnimateur !== ""],
       ["titreLivre", titreLivre, titreLivre !== ""],
       ["numLieu", numLieu, numLieu !== -1],
@@ -52,9 +57,29 @@ export class EvenementService {
     return this.http.get<Evenement[]>(url);
   }
 
+  // Programme du samedi et du dimanche, déjà regroupé (événements permanents, puis par jour et par heure).
+  // Critères vides ("" / -1) ignorés, les autres se cumulent (AND).
+  getProgramme(criteres: Partial<CriteresProgramme> = {}): Observable<Programme> {
+    let params = new HttpParams();
+
+    const recherche = (criteres.recherche ?? "").trim();
+    if (recherche !== "") params = params.set("recherche", recherche);
+    if ((criteres.theme ?? "") !== "") params = params.set("theme", criteres.theme!);
+    if ((criteres.numLieu ?? -1) !== -1) params = params.set("numLieu", criteres.numLieu!);
+    if ((criteres.idAnimateur ?? -1) !== -1) params = params.set("idAnimateur", criteres.idAnimateur!);
+    if ((criteres.idPersonne ?? -1) !== -1) params = params.set("idPersonne", criteres.idPersonne!);
+
+    return this.http.get<Programme>("php/evenement/programme.php", { params });
+  }
+
+  // Choix proposés par les filtres de la page des événements (thèmes, lieux, animateurs)
+  getFiltresEvenements(): Observable<FiltresProgramme> {
+    return this.http.get<FiltresProgramme>("php/evenement/filtres-evenements.php");
+  }
+
   getEvenementById(id: number = -1): Observable<Evenement[]> {
     let first = true;
-    let url = "php/evenement/evenement-by-id.php";
+    let url = "php/evenement/evenement-id.php";
 
     if (id !== -1) {
       url += first ? "?" : "&";
@@ -78,17 +103,16 @@ export class EvenementService {
   }
 
   // Ajoute (id = -1) ou modifie un evenement avec ses livres, renvoie l'id de l'evenement
-  majEvenement( mdp: string, evenement: Evenement, idLivres: number[] ): Observable<{ id: number }>
+  majEvenement( evenement: Evenement, idLivres: number[] ): Observable<{ id: number }>
   {
       return this.http.post<{ id: number }>( "php/evenement/maj-evenement.php", {
-          mdp: mdp,
           evenement: evenement,
           idLivres: idLivres
       } ) ;
   }
 
-  supprimeEvenement( mdp: string, id: number ): Observable<any>
+  supprimeEvenement( id: number ): Observable<any>
   {
-      return this.http.post( "php/evenement/supprime-evenement.php", { mdp: mdp, id: id } ) ;
+      return this.http.post( "php/evenement/supprime-evenement.php", { id: id } ) ;
   }
 }

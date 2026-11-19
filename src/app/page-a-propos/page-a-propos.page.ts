@@ -1,6 +1,7 @@
 // Auteur: Kevin MEYER - 09/11/2026
 
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   IonContent,
   IonHeader,
@@ -14,7 +15,11 @@ import {
   IonNote,
   IonItem,
   IonLabel,
+  IonButton,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { settingsOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 
 // Page A propos : les etudiants et le professeur qui ont fait le projet
 @Component({
@@ -31,14 +36,22 @@ import {
     IonMenuButton,
     IonList,
     IonItemDivider,
-  IonNote,
+    IonNote,
     IonItem,
     IonLabel,
+    IonButton,
+    IonIcon,
+    RouterLink
   ]
 })
 export class PageAProposPage
 {
   protected professeur: string = "M. Axel RINALDI" ;
+
+  constructor()
+  {
+    addIcons( { settingsOutline, shieldCheckmarkOutline } ) ;
+  }
 
   // Etudiants de la classe, ranges par ordre alphabetique du prenom
   protected etudiants: Array<string> = [

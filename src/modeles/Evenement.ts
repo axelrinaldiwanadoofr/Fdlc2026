@@ -1,3 +1,5 @@
+// Modèle de master, avec les champs de détail additionnels renvoyés par notre PHP.
+
 
 export class Evenement
 {
@@ -11,6 +13,22 @@ export class Evenement
     public fin: string = "" ;             // date et heure de fin
     public idAnimateur: number = -1 ;     // id personne qui anime
     public numLieu: number = -1 ;         // num du lieu où se déroule l'événement
+    public heuredebut: string = "" ;      // heure de début ("HH:MM")
+    public jourdebut: string = "" ;      // jour de début ("AAAA-MM-JJ")
+    public type: string = "" ;             // type de l'événement (conférence, dédicace, etc.)
+    public nomLieu: string = "" ;          // nom du lieu où se déroule l'événement
+    public nomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
+    public prenomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
+
+    // Champs d'affichage calculés par le PHP (evenement-commun.php : programme.php, evenement-id.php)
+    public animateur?: string ;           // "Prénom Nom" de l'animateur
+    public hall?: number | null ;         // hall du lieu
+    public nomJour?: string ;             // "Samedi"
+    public dateJour?: string ;            // "21 novembre"
+    public touteLaJournee?: boolean ;     // présent toute la journée (stands, expositions...)
+    public heure?: string ;               // "10h30" ("" si toute la journée)
+    public heureFin?: string ;            // "11h30" ("" si inconnue)
+    public livres?: { id: number, titre: string, auteurs: string }[] ;   // livres présentés (evenement-id.php)
 
     constructor( 
         id: number = -1, 
@@ -34,5 +52,18 @@ export class Evenement
         this.fin = fin ;
         this.idAnimateur = idAnimateur ;
         this.numLieu = numLieu ;
+        this.heuredebut = debut ? debut.substring( 11, 16 ) : "" ;
+        this.jourdebut = debut ? debut.substring( 0, 10 ) : "" ;
     }
+
+    /*
+    get heuredebut(): string
+    {
+        return this.debut ? this.debut.substring( 11, 16 ) : "" ;
+    }
+
+    get jourdebut(): string
+    {
+        return this.debut ? this.debut.substring( 0, 10 ) : "" ;
+    }*/
 }

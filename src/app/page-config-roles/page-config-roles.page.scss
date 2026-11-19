@@ -1,0 +1,87 @@
+// Auteur: Kevin MEYER - 16/11/2026
+
+// liste à gauche et détail à droite, l'un sous l'autre sur téléphone
+.page
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    max-width: 1000px;
+    margin: auto;
+    padding-bottom: 80px;
+}
+
+.liste-roles
+{
+    flex: 1 1 260px;
+}
+
+.detail
+{
+    flex: 999 1 420px;
+    min-width: 0;
+}
+
+.pastille
+{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+
+.choisi
+{
+    --background: rgba(var(--ion-color-primary-rgb), 0.12);
+}
+
+.root
+{
+    opacity: 0.7;
+}
+
+.pastille.root
+{
+    opacity: 1;
+    background: #4b5563;
+}
+
+.aide
+{
+    font-size: 0.85em;
+    color: var(--ion-color-medium);
+}
+
+input[type="color"]
+{
+    width: 44px;
+    height: 32px;
+    border: none;
+    background: none;
+    cursor: pointer;
+}
+
+.barre
+{
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    width: min(700px, calc(100% - 32px));
+    box-sizing: border-box;
+    padding: 8px 8px 8px 16px;
+    border-radius: 12px;
+    color: white;
+    background: #111827;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+}
+
+.barre span
+{
+    flex: 1;
+}

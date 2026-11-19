@@ -10,6 +10,10 @@ export class Lieu
     public x2: number = 0 ;
     public y2: number = 0 ;
 
+    // Remplis seulement par la page de config des lieux
+    public nbExposants: number = 0 ;
+    public nbEvenements: number = 0 ;
+
     constructor( 
         num: number = -1, 
         nom: string = "",
