@@ -1,88 +1,36 @@
 .filtres {
   max-width: 800px;
   margin: 0 auto;
-  padding: 8px 16px 4px;
+  padding: 10px 0 2px;
 }
 
-// Recherche + bouton Filtres sur une ligne
-.barre {
+// Rangée de pastilles : défile horizontalement sur téléphone
+.pastilles {
+  display: flex;
+  gap: 8px;
+  padding: 2px 16px 6px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar { display: none; }
+}
+
+// Ordinateur : assez de place, les pastilles passent à la ligne
+@media (min-width: 768px) {
+  .pastilles { flex-wrap: wrap; overflow-x: visible; }
+}
+
+.resume {
   display: flex;
   align-items: center;
-  gap: 8px;
-
-  ion-searchbar {
-    flex: 1;
-    min-width: 0;
-    padding: 0;
-  }
-}
-
-.bouton-filtres {
-  flex-shrink: 0;
-  margin: 0;
-  height: 40px;
-  text-transform: none;
-  --border-radius: 8px;
-}
-
-.pastille-nb {
-  margin-left: 6px;
-  min-width: 20px;
-  padding: 0 6px;
-  border-radius: 10px;
-  background: var(--ion-color-primary, #3880ff);
-  color: var(--ion-color-primary-contrast, #fff);
-  font-size: 0.75rem;
-  line-height: 20px;
-  text-align: center;
-}
-
-// Bouton plein (panneau ouvert) : pastille en couleurs inversées
-.bouton-filtres[fill="solid"] .pastille-nb {
-  background: var(--ion-color-primary-contrast, #fff);
-  color: var(--ion-color-primary, #3880ff);
-}
-
-// Panneau rangé par défaut : 3 filtres par ligne sur ordinateur, 2 sur téléphone
-.panneau {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-  margin-top: 10px;
-  padding: 12px;
-  border-radius: 10px;
-  background: var(--ion-background-color-step-50, var(--ion-color-step-50, #f4f4f4));
-  border: 1px solid var(--ion-border-color, var(--ion-background-color-step-150, #d9d9d9));
-}
-
-.actifs {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px 4px;
-  margin-top: 8px;
-
-  ion-chip { margin: 0; max-width: 100%; }
-  ion-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .nom-filtre { opacity: 0.75; }
+  justify-content: space-between;
+  padding: 0 8px 0 16px;
 
   .resultat {
-    margin-left: auto;
     font-size: 0.85rem;
     color: var(--ion-text-color-step-400, #666);
   }
 
   ion-button { margin: 0; text-transform: none; }
-}
-
-@media (max-width: 600px) {
-  .panneau { grid-template-columns: 1fr 1fr; padding: 10px; }
-  .panneau app-filtre-choix:last-child:nth-child(odd) { grid-column: 1 / -1; }
-}
-
-// Téléphone : le bouton ne garde que l'icône (et le nombre de filtres), la recherche prend la place
-@media (max-width: 480px) {
-  .texte-bouton { display: none; }
-  .bouton-filtres { --padding-start: 10px; --padding-end: 8px; }
-  .bouton-filtres ion-icon[slot="start"] { margin-inline-end: 0; }
 }
