@@ -92,7 +92,7 @@ ion-input, ion-textarea, ion-select, ion-item
   src: url("assets/fonts/shrikhand-latin-400-normal.woff2") format("woff2");
 }
 
-/* Titres des barres en bleu de l'affiche */
+/* Titres des barres en gras */
 ion-title
 {
   font-weight: 700;
@@ -138,14 +138,6 @@ ion-segment-button
 {
   text-transform: none;
   letter-spacing: 0;
-}
-
-/* Listes et formulaires des pages de config en blocs blancs arrondis */
-ion-list.liste, ion-list.formulaire
-{
-  padding: 0;
-  border-radius: 16px;
-  overflow: hidden;
 }
 
 /* Trait fin sous la barre du haut au lieu de l'ombre d'Android */
