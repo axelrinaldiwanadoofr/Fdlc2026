@@ -1,53 +1,69 @@
-// Modèle commun des événements, compatible avec les pages et services existants.
-export class Evenement {
-  public id: number = -1;
-  public typeevenement: string = '';
-  public titre: string = '';
-  public stitre: string = '';
-  public public: string = '';
-  public commentaire: string = '';
-  public debut: string = '';
-  public fin: string = '';
-  public idAnimateur: number = -1;
-  public numLieu: number = -1;
+// Modèle de master, avec les champs de détail additionnels renvoyés par notre PHP.
 
-  // Champs complémentaires de master (issus de vues et des pages de listes).
-  // Facultatifs pour rester compatibles avec les autres représentations d'événements.
-  public heuredebut?: string;
-  public jourdebut?: string;
-  public type?: string;
-  public nomLieu?: string;
-  public nomAnimateur?: string;
-  public prenomAnimateur?: string;
 
-  // Alias utilisés par notre page de détail et son endpoint PHP.
-  public idLieu?: number | null;
-  public lieu?: string | null;
-  public animateur?: string | null;
+export class Evenement
+{
+    public id: number = -1 ;
+    public typeevenement: string = "" ;   // type événement
+    public titre: string = "" ;
+    public stitre: string = "" ;          // sous-titre
+    public public: string = "" ;          // public visé
+    public commentaire: string = "" ;
+    public debut: string = "" ;           // date et heure de début ("AAAA-MM-JJ HH:MM:SS")
+    public fin: string = "" ;             // date et heure de fin
+    public idAnimateur: number = -1 ;     // id personne qui anime
+    public numLieu: number = -1 ;         // num du lieu où se déroule l'événement
+    public heuredebut: string = "" ;      // heure de début ("HH:MM")
+    public jourdebut: string = "" ;      // jour de début ("AAAA-MM-JJ")
+    public type: string = "" ;             // type de l'événement (conférence, dédicace, etc.)
+    public nomLieu: string = "" ;          // nom du lieu où se déroule l'événement
+    public nomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
+    public prenomAnimateur: string = "" ;        // nom de la personne qui anime l'événement    
 
-  constructor(
-    id: number = -1,
-    typeevenement: string = '',
-    titre: string = '',
-    stitre: string = '',
-    pub: string = '',
-    commentaire: string = '',
-    debut: string = '',
-    fin: string = '',
-    idAnimateur: number = -1,
-    numLieu: number = -1
-  ) {
-    this.id = id;
-    this.typeevenement = typeevenement;
-    this.titre = titre;
-    this.stitre = stitre;
-    this.public = pub;
-    this.commentaire = commentaire;
-    this.debut = debut;
-    this.fin = fin;
-    this.idAnimateur = idAnimateur;
-    this.numLieu = numLieu;
-    this.heuredebut = debut ? debut.substring(11, 16) : '';
-    this.jourdebut = debut ? debut.substring(0, 10) : '';
-  }
+    // Champs d'affichage calculés par le PHP (evenement-commun.php : programme.php, evenement-id.php)
+    public animateur?: string ;           // "Prénom Nom" de l'animateur
+    public hall?: number | null ;         // hall du lieu
+    public nomJour?: string ;             // "Samedi"
+    public dateJour?: string ;            // "21 novembre"
+    public touteLaJournee?: boolean ;     // présent toute la journée (stands, expositions...)
+    public heure?: string ;               // "10h30" ("" si toute la journée)
+    public heureFin?: string ;            // "11h30" ("" si inconnue)
+    public livres?: { id: number, titre: string, auteurs: string }[] ;   // livres présentés (evenement-id.php)
+
+    constructor( 
+        id: number = -1, 
+        typeevenement: string = "", 
+        titre: string = "",
+        stitre: string = "",
+        pub: string = "",
+        commentaire: string = "",
+        debut: string = "",
+        fin: string = "",
+        idAnimateur: number = -1,
+        numLieu: number = -1 )
+    {
+        this.id = id ;
+        this.typeevenement = typeevenement ;
+        this.titre = titre ;
+        this.stitre = stitre ;
+        this.public = pub ;
+        this.commentaire = commentaire ;
+        this.debut = debut ;
+        this.fin = fin ;
+        this.idAnimateur = idAnimateur ;
+        this.numLieu = numLieu ;
+        this.heuredebut = debut ? debut.substring( 11, 16 ) : "" ;
+        this.jourdebut = debut ? debut.substring( 0, 10 ) : "" ;
+    }
+
+    /*
+    get heuredebut(): string
+    {
+        return this.debut ? this.debut.substring( 11, 16 ) : "" ;
+    }
+
+    get jourdebut(): string
+    {
+        return this.debut ? this.debut.substring( 0, 10 ) : "" ;
+    }*/
 }

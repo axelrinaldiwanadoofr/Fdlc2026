@@ -69,12 +69,12 @@ export class PageConfigAnnoncePage
   protected message = signal("") ;
   protected alerteSupprimer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
 
-  protected readonly couleurs = [
+  protected couleurs = [
     { valeur: "primary", nom: "Information" },
     { valeur: "warning", nom: "Important" },
     { valeur: "danger", nom: "Urgent" }

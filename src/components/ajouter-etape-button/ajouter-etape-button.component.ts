@@ -57,8 +57,8 @@ export class AjouterEtapeButtonComponent implements OnInit
   public    label = input( "Planifier" ) ;
   public    onEtapeAjoutee = output<Etape>() ;
 
-  protected readonly debutFestival = Etape.debutFestival ;
-  protected readonly finFestival = Etape.finFestival ;
+  protected debutFestival = Etape.debutFestival ;
+  protected finFestival = Etape.finFestival ;
 
   protected heureChoisie: string = "2026-11-21T10:00:00" ;
 
@@ -69,7 +69,7 @@ export class AjouterEtapeButtonComponent implements OnInit
   protected etape = signal<Etape | undefined>( undefined ) ;
 
   protected alerteRetirer = signal(false) ;
-  protected readonly boutonsRetirer = [
+  protected boutonsRetirer = [
     { text: "Annuler", role: "cancel" },
     { text: "Retirer", role: "destructive", handler: () => this.retire() }
   ] ;

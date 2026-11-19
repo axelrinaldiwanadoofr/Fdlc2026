@@ -1,0 +1,82 @@
+<!-- Auteur: Kevin MEYER - 18/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mes données</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  @if( donnees(); as d )
+  {
+    <ion-list class="liste">
+      <ion-item-divider color="light">
+        <ion-label>Mon compte</ion-label>
+      </ion-item-divider>
+      <ion-item>
+        <ion-label>Identifiant</ion-label>
+        <ion-note slot="end">{{d.identifiant}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Fiche personne</ion-label>
+        <ion-note slot="end">{{d.nom || "Aucune"}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Rôle</ion-label>
+        <ion-note slot="end">{{d.role}}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Dernière connexion</ion-label>
+        <ion-note slot="end">{{ date( d.derniereConnexion ) }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Mot de passe</ion-label>
+        <ion-note slot="end">Chiffré, personne ne peut le lire</ion-note>
+      </ion-item>
+
+      <ion-item-divider color="light">
+        <ion-label>Ce que je peux faire</ion-label>
+      </ion-item-divider>
+      @for( droit of d.droits; track droit )
+      {
+        <ion-item>
+          <ion-label class="ion-text-wrap">{{droit}}</ion-label>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item>
+          <ion-label color="medium">Aucune permission</ion-label>
+        </ion-item>
+      }
+
+      <ion-item-divider color="light">
+        <ion-label>Mes actions enregistrées</ion-label>
+      </ion-item-divider>
+      @for( l of d.journal; track $index )
+      {
+        <ion-item>
+          <ion-label class="ion-text-wrap">
+            <h3>{{l.action}}</h3>
+            @if( l.detail ) { <p>{{l.detail}}</p> }
+          </ion-label>
+          <ion-note slot="end">{{ date( l.date ) }}<br>{{l.ip}}</ion-note>
+        </ion-item>
+      }
+      @empty
+      {
+        <ion-item>
+          <ion-label color="medium">Aucune action</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+
+    <p class="info">
+      Les actions sont effacées automatiquement au bout de {{d.joursJournal}} jours.
+      Pour corriger ou supprimer votre compte, demandez à un administrateur.
+      <a [routerLink]="['/donnees-personnelles']">En savoir plus</a>
+    </p>
+  }
+</ion-content>

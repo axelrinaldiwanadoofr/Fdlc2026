@@ -67,12 +67,12 @@ export class AccesCompteComponent implements OnChanges
     return this.roles().filter( r => moi?.estRoot || r.niveau < ( moi?.niveau ?? 0 ) ) ;
   }) ;
 
-  protected readonly boutonsMdp = [
+  protected boutonsMdp = [
     { text: "Annuler", role: "cancel" },
     { text: "Générer", handler: () => this.enregistre( this.compte(), true ) }
   ] ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;

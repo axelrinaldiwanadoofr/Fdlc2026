@@ -31,7 +31,7 @@ try
 
     $bd->beginTransaction() ;
 
-    foreach( ["ecrire" => "idPersonne", "exposer" => "idPersonne", "invite" => "idpersonne", "personne" => "id"] as $table => $champ )
+    foreach( ["ecrire" => "idPersonne", "exposer" => "idPersonne", "invite" => "idpersonne", "compte" => "idPersonne", "personne" => "id"] as $table => $champ )
     {
         $bd->prepare( "delete from " . Connexion::$tables[$table] . " where " . $champ . " = :id" )->execute( ["id" => $id] ) ;
     }

@@ -6,6 +6,14 @@
 
 require_once __DIR__ . "/../Connexion.php" ;
 
+// Tables ajoutées depuis la base de départ : si un Connexion.php ne les a pas,
+// elles prennent le même préfixe que la table personne (fdlc_compte...)
+$prefixeTables = substr( Connexion::$tables["personne"], 0, -strlen( "personne" ) ) ;
+foreach( ["compte", "role", "permission", "journal", "annonce", "typeexposant", "invite"] as $nomTable )
+{
+    if( !isset( Connexion::$tables[$nomTable] ) ) Connexion::$tables[$nomTable] = $prefixeTables . $nomTable ;
+}
+
 const NIVEAU_ROOT = 1000 ;
 const DUREE_INACTIVITE = 15 * 60 ;
 const DUREE_SESSION_MAX = 8 * 3600 ;
@@ -14,6 +22,9 @@ const ESSAIS_MAX = 5 ;
 // Mot de passe du compte root à l'installation
 const MDP_ROOT_DEFAUT = "fdlc2026" ;
 const DUREE_BLOCAGE = 15 * 60 ;
+
+// Le journal est vidé de ses lignes de plus de 6 mois (RGPD)
+const JOURS_JOURNAL = 180 ;
 
 // Permissions rangées par groupe
 const PERMISSIONS = [
@@ -84,23 +95,41 @@ function donneesPost()
 }
 
 // Création des tables au premier lancement
+function tableExiste( $nom )
+{
+    try
+    {
+        bd()->query( "select 1 from " . table( $nom ) . " limit 1" ) ;
+        return true ;
+    }
+    catch( Exception $erreur )
+    {
+        return false ;
+    }
+}
+
+// Création des tables qui manquent au premier lancement
 function creeTables()
 {
+    $tables = [
+        "role" => "id int not null auto_increment primary key, nom varchar(40) not null unique, niveau int not null,"
+                . " couleur varchar(7) not null default '#6b7280'",
+        "permission" => "idRole int not null, code varchar(40) not null, primary key ( idRole, code )",
+        "compte" => "id int not null auto_increment primary key, identifiant varchar(50) not null unique, hash varchar(255) not null,"
+                  . " estRoot tinyint(1) not null default 0, idRole int default null, idPersonne int default null unique,"
+                  . " actif tinyint(1) not null default 1, doitChanger tinyint(1) not null default 0, version int not null default 1,"
+                  . " essais int not null default 0, bloqueJusqua datetime default null, derniereConnexion datetime default null,"
+                  . " creeLe datetime not null",
+        "journal" => "id int not null auto_increment primary key, date datetime not null, idCompte int default null,"
+                   . " identifiant varchar(50) default null, action varchar(60) not null, detail varchar(255) default null,"
+                   . " ip varchar(45) default null"
+    ] ;
+
     $bd = bd() ;
-    $bd->exec( "create table if not exists " . table( "role" ) . " ( id int not null auto_increment primary key,"
-             . " nom varchar(40) not null unique, niveau int not null, couleur varchar(7) not null default '#6b7280' ) engine=InnoDB" ) ;
-    $bd->exec( "create table if not exists " . table( "permission" ) . " ( idRole int not null, code varchar(40) not null,"
-             . " primary key ( idRole, code ), foreign key ( idRole ) references " . table( "role" ) . " ( id ) on delete cascade ) engine=InnoDB" ) ;
-    $bd->exec( "create table if not exists " . table( "compte" ) . " ( id int not null auto_increment primary key,"
-             . " identifiant varchar(50) not null unique, hash varchar(255) not null, estRoot tinyint(1) not null default 0,"
-             . " idRole int default null, idPersonne int default null unique, actif tinyint(1) not null default 1,"
-             . " doitChanger tinyint(1) not null default 0, version int not null default 1, essais int not null default 0,"
-             . " bloqueJusqua datetime default null, derniereConnexion datetime default null, creeLe datetime not null,"
-             . " foreign key ( idRole ) references " . table( "role" ) . " ( id ),"
-             . " foreign key ( idPersonne ) references " . table( "personne" ) . " ( id ) on delete cascade ) engine=InnoDB" ) ;
-    $bd->exec( "create table if not exists " . table( "journal" ) . " ( id int not null auto_increment primary key,"
-             . " date datetime not null, idCompte int default null, identifiant varchar(50) default null,"
-             . " action varchar(60) not null, detail varchar(255) default null, ip varchar(45) default null ) engine=InnoDB" ) ;
+    foreach( $tables as $nom => $colonnes )
+    {
+        if( !tableExiste( $nom ) ) $bd->exec( "create table " . table( $nom ) . " ( " . $colonnes . " ) engine=InnoDB" ) ;
+    }
 
     if( !rootExiste() )
     {
@@ -301,6 +330,7 @@ function journal( $action, $detail = "", $compte = null )
                 "detail" => mb_substr( $detail, 0, 255 ),
                 "ip" => $_SERVER["REMOTE_ADDR"] ?? null
             ] ) ;
+        bd()->exec( "delete from " . table( "journal" ) . " where date < now() - interval " . JOURS_JOURNAL . " day" ) ;
     }
     catch( Exception $erreur )
     {

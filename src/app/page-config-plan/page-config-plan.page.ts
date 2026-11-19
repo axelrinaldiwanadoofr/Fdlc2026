@@ -60,7 +60,7 @@ export class PageConfigPlanPage
   protected router: Router ;
   protected route: ActivatedRoute ;
 
-  protected readonly halls = [1, 2, 3, 4, 5] ;
+  protected halls = [1, 2, 3, 4, 5] ;
   protected hall = signal(1) ;
   protected lieux = signal<Array<Lieu>>( [] ) ;
   protected numChoisi: number = -1 ;
@@ -78,7 +78,7 @@ export class PageConfigPlanPage
   // Confirmation avant de supprimer une zone
   protected alerteSupprimer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
@@ -212,7 +212,7 @@ export class PageConfigPlanPage
       next: () =>
       {
         this.zone.set( null ) ;
-        this.lieux.set( [...this.lieux()] ) ;
+        this.lieux.set( this.lieux().slice() ) ;
         this.message.set( message ) ;
       },
       error: erreur =>

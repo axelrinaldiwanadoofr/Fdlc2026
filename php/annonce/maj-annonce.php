@@ -33,8 +33,8 @@ try
 
     $table = Connexion::$tables["annonce"] ;
 
-    // la table est créée à la première annonce (on n'a pas accès à la base du serveur)
-    $bd->exec( "create table if not exists " . $table . " ( id int not null auto_increment primary key, texte varchar(300) not null,"
+    // la table est créée à la première annonce
+    if( !tableExiste( "annonce" ) ) $bd->exec( "create table " . $table . " ( id int not null auto_increment primary key, texte varchar(300) not null,"
              . " couleur varchar(20) not null default 'primary', debut datetime default null, fin datetime default null,"
              . " active tinyint(1) not null default 1 )" ) ;
     $id = (int)( $annonce["id"] ?? -1 ) ;

@@ -24,12 +24,12 @@ export class ConfigService
     public pret = signal(false) ;
 
     // Deconnexion automatique apres 15 minutes sans rien faire
-    private readonly dureeInactivite = 15 * 60 * 1000 ;
+    private dureeInactivite = 15 * 60 * 1000 ;
     private minuteur: any = null ;
     public deconnecteParInactivite = signal(false) ;
 
     // evenements qui comptent comme une activite de l'utilisateur
-    private readonly evenementsActivite = [ "click", "keydown", "pointermove", "touchstart", "scroll" ] ;
+    private evenementsActivite = [ "click", "keydown", "pointermove", "touchstart", "scroll" ] ;
     private onActivite = () => this.relanceMinuteur() ;
 
     constructor( http: HttpClient, router: Router )
@@ -120,6 +120,11 @@ export class ConfigService
     }
 
     // Comptes et rôles
+
+    getMesDonnees(): Observable<any>
+    {
+        return this.http.get( "php/compte/mes-donnees.php" ) ;
+    }
 
     getComptes( idPersonne: number = -1 ): Observable<Compte[]>
     {

@@ -28,7 +28,7 @@
       </ion-segment>
     </ion-toolbar>
     <ion-toolbar>
-      <ion-searchbar placeholder="Nom, stand ou type" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+      <ion-searchbar placeholder="Nom, stand ou type" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
     </ion-toolbar>
   }
 </ion-header>
@@ -97,7 +97,7 @@
             <ion-title>Garder lequel ?</ion-title>
           </ion-toolbar>
           <ion-toolbar>
-            <ion-searchbar placeholder="Nom ou stand" [debounce]="200" (ionInput)="rechercheFusion.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+            <ion-searchbar placeholder="Nom ou stand" [debounce]="200" [ngModel]="rechercheFusion()" (ngModelChange)="rechercheFusion.set( $event )"></ion-searchbar>
           </ion-toolbar>
         </ion-header>
         <ion-content>

@@ -19,7 +19,7 @@ import {
   IonIcon,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { settingsOutline } from 'ionicons/icons';
+import { settingsOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 
 // Page A propos : les etudiants et le professeur qui ont fait le projet
 @Component({
@@ -50,7 +50,7 @@ export class PageAProposPage
 
   constructor()
   {
-    addIcons( { settingsOutline } ) ;
+    addIcons( { settingsOutline, shieldCheckmarkOutline } ) ;
   }
 
   // Etudiants de la classe, ranges par ordre alphabetique du prenom

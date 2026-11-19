@@ -63,7 +63,7 @@ export class PageConfigLieuPage
   protected serviceLieu: LieuService ;
   protected router: Router ;
 
-  protected readonly halls = [1, 2, 3, 4, 5] ;
+  protected halls = [1, 2, 3, 4, 5] ;
   protected lieux = signal<Array<Lieu>>( [] ) ;
   protected types = signal<Array<string>>( [] ) ;
 
@@ -79,12 +79,12 @@ export class PageConfigLieuPage
   protected alerteSupprimer = signal(false) ;
   protected alertePlacer = signal(false) ;
 
-  protected readonly boutonsSupprimer = [
+  protected boutonsSupprimer = [
     { text: "Annuler", role: "cancel" },
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
 
-  protected readonly boutonsPlacer = [
+  protected boutonsPlacer = [
     { text: "Plus tard", role: "cancel" },
     { text: "Placer sur le plan", handler: () => this.onPlacer() }
   ] ;

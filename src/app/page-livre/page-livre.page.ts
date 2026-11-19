@@ -1,8 +1,11 @@
-import { Component, OnInit, input } from '@angular/core';
+import { Component, OnInit, input, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
+import {Observable} from "rxjs" ;
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { LivreService } from '../../services/livre.service';
 import { Livre } from '../../modeles/Livre';
 
 import {
@@ -16,6 +19,11 @@ import {
   IonList,
   IonItem,
   IonLabel,
+  IonCard,
+  IonCardTitle,
+  IonCardHeader,
+  IonCardSubtitle,
+  IonCardContent,
 } from '@ionic/angular';
 
 @Component({
@@ -33,21 +41,41 @@ import {
     IonList,
     IonItem,
     IonLabel,
+    IonCardTitle,
+    IonCardHeader,
+    IonCardSubtitle,
+    IonCardContent,
+    IonCard,
     AsyncPipe
   ]
 })
 export class PageLivrePage implements OnInit
 {
-  // Reçu depuis la route page-livre/:id
-  public id = input<number>( -1 );
+  public id = input<number>( -1 ) ;
+  public livre = signal<Livre | null>( null ) ;
+  public message = signal( "Chargement des détails du livre..." ) ;
 
   protected livres: Observable<Array<Livre>> | null = null;
+  protected serviceLivre: LivreService ;
 
-  constructor( private http: HttpClient ) {}
+  constructor( serviceLivre: LivreService ) 
+  {
+    this.serviceLivre = serviceLivre ;
+  }
 
   ngOnInit()
   {
-    // livre-by-id.php renvoie un tableau (0 ou 1 livre)
-    this.livres = this.http.get<Array<Livre>>( 'php/livre/livre-by-id.php?id=' + this.id() );
+    const bookId = Number( this.id() ) ;
+    if( bookId > 0 )
+    {
+      this.serviceLivre.getLivreById( bookId ).subscribe({
+        next: ( data ) => {
+          this.livre.set( data ) ;
+          if( !data ) this.message.set( "Ce livre n'existe pas ou plus." ) ;
+        },
+        error: () => { this.message.set( "Impossible de charger le livre." ) ; }
+      }) ;
+    }
+    else this.message.set( "Ce livre n'existe pas ou plus." ) ;
   }
 }

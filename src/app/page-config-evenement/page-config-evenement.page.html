@@ -126,7 +126,7 @@
             </ion-buttons>
           </ion-toolbar>
           <ion-toolbar>
-            <ion-searchbar placeholder="Titre ou auteur" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+            <ion-searchbar placeholder="Titre ou auteur" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
           </ion-toolbar>
         </ion-header>
         <ion-content>
@@ -161,7 +161,7 @@
             <ion-title>Animateur</ion-title>
           </ion-toolbar>
           <ion-toolbar>
-            <ion-searchbar placeholder="Nom de la personne" [debounce]="200" (ionInput)="recherche.set( $any($event).detail.value ?? '' )"></ion-searchbar>
+            <ion-searchbar placeholder="Nom de la personne" [debounce]="200" [ngModel]="recherche()" (ngModelChange)="recherche.set( $event )"></ion-searchbar>
           </ion-toolbar>
         </ion-header>
         <ion-content>
