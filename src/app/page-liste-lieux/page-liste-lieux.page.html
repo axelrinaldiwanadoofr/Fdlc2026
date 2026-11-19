@@ -1,26 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-<<<<<<< HEAD
-      <ion-menu-button></ion-menu-button>
-=======
       <ion-back-button defaultHref="/"></ion-back-button>
->>>>>>> page_liste_lieux
     </ion-buttons>
     <ion-title>Liste des lieux</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
-<<<<<<< HEAD
-  <ion-toolbar>
-    <ion-searchbar placeholder="Rechercher un lieu" [(ngModel)]="recherche" [debounce]="300"></ion-searchbar>
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <app-liste-lieux [recherche]="recherche"></app-liste-lieux>
-=======
   <ion-accordion-group id="liste-lieux-page-accordion">
     <ion-accordion value="first">
       <ion-item slot="header" color="light">
@@ -67,5 +54,4 @@
     [nomExposant]="nomExposant"
     [nomPersonne]="nomPersonne"
     [titreEvenement]="titreEvenement"></app-liste-lieux>
->>>>>>> page_liste_lieux
 </ion-content>
