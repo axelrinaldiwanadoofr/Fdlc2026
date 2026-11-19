@@ -115,7 +115,7 @@
 
 <!-- Carte d'un événement -->
 <ng-template #carte let-evenement>
-  <a class="carte" [class.cliquable]="lienPage() != ''" [routerLink]="lien(evenement)">
+  <a class="carte" [class.cliquable]="lienPage() != ''" [routerLink]="lien(evenement)" [attr.data-couleur]="couleurType(evenement.type)">
     <div class="contenu">
       @if( evenement.type ) { <p class="type">{{ evenement.type }}</p> }
       <h3 class="titre">{{ evenement.titre }}</h3>

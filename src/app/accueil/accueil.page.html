@@ -1,20 +1,39 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>Festival du livre de Colmar 2026</ion-title>
-    <ion-buttons slot="end">
-      <!-- Logo du lycée en haut à droite -->
-      <img class="logo-lycee" src="assets/logo-lycee-camille-see.png" alt="Lycée Camille Sée Colmar">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>    
-  </ion-toolbar>
-</ion-header>
-
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
+@if( serviceParametre.accueil() == "nouveau" )
+{
+  <ion-content>
+    <app-accueil-nouveau></app-accueil-nouveau>
+  </ion-content>
+}
+@else if( serviceParametre.accueil() == "ancien" )
+{
+  <ion-header [translucent]="true">
     <ion-toolbar>
-      <ion-title size="large">accueil</ion-title>
+      <ion-title>Festival du livre de Colmar 2026</ion-title>
+      <ion-buttons slot="end">
+        <!-- Logo du lycée en haut à droite -->
+        <a class="lycee" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener">
+          <img class="logo-lycee" src="assets/logo-lycee-camille-see.png" alt="Lycée Camille Sée Colmar">
+          <span>
+            <strong>Lycée Camille Sée</strong>
+            BTS SIO
+          </span>
+        </a>
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>    
     </ion-toolbar>
   </ion-header>
-  <app-annonces></app-annonces>
-  <img src="assets/afficheFdlc2026.jpg" alt="Affiche du festival du livre de Colmar 2026" loading="lazy">
-</ion-content>
+
+  <ion-content [fullscreen]="true">
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">accueil</ion-title>
+      </ion-toolbar>
+    </ion-header>
+    <app-annonces></app-annonces>
+    <img src="assets/afficheFdlc2026.jpg" alt="Affiche du festival du livre de Colmar 2026" loading="lazy">
+  </ion-content>
+}
+@else
+{
+  <ion-content></ion-content>
+}

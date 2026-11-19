@@ -19,7 +19,7 @@
     </ion-searchbar>
 
     <div class="selections">
-      <ion-select label="Thème" labelPlacement="stacked" interface="popover" fill="outline"
+      <ion-select label="Thème" labelPlacement="stacked" interface="popover" fill="solid"
                   [value]="theme()" (ionChange)="theme.set( $event.detail.value ?? '' )">
         <ion-select-option value="">Tous les thèmes</ion-select-option>
         @for( t of filtres()?.themes ?? []; track t )
@@ -28,7 +28,7 @@
         }
       </ion-select>
 
-      <ion-select label="Lieu" labelPlacement="stacked" interface="popover" fill="outline"
+      <ion-select label="Lieu" labelPlacement="stacked" interface="popover" fill="solid"
                   [value]="numLieu()" (ionChange)="numLieu.set( $event.detail.value ?? -1 )">
         <ion-select-option [value]="-1">Tous les lieux</ion-select-option>
         @for( lieu of filtres()?.lieux ?? []; track lieu.num )
@@ -37,7 +37,7 @@
         }
       </ion-select>
 
-      <ion-select label="Animé par" labelPlacement="stacked" interface="popover" fill="outline"
+      <ion-select label="Animé par" labelPlacement="stacked" interface="popover" fill="solid"
                   [value]="idAnimateur()" (ionChange)="idAnimateur.set( $event.detail.value ?? -1 )">
         <ion-select-option [value]="-1">Tous</ion-select-option>
         @for( animateur of filtres()?.animateurs ?? []; track animateur.id )

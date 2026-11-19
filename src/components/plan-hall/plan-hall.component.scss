@@ -51,20 +51,20 @@
 
 .zone:hover, .zone:active
 {
-    fill: rgba(255, 196, 9, 0.35);
+    fill: rgba(224, 138, 44, 0.35);
 }
 
 .zone.selection
 {
-    fill: rgba(255, 196, 9, 0.25);
-    stroke: #ff9800;
+    fill: rgba(224, 138, 44, 0.25);
+    stroke: #e08a2c;
     stroke-width: 6;
 }
 
 .zone.clique
 {
-    fill: rgba(56, 128, 255, 0.35);
-    stroke: #3880ff;
+    fill: rgba(43, 57, 144, 0.3);
+    stroke: #2b3990;
     stroke-width: 6;
 }
 
@@ -75,7 +75,7 @@
 
 .repere rect, .repere .pointe
 {
-    fill: #e53935;
+    fill: #c2569a;
     // contour blanc pour que la bulle se voie sur les stands bleus
     stroke: white;
     stroke-width: 3;
@@ -105,5 +105,16 @@
 
 .boutons-zoom
 {
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 2px;
+}
+
+.boutons-zoom span
+{
+    margin-right: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: var(--ion-color-medium);
 }

@@ -1,101 +1,25 @@
 // Auteur: Kevin MEYER - 05/11/2026
 
+.page, .connexion
+{
+    max-width: 640px;
+    margin: 0 auto;
+}
+
 .connexion
 {
-    max-width: 500px;
-    margin: auto;
+    padding: 8px 0;
+    border-radius: 16px;
+    background: #ffffff;
 }
 
 .rgpd
 {
+    padding: 0 16px;
     font-size: 0.8em;
     color: var(--ion-color-medium);
     text-align: center;
 }
-
-.profil, .bandeau, .resume, .section, .grille, .vide
-{
-    max-width: 760px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.resume
-{
-    --background: rgba(var(--ion-color-warning-rgb), 0.12);
-    border-radius: 12px;
-    margin-bottom: 8px;
-}
-
-.section
-{
-    margin-top: 20px;
-    margin-bottom: 8px;
-    font-size: 0.8em;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--ion-color-medium);
-}
-
-// 2 colonnes sur ordinateur, 1 sur téléphone
-.grille
-{
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 10px;
-}
-
-.tuile
-{
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 12px;
-    width: 100%;
-    border: none;
-    font: inherit;
-    text-align: left;
-    color: inherit;
-    cursor: pointer;
-    background: var(--ion-color-light);
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.tuile:hover
-{
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.icone
-{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    border-radius: 10px;
-    color: white;
-    font-size: 22px;
-}
-
-.texte
-{
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 0;
-}
-
-.texte span
-{
-    font-size: 0.85em;
-    color: var(--ion-color-medium);
-}
-
 
 .attente
 {
@@ -107,10 +31,8 @@
 .profil
 {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
 }
 
 .avatar
@@ -118,11 +40,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    color: white;
-    font-weight: bold;
+    color: #ffffff;
+    font-weight: 700;
     font-size: 1.2em;
 }
 
@@ -130,43 +53,151 @@
 {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
-    flex: 1;
 }
 
-.role
+.qui strong
 {
-    padding: 1px 8px;
-    border-radius: 6px;
-    color: white;
-    font-size: 0.75em;
-    font-weight: bold;
+    font-size: 1.1em;
 }
 
-.bandeau
+.qui span
+{
+    font-size: 0.85em;
+    font-weight: 600;
+}
+
+.actions
 {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    padding: 10px 14px;
-    border-radius: 12px;
-    background: rgba(var(--ion-color-warning-rgb), 0.15);
-    font-size: 0.9em;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    margin: 12px 0 20px;
 }
 
-.bandeau ion-icon
+.actions button, .actions a
 {
-    flex-shrink: 0;
-    font-size: 1.4em;
-    color: var(--ion-color-warning-shade);
+    padding: 0;
+    background: none;
+    border: none;
+    font: inherit;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--ion-color-primary);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.actions .sortie
+{
+    color: var(--ion-color-medium);
+}
+
+// message a traiter (mot de passe root, controle des donnees)
+.bandeau
+{
+    display: block;
+    margin: 0 0 10px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #fbecd9;
+    color: #7a4410;
+    font-size: 0.9em;
+    text-decoration: none;
 }
 
 .bandeau a
 {
+    margin-left: 4px;
+    font-weight: 700;
+    color: inherit;
     cursor: pointer;
-    font-weight: bold;
+}
+
+h2
+{
+    margin: 22px 4px 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+}
+
+.bloc
+{
+    border-radius: 16px;
+    background: #ffffff;
+    overflow: hidden;
+}
+
+.ligne
+{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    min-height: 60px;
+    padding: 10px 16px;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    text-align: left;
+}
+
+button.ligne
+{
+    cursor: pointer;
+}
+
+button.ligne:hover
+{
+    background: #f8f4ee;
+}
+
+.ligne + .ligne
+{
+    border-top: 1px solid #ece6dc;
+}
+
+.ligne > ion-icon
+{
+    flex-shrink: 0;
+    font-size: 22px;
+}
+
+.texte
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+.texte strong
+{
+    font-weight: 600;
+}
+
+.texte span
+{
+    font-size: 0.85em;
+    color: var(--ion-color-medium);
+}
+
+.nombre
+{
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #fbecd9;
+    color: #7a4410;
+    font-size: 0.8em;
+    font-weight: 700;
+}
+
+.suite
+{
+    flex-shrink: 0;
+    font-size: 16px;
+    color: #b9b4c4;
 }
 
 .vide

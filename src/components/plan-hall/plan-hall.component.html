@@ -1,9 +1,10 @@
 <!-- Auteur: Kevin MEYER - 04/11/2026 -->
 <div class="boutons-zoom">
-  <ion-button size="small" (click)="changeZoom( 0.5 )" [disabled]="zoom() >= 3">
+  <span>Zoom</span>
+  <ion-button size="small" aria-label="Agrandir le plan" (click)="changeZoom( 0.5 )" [disabled]="zoom() >= 3">
     <ion-icon slot="icon-only" name="add-outline"></ion-icon>
   </ion-button>
-  <ion-button size="small" (click)="changeZoom( -0.5 )" [disabled]="zoom() <= 1">
+  <ion-button size="small" aria-label="Réduire le plan" (click)="changeZoom( -0.5 )" [disabled]="zoom() <= 1">
     <ion-icon slot="icon-only" name="remove-outline"></ion-icon>
   </ion-button>
 </div>

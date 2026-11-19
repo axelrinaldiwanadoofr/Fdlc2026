@@ -41,22 +41,22 @@ svg.dessin
 
 .zone
 {
-    fill: rgba(76, 175, 80, 0.3);
-    stroke: #2e7d32;
+    fill: rgba(31, 138, 91, 0.3);
+    stroke: #1f8a5b;
     stroke-width: 3;
     cursor: pointer;
 }
 
 .zone.choisie
 {
-    fill: rgba(255, 152, 0, 0.4);
-    stroke: #e65100;
+    fill: rgba(224, 138, 44, 0.4);
+    stroke: #c57926;
 }
 
 .nouvelle
 {
-    fill: rgba(33, 150, 243, 0.3);
-    stroke: #1565c0;
+    fill: rgba(43, 57, 144, 0.3);
+    stroke: #2b3990;
     stroke-width: 3;
     stroke-dasharray: 10 6;
     pointer-events: none;
@@ -66,6 +66,6 @@ text
 {
     font-size: 20px;
     font-weight: bold;
-    fill: #1b5e20;
+    fill: #1b7950;
     pointer-events: none;
 }
