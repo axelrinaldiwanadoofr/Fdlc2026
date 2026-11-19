@@ -19,15 +19,15 @@
     </ion-item-divider>
     <ion-item>
       <ion-label class="ion-text-wrap">
-        Festival du livre de Colmar, les 21 et 22 novembre 2026 au Parc des Expositions de Colmar
+        {{ serviceParametre.reglages().titre }}, les {{ serviceParametre.dates() }} au {{ serviceParametre.reglages().lieu }}
       </ion-label>
     </ion-item>
 
     <ion-item-divider color="light" sticky>
       <ion-label>Étudiants</ion-label>
-      <ion-note slot="end">{{etudiants.length}} étudiants</ion-note>
+      <ion-note slot="end">{{ serviceParametre.etudiants().length }} étudiants</ion-note>
     </ion-item-divider>
-    @for( etudiant of etudiants; track etudiant )
+    @for( etudiant of serviceParametre.etudiants(); track $index )
     {
       <ion-item>
         <ion-label>{{etudiant}}</ion-label>
@@ -38,7 +38,7 @@
       <ion-label>Professeur encadrant</ion-label>
     </ion-item-divider>
     <ion-item>
-      <ion-label>{{professeur}}</ion-label>
+      <ion-label>{{ serviceParametre.reglages().professeur }}</ion-label>
     </ion-item>
 
     <ion-item-divider color="light" sticky>

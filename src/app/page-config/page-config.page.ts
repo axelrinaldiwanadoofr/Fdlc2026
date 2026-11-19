@@ -24,7 +24,7 @@ import {
 import { addIcons } from 'ionicons';
 import { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
          checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
-         homeOutline, chevronForward } from 'ionicons/icons';
+         homeOutline, optionsOutline, chevronForward } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { ParametreService } from '../../services/parametre.service';
@@ -144,7 +144,7 @@ export class PageConfigPage
     this.router = router ;
     addIcons( { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
                 checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
-                homeOutline, chevronForward } ) ;
+                homeOutline, optionsOutline, chevronForward } ) ;
 
     effect( () =>
     {

@@ -12,6 +12,7 @@ import {
  } from '@ionic/angular';
 
 import { LieuService } from '../../services/lieu.service';
+import { ParametreService } from '../../services/parametre.service';
 import { Lieu } from '../../modeles/Lieu';
 
 @Component({
@@ -88,9 +89,12 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     return { x: ( lieu.x1 + lieu.x2 ) / 2, y: y } ;
   }) ;
 
-  constructor( serviceLieu: LieuService, router: Router, cdr: ChangeDetectorRef )
+  protected serviceParametre: ParametreService ;
+
+  constructor( serviceLieu: LieuService, serviceParametre: ParametreService, router: Router, cdr: ChangeDetectorRef )
   {
     this.serviceLieu = serviceLieu ;
+    this.serviceParametre = serviceParametre ;
     this.router = router ;
     this.cdr = cdr ;
     addIcons( { addOutline, removeOutline } ) ;

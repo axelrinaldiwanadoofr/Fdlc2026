@@ -1,10 +1,10 @@
 // Auteur: Kevin MEYER - 19/11/2026
 
-import {Injectable, signal} from "@angular/core" ;
+import {Injectable, computed, signal} from "@angular/core" ;
 import {HttpClient} from "@angular/common/http" ;
 import {Observable, tap} from "rxjs" ;
 
-// Réglages communs à tout le site (choix de la page d'accueil)
+// Réglages communs à tout le site : page d'accueil et réglages du festival
 @Injectable( {
     providedIn: "root"
 })
@@ -12,8 +12,27 @@ export class ParametreService
 {
     private http: HttpClient ;
 
+    // valeurs utilisées tant que rien n'a été changé dans la page Réglages
+    public defauts: any = {
+        titre: "Festival du livre de Colmar 2026",
+        debut: "2026-11-21",
+        fin: "2026-11-22",
+        lieu: "Parc des Expositions de Colmar",
+        lienLycee: "https://lyceecamilleseecolmar.fr",
+        contact: "le lycée Camille Sée de Colmar, qui héberge l'application",
+        professeur: "M. Axel RINALDI",
+        etudiants: "Don-Divin KISSANGOU MABIALA\nÉlodie VERMOYAL-DESAPHY\nKevin MEYER\nKenisha HAAS\nLiam EHRHARD\nMathieu SIMON\n"
+                  + "Merve YASAR\nNadir MAHI\nRabbi DZALAMOU\nRicardo PATTA\nSidi BENHADJEBA\nYannis Benewinde SILGA",
+        affiche: ""
+    } ;
+
     // "ancien" ou "nouveau", vide tant que ce n'est pas chargé
     public accueil = signal( "" ) ;
+    public reglages = signal<any>( this.defauts ) ;
+
+    public dates = computed( () => this.texteDates( this.reglages().debut, this.reglages().fin ) ) ;
+    public affiche = computed( () => this.reglages().affiche || "assets/afficheFdlc2026.jpg" ) ;
+    public etudiants = computed( () => this.reglages().etudiants.split( "\n" ).map( ( e: string ) => e.trim() ).filter( ( e: string ) => e != "" ) ) ;
 
     constructor( http: HttpClient )
     {
@@ -24,7 +43,13 @@ export class ParametreService
     charge()
     {
         this.http.get<any>( "php/parametre/parametres.php" ).subscribe( {
-            next: parametres => this.accueil.set( parametres.accueil ?? "ancien" ),
+            next: parametres =>
+            {
+                let reglages = Object.assign( {}, this.defauts ) ;
+                for( let cle in parametres ) if( cle != "accueil" && parametres[cle] != "" ) reglages[cle] = parametres[cle] ;
+                this.reglages.set( reglages ) ;
+                this.accueil.set( parametres.accueil ?? "ancien" ) ;
+            },
             error: () => this.accueil.set( "ancien" )
         }) ;
     }
@@ -33,5 +58,46 @@ export class ParametreService
     {
         return this.http.post( "php/parametre/maj-parametre.php", { cle: "accueil", valeur: valeur } )
             .pipe( tap( () => this.accueil.set( valeur ) ) ) ;
+    }
+
+    majReglages( valeurs: any ): Observable<any>
+    {
+        return this.http.post( "php/parametre/maj-parametre.php", { valeurs: valeurs } )
+            .pipe( tap( () => this.charge() ) ) ;
+    }
+
+    envoieImage( pour: string, fichier: File ): Observable<any>
+    {
+        let donnees = new FormData() ;
+        donnees.append( "pour", pour ) ;
+        donnees.append( "image", fichier ) ;
+        return this.http.post( "php/parametre/image-reglage.php", donnees ) ;
+    }
+
+    // image du plan d'un hall, celle d'origine si aucune n'a été envoyée
+    plan( hall: number ): string
+    {
+        return this.reglages()["plan" + hall] || "assets/plans/hall" + hall + ".png" ;
+    }
+
+    // "2026-11-21" => date locale à minuit
+    date( texte: string ): Date
+    {
+        let morceaux = texte.split( "-" ) ;
+        return new Date( Number( morceaux[0] ), Number( morceaux[1] ) - 1, Number( morceaux[2] ) ) ;
+    }
+
+    // "21 et 22 novembre 2026", "21 novembre 2026" ou "30 novembre au 2 décembre 2026"
+    texteDates( debut: string, fin: string ): string
+    {
+        let format = new Intl.DateTimeFormat( "fr-FR", { day: "numeric", month: "long", year: "numeric" } ) ;
+        let d = this.date( debut ) ;
+        let f = this.date( fin ) ;
+        let jours = Math.round( ( f.getTime() - d.getTime() ) / 86400000 ) ;
+
+        if( jours <= 0 ) return format.format( d ) ;
+        if( d.getMonth() == f.getMonth() && d.getFullYear() == f.getFullYear() )
+            return d.getDate() + ( jours == 1 ? " et " : " au " ) + format.format( f ) ;
+        return new Intl.DateTimeFormat( "fr-FR", { day: "numeric", month: "long" } ).format( d ) + " au " + format.format( f ) ;
     }
 }

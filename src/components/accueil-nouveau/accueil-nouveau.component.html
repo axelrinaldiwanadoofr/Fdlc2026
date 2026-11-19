@@ -2,11 +2,11 @@
 <div class="accueil">
   <div class="haut">
     <span class="moment">
-      <small>{{moment[0]}}</small>
-      {{moment[1]}}
+      <small>{{moment()[0]}}</small>
+      {{moment()[1]}}
     </span>
     <div class="droite">
-      <a class="lycee" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener" title="Site du lycée (nouvel onglet)">
+      <a class="lycee" [href]="serviceParametre.reglages().lienLycee" target="_blank" rel="noopener" title="Site du lycée (nouvel onglet)">
         <img src="assets/logo-lycee-petit.png" width="32" height="32" alt="">
         <span>
           <strong>Lycée Camille Sée</strong>
@@ -18,7 +18,7 @@
     </div>
   </div>
 
-  <img class="affiche" src="assets/afficheFdlc2026.jpg" width="800" height="1125" alt="Affiche du festival du livre de Colmar 2026">
+  <img class="affiche" [src]="serviceParametre.affiche()" width="800" height="1125" [alt]="'Affiche du ' + serviceParametre.reglages().titre">
 
   <div class="colonne">
     <app-annonces></app-annonces>

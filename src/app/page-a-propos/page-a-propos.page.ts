@@ -21,6 +21,8 @@ import {
 import { addIcons } from 'ionicons';
 import { settingsOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 
+import { ParametreService } from '../../services/parametre.service';
+
 // Page A propos : les etudiants et le professeur qui ont fait le projet
 @Component({
   selector: 'app-page-a-propos',
@@ -46,26 +48,11 @@ import { settingsOutline, shieldCheckmarkOutline } from 'ionicons/icons';
 })
 export class PageAProposPage
 {
-  protected professeur: string = "M. Axel RINALDI" ;
+  protected serviceParametre: ParametreService ;
 
-  constructor()
+  constructor( serviceParametre: ParametreService )
   {
+    this.serviceParametre = serviceParametre ;
     addIcons( { settingsOutline, shieldCheckmarkOutline } ) ;
   }
-
-  // Etudiants de la classe, ranges par ordre alphabetique du prenom
-  protected etudiants: Array<string> = [
-    "Don-Divin KISSANGOU MABIALA",
-    "Élodie VERMOYAL-DESAPHY",
-    "Kevin MEYER",
-    "Kenisha HAAS",
-    "Liam EHRHARD",
-    "Mathieu SIMON",
-    "Merve YASAR",
-    "Nadir MAHI",
-    "Rabbi DZALAMOU",
-    "Ricardo PATTA",
-    "Sidi BENHADJEBA",
-    "Yannis Benewinde SILGA",
-  ] ;
 }

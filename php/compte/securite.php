@@ -45,6 +45,7 @@ const PERMISSIONS = [
     "Pendant le festival" => [
         "annonces.modifier" => "Publier des annonces sur l'accueil",
         "accueil.modifier" => "Choisir la page d'accueil du site",
+        "reglages.modifier" => "Modifier les réglages du festival (dates, affiche, plans, textes)",
         "controle.voir" => "Voir le contrôle des données"
     ],
     "Outils" => [
@@ -147,6 +148,13 @@ function creeTables()
         creeRole( "Administrateur", 100, "#2b3990", $tout ) ;
         creeRole( "Modérateur", 50, "#1f8a5b", $moderation ) ;
         creeRole( "Bénévole", 10, "#c2569a", ["annonces.modifier", "controle.voir"] ) ;
+    }
+
+    // permissions arrivées après la création des rôles : on les donne aux administrateurs
+    foreach( ["accueil.modifier", "reglages.modifier"] as $code )
+    {
+        $bd->prepare( "insert ignore into " . table( "permission" ) . " ( idRole, code ) select id, :code from " . table( "role" ) . " where nom = 'Administrateur'" )
+           ->execute( ["code" => $code] ) ;
     }
 }
 

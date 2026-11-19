@@ -1,6 +1,6 @@
 // Auteur: Kevin MEYER - 19/11/2026
 
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
@@ -8,6 +8,7 @@ import { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward
 
 import { AnnoncesComponent } from '../annonces/annonces.component';
 import { EvenementService } from '../../services/evenement.service';
+import { ParametreService } from '../../services/parametre.service';
 import { Evenement } from '../../modeles/Evenement';
 
 // Nouvelle page d'accueil : affiche, raccourcis et prochains événements
@@ -25,9 +26,10 @@ import { Evenement } from '../../modeles/Evenement';
 export class AccueilNouveauComponent implements OnInit
 {
   protected serviceEvenement: EvenementService ;
+  protected serviceParametre: ParametreService ;
   protected evenements = signal<Evenement[]>( [] ) ;
   protected charge = signal( false ) ;
-  protected moment: string[] = [] ;
+  protected moment = computed( () => this.calculeMoment( this.serviceParametre.reglages().debut, this.serviceParametre.reglages().fin ) ) ;
 
   protected liens = [
     { titre: "Programme", icone: "calendar-outline", couleur: "secondary", lien: "/page-liste-evenements" },
@@ -36,24 +38,24 @@ export class AccueilNouveauComponent implements OnInit
     { titre: "Mon planning", icone: "star-outline", couleur: "warning", lien: "/page-planning-personnel" }
   ] ;
 
-  constructor( serviceEvenement: EvenementService )
+  constructor( serviceEvenement: EvenementService, serviceParametre: ParametreService )
   {
     this.serviceEvenement = serviceEvenement ;
+    this.serviceParametre = serviceParametre ;
     addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } ) ;
-    this.moment = this.calculeMoment() ;
   }
 
   // texte de la puce en haut a gauche selon le jour
-  calculeMoment(): string[]
+  calculeMoment( debut: string, fin: string ): string[]
   {
     let aujourdhui = new Date() ;
     aujourdhui.setHours( 0, 0, 0, 0 ) ;
-    let jours = Math.round( ( new Date( 2026, 10, 21 ).getTime() - aujourdhui.getTime() ) / 86400000 ) ;
+    let jours = Math.round( ( this.serviceParametre.date( debut ).getTime() - aujourdhui.getTime() ) / 86400000 ) ;
 
     if( jours > 1 ) return ["Ouverture", "dans " + jours + " jours"] ;
     if( jours == 1 ) return ["Ouverture", "demain"] ;
-    if( jours == 0 ) return ["Ouvert aujourd'hui", "samedi 21"] ;
-    if( jours == -1 ) return ["Ouvert aujourd'hui", "dimanche 22"] ;
+    if( aujourdhui <= this.serviceParametre.date( fin ) )
+      return ["Ouvert aujourd'hui", new Intl.DateTimeFormat( "fr-FR", { weekday: "long", day: "numeric" } ).format( aujourdhui )] ;
     return ["Merci de votre visite", "à l'année prochaine"] ;
   }
 

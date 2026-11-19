@@ -74,19 +74,33 @@
         <p class="vide">Votre rôle ne donne accès à aucune page de configuration pour l'instant.</p>
       }
 
-      @if( serviceConfig.peut( "accueil.modifier" ) )
+      @if( serviceConfig.peut( "accueil.modifier" ) || serviceConfig.peut( "reglages.modifier" ) )
       {
         <h2>Le site</h2>
         <div class="bloc">
-          <div class="ligne">
-            <ion-icon name="home-outline" color="primary"></ion-icon>
-            <span class="texte">
-              <strong>Nouvelle page d'accueil</strong>
-              <span>{{ serviceParametre.accueil() == "nouveau" ? "Affichée pour tous les visiteurs" : "L'ancienne page est affichée" }}</span>
-            </span>
-            <ion-toggle class="interrupteur" aria-label="Nouvelle page d'accueil" [checked]="serviceParametre.accueil() == 'nouveau'"
-                        (ionChange)="onChangeAccueil( $event )"></ion-toggle>
-          </div>
+          @if( serviceConfig.peut( "reglages.modifier" ) )
+          {
+            <button class="ligne" [routerLink]="['/config-reglages']">
+              <ion-icon name="options-outline" color="primary"></ion-icon>
+              <span class="texte">
+                <strong>Réglages du festival</strong>
+                <span>Dates, affiche, plans, textes et liens</span>
+              </span>
+              <ion-icon class="suite" name="chevron-forward"></ion-icon>
+            </button>
+          }
+          @if( serviceConfig.peut( "accueil.modifier" ) )
+          {
+            <div class="ligne">
+              <ion-icon name="home-outline" color="primary"></ion-icon>
+              <span class="texte">
+                <strong>Nouvelle page d'accueil</strong>
+                <span>{{ serviceParametre.accueil() == "nouveau" ? "Affichée pour tous les visiteurs" : "L'ancienne page est affichée" }}</span>
+              </span>
+              <ion-toggle class="interrupteur" aria-label="Nouvelle page d'accueil" [checked]="serviceParametre.accueil() == 'nouveau'"
+                          (ionChange)="onChangeAccueil( $event )"></ion-toggle>
+            </div>
+          }
         </div>
       }
     </div>

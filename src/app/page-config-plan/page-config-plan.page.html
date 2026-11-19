@@ -49,7 +49,7 @@
     </p>
 
     <div class="plan">
-      <img [src]="'assets/plans/hall' + hall() + '.png'" draggable="false" (load)="onImageChargee($event)">
+      <img [src]="serviceParametre.plan( hall() )" draggable="false" (load)="onImageChargee($event)">
 
       @if( largeur() > 0 )
       {

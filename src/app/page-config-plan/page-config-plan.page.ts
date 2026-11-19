@@ -26,6 +26,7 @@ import { addIcons } from 'ionicons';
 import { saveOutline, trashOutline } from 'ionicons/icons';
 
 import { LieuService } from '../../services/lieu.service';
+import { ParametreService } from '../../services/parametre.service';
 import { ConfigService } from '../../services/config.service';
 import { Lieu } from '../../modeles/Lieu';
 
@@ -89,10 +90,13 @@ export class PageConfigPlanPage
 
   protected nbZones = computed( () => this.lieux().filter( l => l.x1 != null ).length ) ;
 
-  constructor( serviceLieu: LieuService, serviceConfig: ConfigService, router: Router, route: ActivatedRoute )
+  protected serviceParametre: ParametreService ;
+
+  constructor( serviceLieu: LieuService, serviceConfig: ConfigService, serviceParametre: ParametreService, router: Router, route: ActivatedRoute )
   {
     addIcons( { saveOutline, trashOutline } ) ;
     this.serviceLieu = serviceLieu ;
+    this.serviceParametre = serviceParametre ;
     this.serviceConfig = serviceConfig ;
     this.router = router ;
     this.route = route ;

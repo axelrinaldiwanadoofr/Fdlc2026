@@ -19,12 +19,12 @@
       </ion-list>
     </ion-content>
     <ion-footer class="pied-menu">
-      <p class="dates">21 et 22 novembre 2026</p>
-      <p>Parc des Expositions de Colmar</p>
+      <p class="dates">{{ serviceParametre.dates() }}</p>
+      <p>{{ serviceParametre.reglages().lieu }}</p>
       <ion-menu-toggle auto-hide="false">
         <a routerLink="/donnees-personnelles">Données personnelles</a>
       </ion-menu-toggle>
-      <a class="credit" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener">
+      <a class="credit" [href]="serviceParametre.reglages().lienLycee" target="_blank" rel="noopener">
         Application réalisée par les BTS SIO du lycée Camille Sée
       </a>
     </ion-footer>

@@ -7,27 +7,45 @@ require_once "../compte/securite.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
-$compte = exigePermission( "accueil.modifier" ) ;
+// Vrai si la valeur est acceptée pour ce réglage
+function valeurValide( $cle, $valeur )
+{
+    if( !is_string( $valeur ) ) return false ;
+    if( $cle == "accueil" ) return in_array( $valeur, ["ancien", "nouveau"] ) ;
+    if( $cle == "debut" || $cle == "fin" ) return preg_match( "/^\d{4}-\d{2}-\d{2}$/", $valeur ) == 1 ;
+    if( $cle == "lienLycee" ) return $valeur == "" || preg_match( "/^https?:\/\/\S+$/", $valeur ) == 1 ;
+    if( $cle == "affiche" || preg_match( "/^plan[1-9]$/", $cle ) ) return $valeur == "" || preg_match( "/^assets\/reglages\/[\w.-]+$/", $valeur ) == 1 ;
+    if( in_array( $cle, ["titre", "lieu", "contact", "professeur"] ) ) return mb_strlen( $valeur ) <= 200 ;
+    if( $cle == "etudiants" ) return mb_strlen( $valeur ) <= 3000 ;
+    return false ;
+}
+
 $donnees = donneesPost() ;
 
-// valeurs acceptées pour chaque réglage
-$valeurs = ["accueil" => ["ancien", "nouveau"]] ;
+// la page config envoie une seule clé (accueil), la page Réglages toutes ses valeurs
+$valeurs = isset( $donnees["cle"] ) ? [$donnees["cle"] => $donnees["valeur"] ?? ""] : ( $donnees["valeurs"] ?? [] ) ;
+if( !is_array( $valeurs ) || count( $valeurs ) == 0 ) refuse( "Aucun réglage à enregistrer", 400 ) ;
 
-$cle = $donnees["cle"] ?? "" ;
-$valeur = $donnees["valeur"] ?? "" ;
+foreach( $valeurs as $cle => $valeur )
+{
+    if( !valeurValide( $cle, $valeur ) ) refuse( "Valeur incorrecte pour " . $cle, 400 ) ;
+}
+if( isset( $valeurs["debut"], $valeurs["fin"] ) && $valeurs["fin"] < $valeurs["debut"] ) refuse( "La fin du festival doit être après le début", 400 ) ;
 
-if( !isset( $valeurs[$cle] ) || !in_array( $valeur, $valeurs[$cle] ) ) refuse( "Réglage inconnu", 400 ) ;
+if( isset( $valeurs["accueil"] ) ) $compte = exigePermission( "accueil.modifier" ) ;
+if( count( $valeurs ) > ( isset( $valeurs["accueil"] ) ? 1 : 0 ) ) $compte = exigePermission( "reglages.modifier" ) ;
 
 try
 {
     $bd = bd() ;
 
-    if( !tableExiste( "parametre" ) ) $bd->exec( "create table " . table( "parametre" ) . " ( cle varchar(50) not null primary key, valeur varchar(200) not null ) engine=InnoDB" ) ;
+    if( !tableExiste( "parametre" ) ) $bd->exec( "create table " . table( "parametre" ) . " ( cle varchar(50) not null primary key, valeur text not null ) engine=InnoDB" ) ;
+    else if( !isset( $valeurs["accueil"] ) ) $bd->exec( "alter table " . table( "parametre" ) . " modify valeur text not null" ) ;
 
-    $bd->prepare( "replace into " . table( "parametre" ) . " ( cle, valeur ) values ( :cle, :valeur )" )
-       ->execute( ["cle" => $cle, "valeur" => $valeur] ) ;
+    $cursor = $bd->prepare( "replace into " . table( "parametre" ) . " ( cle, valeur ) values ( :cle, :valeur )" ) ;
+    foreach( $valeurs as $cle => $valeur ) $cursor->execute( ["cle" => $cle, "valeur" => trim( $valeur )] ) ;
 
-    journal( "Réglage du site", $cle . " = " . $valeur, $compte ) ;
+    journal( "Réglage du site", isset( $valeurs["accueil"] ) ? "accueil = " . $valeurs["accueil"] : "Réglages du festival", $compte ) ;
     repond( ["ok" => true] ) ;
 }
 catch( Exception $erreur )

@@ -17,6 +17,7 @@ import {
 import { addIcons } from 'ionicons';
 import { homeOutline, calendarOutline, storefrontOutline, peopleOutline, locationOutline, bookOutline,
          starOutline, mapOutline, informationCircleOutline } from 'ionicons/icons';
+import { ParametreService } from '../services/parametre.service';
 
 @Component({
   selector: 'app-root',
@@ -54,8 +55,11 @@ export class AppComponent
     { titre: "À propos", lien: "/a-propos", icone: "information-circle-outline" }
   ] ;
 
-  constructor( router: Router )
+  protected serviceParametre: ParametreService ;
+
+  constructor( router: Router, serviceParametre: ParametreService )
   {
+    this.serviceParametre = serviceParametre ;
     addIcons( { homeOutline, calendarOutline, storefrontOutline, peopleOutline, locationOutline, bookOutline,
                 starOutline, mapOutline, informationCircleOutline } ) ;
 
