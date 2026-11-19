@@ -149,7 +149,8 @@ $sql = "SELECT DISTINCT
     }
 
     // Classement alphabétique par nom, puis par prénom.
-    $sql .= " ORDER BY p.nom, p.prenom";
+    // ordre du nom affiché "Prénom Nom" (sans prénom : tri sur le nom)
+    $sql .= " ORDER BY trim(concat(coalesce(p.prenom, ''), ' ', coalesce(p.nom, '')))";
 
     /*
      * PRÉPARATION DE LA REQUÊTE
