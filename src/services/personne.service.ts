@@ -106,6 +106,17 @@ export class PersonneService
     }
 
     // Ajoute une spécialité, ou la supprime si supprimer = true
+    // Spécialités qui ont l'étiquette STAFF
+    getSpecialitesStaff(): Observable<string[]>
+    {
+        return this.http.get<string[]>( "php/personne/specialites.php?staff=1" ) ;
+    }
+
+    majStaff( specialite: string, staff: boolean ): Observable<any>
+    {
+        return this.http.post( "php/personne/maj-specialite.php", { specialite: specialite, staff: staff } ) ;
+    }
+
     majSpecialite( specialite: string, supprimer: boolean ): Observable<any>
     {
         return this.http.post( "php/personne/maj-specialite.php", { specialite: specialite, supprimer: supprimer } ) ;

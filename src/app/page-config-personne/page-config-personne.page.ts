@@ -27,6 +27,7 @@ import {
   IonChip,
   IonAvatar,
   IonIcon,
+  IonToggle,
   IonNote,
   IonToast,
   IonAlert,
@@ -73,6 +74,7 @@ import { AccesCompteComponent } from '../../components/acces-compte/acces-compte
     IonChip,
     IonAvatar,
     IonIcon,
+    IonToggle,
     IonNote,
     IonToast,
     IonAlert,
@@ -97,8 +99,8 @@ export class PageConfigPersonnePage
   // Filtres de la liste
   protected filtre = signal("tous") ;
 
-  // Spécialités des personnes qui font tourner le festival
-  protected rolesStaff = [ "animateur", "modérateur", "présentateur", "organisateur", "bénévole" ] ;
+  // Spécialités des personnes qui font tourner le festival (étiquette STAFF)
+  protected rolesStaff = signal<string[]>( [] ) ;
   protected recherche = signal("") ;
 
   // Personne en cours de modification (null = on affiche la liste)
@@ -140,7 +142,7 @@ export class PageConfigPersonnePage
     {
       if( this.filtre() == "stand" && !p.stands ) return false ;
       if( this.filtre() == "photo" && p.photo ) return false ;
-      if( this.filtre() == "staff" && !this.rolesStaff.includes( p.specialite ) ) return false ;
+      if( this.filtre() == "staff" && !this.rolesStaff().includes( p.specialite ) ) return false ;
       return this.nomPersonne( p ).toLowerCase().includes( texte ) ;
     }) ;
   }) ;
@@ -196,6 +198,16 @@ export class PageConfigPersonnePage
   chargeSpecialites()
   {
     this.servicePersonne.getSpecialites().subscribe( specialites => this.specialites.set( specialites ) ) ;
+    this.servicePersonne.getSpecialitesStaff().subscribe( staff => this.rolesStaff.set( staff ) ) ;
+  }
+
+  onChangeStaff( specialite: string, staff: boolean )
+  {
+    this.erreur.set( "" ) ;
+    this.servicePersonne.majStaff( specialite, staff ).subscribe( {
+      next: () => this.chargeSpecialites(),
+      error: erreur => this.erreurServeur( erreur )
+    }) ;
   }
 
   onNouveau()

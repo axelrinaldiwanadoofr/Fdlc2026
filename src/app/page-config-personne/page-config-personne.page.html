@@ -247,7 +247,7 @@
           <ion-label>
             <h2>{{ nomPersonne( p ) }}</h2>
             <p>
-              @if( rolesStaff.includes( p.specialite ) )
+              @if( rolesStaff().includes( p.specialite ) )
               {
                 <span class="staff">staff</span>
               }
@@ -283,6 +283,8 @@
             <ion-item>
               <ion-label>{{specialite}}</ion-label>
               <ion-note slot="end">{{ nbAvecRole( specialite ) }}</ion-note>
+              <ion-toggle slot="end" class="interrupteur" [checked]="rolesStaff().includes( specialite )"
+                          (ionChange)="onChangeStaff( specialite, $event.detail.checked )">STAFF</ion-toggle>
               <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="majRole( specialite, true )">
                 <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
               </ion-button>
