@@ -27,6 +27,7 @@ export class AccueilNouveauComponent implements OnInit
   protected serviceEvenement: EvenementService ;
   protected evenements = signal<Evenement[]>( [] ) ;
   protected charge = signal( false ) ;
+  protected texteDuJour: string = "" ;
 
   protected liens = [
     { titre: "Programme", icone: "calendar-outline", couleur: "#1f8a5b", lien: "/page-liste-evenements" },
@@ -39,6 +40,20 @@ export class AccueilNouveauComponent implements OnInit
   {
     this.serviceEvenement = serviceEvenement ;
     addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward } ) ;
+    this.texteDuJour = this.calculeTexteDuJour() ;
+  }
+
+  // texte en haut de la page selon le nombre de jours avant le festival
+  calculeTexteDuJour(): string
+  {
+    let aujourdhui = new Date() ;
+    aujourdhui.setHours( 0, 0, 0, 0 ) ;
+    let jours = Math.round( ( new Date( 2026, 10, 21 ).getTime() - aujourdhui.getTime() ) / 86400000 ) ;
+
+    if( jours > 1 ) return "Le festival commence dans " + jours + " jours" ;
+    if( jours == 1 ) return "Le festival commence demain" ;
+    if( jours >= -1 ) return "Le festival a lieu aujourd'hui" ;
+    return "Merci de votre visite, à l'année prochaine" ;
   }
 
   // les 4 prochains événements a partir de maintenant
