@@ -97,3 +97,46 @@ ion-title
 {
   font-weight: 700;
 }
+
+/* Composants Ionic aux couleurs de l'affiche */
+ion-button
+{
+  --border-radius: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+ion-searchbar
+{
+  --background: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: none;
+}
+
+ion-card
+{
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+ion-item-divider
+{
+  --background: #f3eee6;
+  --color: var(--ion-color-medium);
+  font-weight: 600;
+}
+
+ion-segment-button
+{
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Listes et formulaires des pages de config en blocs blancs arrondis */
+ion-list.liste, ion-list.formulaire
+{
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
