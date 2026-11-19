@@ -1,0 +1,63 @@
+<!-- Auteur: Kevin MEYER - 19/11/2026 -->
+<div class="accueil">
+  <div class="haut">
+    <span class="moment">
+      <small>{{moment[0]}}</small>
+      {{moment[1]}}
+    </span>
+    <div class="droite">
+      <a class="lycee" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener">
+        <img src="assets/logo-lycee-petit.png" width="36" height="36" alt="">
+        <span>
+          <strong>Lycée Camille Sée</strong>
+          BTS SIO
+        </span>
+      </a>
+      <ion-menu-button class="menu"></ion-menu-button>
+    </div>
+  </div>
+
+  <img class="affiche" src="assets/afficheFdlc2026.jpg" width="800" height="1125" alt="Affiche du festival du livre de Colmar 2026">
+
+  <div class="colonne">
+    <app-annonces></app-annonces>
+
+    <nav class="raccourcis">
+      @for( lien of liens; track lien.titre )
+      {
+        <a [routerLink]="lien.lien">
+          <ion-icon [name]="lien.icone" [style.color]="lien.couleur"></ion-icon>
+          {{lien.titre}}
+        </a>
+      }
+    </nav>
+
+    <h2>Événements à venir</h2>
+    @for( evenement of evenements(); track evenement.id )
+    {
+      <a class="evenement" [routerLink]="['/page-evenement', evenement.id]">
+        <div class="date">
+          <span class="jour">{{ evenement.nomJour?.slice( 0, 3 ) }}.</span>
+          <span class="heure">{{evenement.heure}}</span>
+        </div>
+        <div class="infos">
+          <strong>{{evenement.titre}}</strong>
+          <span>{{evenement.type}}@if( evenement.nomLieu ) { | {{evenement.nomLieu}} }</span>
+          @if( evenement.animateur )
+          {
+            <span class="avec">Avec {{evenement.animateur}}</span>
+          }
+        </div>
+        <span class="fleche"><ion-icon name="chevron-forward"></ion-icon></span>
+      </a>
+    }
+    @empty
+    {
+      @if( charge() )
+      {
+        <p class="vide">Aucun événement à venir pour le moment.</p>
+      }
+    }
+    <a class="programme" routerLink="/page-liste-evenements">Voir tout le programme</a>
+  </div>
+</div>

@@ -10,7 +10,7 @@
 
 <ion-content [fullscreen]="true">
   @if (evenement(); as e) {
-    <article class="fiche">
+    <article class="fiche" [attr.data-couleur]="couleurType(e.type)">
       <header class="entete">
         @if (e.type) { <p class="type">{{ e.type }}</p> }
         <h1>{{ e.titre }}</h1>

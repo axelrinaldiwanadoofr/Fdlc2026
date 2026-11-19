@@ -65,4 +65,8 @@ export class PageEvenementComponent implements OnInit {
       }
     });
   }
+
+  protected couleurType(type: string): string {
+    return this.serviceEvenement.couleurType(type);
+  }
 }

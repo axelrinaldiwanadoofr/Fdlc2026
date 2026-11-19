@@ -34,13 +34,13 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
 
 /* Interrupteurs oui / non en vert et rouge (comptes, rôles et permissions) */
 ion-toggle.interrupteur
 {
-  --track-background: #e5484d;
-  --track-background-checked: #2a9a6a;
+  --track-background: #d64545;
+  --track-background-checked: #1f8a5b;
   --handle-background: #ffffff;
   --handle-background-checked: #ffffff;
 }
@@ -49,4 +49,174 @@ ion-toggle.interrupteur
 ion-input, ion-textarea, ion-select, ion-item
 {
   --highlight-color-valid: var(--ion-color-primary);
+}
+
+/* Polices de la nouvelle DA */
+@font-face
+{
+  font-family: Inter;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Inter;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Inter;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Inter;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Shrikhand;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/shrikhand-latin-400-normal.woff2") format("woff2");
+}
+
+/* Titres des barres en bleu de l'affiche */
+ion-title
+{
+  font-weight: 700;
+}
+
+/* Composants Ionic aux couleurs de l'affiche */
+ion-button, ion-buttons ion-button.md:not(.button-round), ion-buttons ion-button.ios:not(.button-round)
+{
+  --border-radius: 12px;
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 600;
+}
+
+ion-searchbar.md, ion-searchbar.ios
+{
+  --background: #ffffff;
+  --border-radius: 12px;
+  --box-shadow: none;
+}
+
+/* Recherche dans la barre du haut : même largeur que la liste */
+ion-toolbar ion-searchbar
+{
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+ion-card
+{
+  border-radius: 16px;
+  box-shadow: none;
+}
+
+ion-item-divider
+{
+  --background: #f3eee6;
+  --color: var(--ion-color-medium);
+  font-weight: 600;
+}
+
+ion-segment-button
+{
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* Listes et formulaires des pages de config en blocs blancs arrondis */
+ion-list.liste, ion-list.formulaire
+{
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Trait fin sous la barre du haut au lieu de l'ombre d'Android */
+ion-header.header-md:not(.header-collapse-condense)
+{
+  box-shadow: none;
+  border-bottom: 1px solid var(--ion-border-color);
+}
+
+/* Listes des pages en blocs blancs arrondis au lieu de bandes d'un bord à l'autre */
+ion-content ion-list.list-md, ion-content ion-list.list-ios
+{
+  width: calc(100% - 32px);
+  max-width: 760px;
+  margin: 12px auto;
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* sauf dans les fenêtres de choix (select, popover) */
+ion-popover ion-content ion-list.list-md, ion-popover ion-content ion-list.list-ios
+{
+  width: auto;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Bouton Rechercher / filtrer des listes : arrondi et centré */
+ion-header ion-accordion-group
+{
+  display: block;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 12px 10px;
+}
+
+ion-header ion-accordion
+{
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+ion-header ion-accordion ion-item
+{
+  --ion-color-light: #ffffff;
+}
+
+/* Menu latéral : fond crème, lignes arrondies, page en cours surlignée */
+ion-menu ion-list.menu
+{
+  padding: 6px;
+}
+
+ion-menu ion-list.menu ion-item
+{
+  --border-radius: 12px;
+  --min-height: 48px;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+ion-menu ion-list.menu ion-icon
+{
+  margin-inline-end: 14px;
+  color: var(--ion-color-primary);
+}
+
+ion-menu ion-list.menu ion-item.actif
+{
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  --color: var(--ion-color-primary);
+  font-weight: 700;
 }

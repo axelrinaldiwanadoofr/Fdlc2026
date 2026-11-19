@@ -117,4 +117,8 @@ export class ListeEvenementsComponent {
   protected pluriel(n: number, mot: string): string {
     return n + " " + mot + (n > 1 ? "s" : "");
   }
+
+  protected couleurType(type: string): string {
+    return this.serviceEvenement.couleurType(type);
+  }
 }

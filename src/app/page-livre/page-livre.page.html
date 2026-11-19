@@ -14,6 +14,15 @@
   @if( livre(); as livre ) {
     <ion-card>
       <ion-card-header>
+        <div class="couverture">
+          @if( couvertures(); as couvertures ) {
+            @if( couvertures.length > 0 ) {
+              <img [src]="couvertures[0]" [alt]="'Couverture de ' + livre.titre" (error)="imageSuivante()">
+            } @else {
+              <div class="sans-image" title="Couverture non disponible"></div>
+            }
+          }
+        </div>
         <ion-card-title>{{livre.titre}}</ion-card-title>
         @if( livre.genre || livre.editeur ) {
           <ion-card-subtitle>

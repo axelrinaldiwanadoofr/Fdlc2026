@@ -49,6 +49,14 @@ export class LivresAuteurService
         ) ;
     }
 
+    // Couvertures d'un livre de la base, trouvées dans le catalogue BnF de son auteur
+    getCouvertures( idLivre: number, idPersonne: number, prenom: string, nom: string ): Observable<string[]>
+    {
+        return this.getLivresAuteur( idPersonne, prenom, nom, true ).pipe(
+            map( livres => livres.find( l => l.id == idLivre )?.couvertures ?? [] )
+        ) ;
+    }
+
     // XML de la BnF (via le php qui garde la réponse en cache)
     private getXmlBnf( prenom: string, nom: string ): Observable<string>
     {

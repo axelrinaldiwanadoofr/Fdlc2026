@@ -9,7 +9,7 @@ require_once __DIR__ . "/../Connexion.php" ;
 // Tables ajoutées depuis la base de départ : si un Connexion.php ne les a pas,
 // elles prennent le même préfixe que la table personne (fdlc_compte...)
 $prefixeTables = substr( Connexion::$tables["personne"], 0, -strlen( "personne" ) ) ;
-foreach( ["compte", "role", "permission", "journal", "annonce", "typeexposant", "invite"] as $nomTable )
+foreach( ["compte", "role", "permission", "journal", "annonce", "typeexposant", "invite", "parametre"] as $nomTable )
 {
     if( !isset( Connexion::$tables[$nomTable] ) ) Connexion::$tables[$nomTable] = $prefixeTables . $nomTable ;
 }
@@ -43,6 +43,7 @@ const PERMISSIONS = [
     ],
     "Pendant le festival" => [
         "annonces.modifier" => "Publier des annonces sur l'accueil",
+        "accueil.modifier" => "Choisir la page d'accueil du site",
         "controle.voir" => "Voir le contrôle des données"
     ],
     "Outils" => [

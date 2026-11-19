@@ -2,7 +2,8 @@
   <!--<ion-item>{{nomPrenomPersonne()}}</ion-item>-->
   @for( exposant of listeExposants | async;  track exposant.id )
   {
-    <ion-item [routerLink]="[lienPage(), exposant.id]" [innerHTML]="itemText(exposant)">
+    <ion-item [routerLink]="[lienPage(), exposant.id]">
+      <ion-label class="ion-text-wrap"><div [innerHTML]="itemText(exposant)"></div></ion-label>
     </ion-item>
   }
 </ion-list>

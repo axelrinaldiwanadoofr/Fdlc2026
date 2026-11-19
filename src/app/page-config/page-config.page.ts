@@ -12,22 +12,22 @@ import {
   IonBackButton,
   IonList,
   IonItem,
-  IonLabel,
   IonInput,
   IonButton,
   IonNote,
   IonToast,
   IonModal,
   IonIcon,
-  IonBadge,
   IonSpinner,
+  IonToggle,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
          checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
-         warningOutline } from 'ionicons/icons';
+         homeOutline, chevronForward } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
+import { ParametreService } from '../../services/parametre.service';
 
 // Tuile du menu et permission nécessaire pour la voir
 class PageConfig
@@ -66,15 +66,14 @@ class PageConfig
     IonBackButton,
     IonList,
     IonItem,
-    IonLabel,
-    IonInput,
+      IonInput,
     IonButton,
     IonNote,
     IonToast,
     IonModal,
     IonIcon,
-    IonBadge,
-    IonSpinner,
+      IonSpinner,
+    IonToggle,
     FormsModule,
     RouterLink
   ]
@@ -82,6 +81,7 @@ class PageConfig
 export class PageConfigPage
 {
   protected serviceConfig: ConfigService ;
+  protected serviceParametre: ParametreService ;
   protected router: Router ;
 
   protected identifiant: string = "" ;
@@ -137,13 +137,14 @@ export class PageConfigPage
       .filter( s => s.pages.length > 0 ) ;
   }) ;
 
-  constructor( serviceConfig: ConfigService, router: Router )
+  constructor( serviceConfig: ConfigService, serviceParametre: ParametreService, router: Router )
   {
     this.serviceConfig = serviceConfig ;
+    this.serviceParametre = serviceParametre ;
     this.router = router ;
     addIcons( { peopleOutline, storefrontOutline, bookOutline, calendarOutline, locationOutline, mapOutline, megaphoneOutline,
                 checkmarkDoneOutline, libraryOutline, cloudUploadOutline, keyOutline, shieldCheckmarkOutline, listOutline,
-                warningOutline } ) ;
+                homeOutline, chevronForward } ) ;
 
     effect( () =>
     {
@@ -227,6 +228,22 @@ export class PageConfigPage
   {
     if( page.lien.startsWith( "php/" ) ) window.open( page.lien, "_blank" ) ;
     else this.router.navigateByUrl( page.lien ) ;
+  }
+
+  // Change la page d'accueil pour tous les visiteurs
+  onChangeAccueil( event: any )
+  {
+    let interrupteur = event.target ;
+    let valeur = interrupteur.checked ? "nouveau" : "ancien" ;
+
+    this.serviceParametre.changeAccueil( valeur ).subscribe( {
+      next: () => this.message.set( valeur == "nouveau" ? "Nouvelle page d'accueil activée" : "Ancienne page d'accueil activée" ),
+      error: erreur =>
+      {
+        interrupteur.checked = !interrupteur.checked ;
+        this.message.set( erreur.error?.erreur ?? "Erreur lors du changement" ) ;
+      }
+    }) ;
   }
 
   nombre( code: string ): number

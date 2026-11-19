@@ -17,6 +17,11 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./accueil/accueil.page').then(m => m.AccueilPage)
   },
+  {
+    path: 'accueil',
+    redirectTo: '',
+    pathMatch: 'full'
+  },
   // Page de détail conservée de la branche kissangou-mabiala
   {
     path: 'page-evenement/:id',
@@ -122,5 +127,10 @@ export const routes: Routes = [
   {
     path: 'a-propos',
     loadComponent: () => import('./page-a-propos/page-a-propos.page').then( m => m.PageAProposPage)
+  },
+  // URL inconnue : retour a l'accueil
+  {
+    path: '**',
+    redirectTo: ''
   }
 ];
