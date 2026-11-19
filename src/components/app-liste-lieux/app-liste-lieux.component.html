@@ -1,11 +1,32 @@
 <ion-list>
-  @for( lieu of listeLieux | async; track lieu.num )
+  @for( groupe of groupesLieux | async; track groupe.type )
   {
-    <ion-item>
-      <ion-label>
-        <strong>{{ lieu.nom }}</strong> {{ lieu.type }} (n° {{ lieu.num }})
-      </ion-label>
-    </ion-item>
+    <ion-item-group>
+      <!-- Titre du groupe, reste en haut de l'écran pendant le défilement -->
+      <ion-item-divider sticky="true" color="light">
+        <ion-label>{{ groupe.type }} ({{ groupe.lieux.length }})</ion-label>
+      </ion-item-divider>
+
+      @for( lieu of groupe.lieux; track lieu.num )
+      {
+        <!-- Un clic ouvre la page du lieu -->
+        <ion-item [routerLink]="[lienPage(), lieu.num]" detail="true">
+          <ion-label>
+            <!-- Numéro du lieu en premier, puis son nom -->
+            <h2><strong>n° {{ lieu.num }}</strong>
+              @if( lieu.nom && lieu.nom != lieu.num.toString() )
+              {
+                — {{ lieu.nom }}
+              }
+            </h2>
+            @if( lieu.hall )
+            {
+              <p>Hall {{ lieu.hall }}</p>
+            }
+          </ion-label>
+        </ion-item>
+      }
+    </ion-item-group>
   }
   @empty
   {

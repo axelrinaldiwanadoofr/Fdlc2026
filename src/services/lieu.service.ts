@@ -16,7 +16,13 @@ export class LieuService
         this.http = http ;
     }
 
-    getTousLesLieux( nom: string="", type: string = "", avecExposant: boolean = false ): Observable<Lieu[]>
+    getTousLesLieux(
+        nom: string="",
+        type: string = "",
+        avecExposant: boolean = false,
+        nomExposant: string = "",
+        nomPersonne: string = "",
+        titreEvenement: string = "" ): Observable<Lieu[]>
     {
         let first = true ;
         let url: string = "php/lieu/tous-les-lieux.php" ;
@@ -39,6 +45,27 @@ export class LieuService
         {
             url += (first)? "?" : "&" ;
             url += "avecExposant=1" ;
+            first = false ;
+        }
+
+        if( nomExposant != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "nomExposant=" + encodeURIComponent( nomExposant ) ;
+            first = false ;
+        }
+
+        if( nomPersonne != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "nomPersonne=" + encodeURIComponent( nomPersonne ) ;
+            first = false ;
+        }
+
+        if( titreEvenement != "" )
+        {
+            url += (first)? "?" : "&" ;
+            url += "titreEvenement=" + encodeURIComponent( titreEvenement ) ;
             first = false ;
         }
 
