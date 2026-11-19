@@ -3,6 +3,7 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
 require_once "../Connexion.php" ;
+require_once "../colonnes.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -11,7 +12,7 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select l.num, l.nom, l.libelle, coalesce( l.hall, l.num div 100 ) as hall, l.type, l.x1,"
+    $sql = "select l.num, l.nom, " . colonneOuVide( $bd, Connexion::$tables["lieu"], "l", "libelle", "libelle" ) . ", coalesce( l.hall, l.num div 100 ) as hall, l.type, l.x1,"
          . " ( select count(*) from " . Connexion::$tables["exposant"] . " x where x.numLieu = l.num ) as nbExposants,"
          . " ( select count(*) from " . Connexion::$tables["evenement"] . " e where e.numLieu = l.num ) as nbEvenements"
          . " from " . Connexion::$tables["lieu"] . " l order by l.num" ;

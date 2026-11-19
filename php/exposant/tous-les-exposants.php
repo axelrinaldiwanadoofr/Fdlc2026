@@ -4,42 +4,50 @@ header("Access-Control-Allow-Origin: http://localhost:8101");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../Connexion.php" ;
+require_once "../colonnes.php" ;
 
 try
 {
     $bd = Connexion::getInstance() ;
 
-    // Les créneaux de présence n'ont de sens que pour une personne
-    $creneaux = isset($_GET["idPersonne"]) ? ", samedi_am, samedi_pm, dimanche_am, dimanche_pm" : "" ;
+    $exposant = Connexion::$tables["exposant"] ;
+    $exposer = Connexion::$tables["exposer"] ;
 
-    // Récupérer les exposants et leurs créneaux de présence
+    // Les créneaux de présence n'ont de sens que pour une personne
+    $creneaux = isset($_GET["idPersonne"]) ? ", ser.samedi_am, ser.samedi_pm, ser.dimanche_am, ser.dimanche_pm" : "" ;
+
+    // Exposants qui ont un stand (tables de base : la vue n'a pas les mêmes colonnes dans toutes les bases)
     $sql = "SELECT DISTINCT
-                idExposant AS id,
-                trim( nomExposant ) AS nom,
-                libelleExposant as libelle,
-                typeExposant as type,
-                nomLieu,
-                numLieu" . $creneaux . "
-            FROM " . Connexion::$tables["PersonneExposantExposerLieu"] . "
-            WHERE 1 " ;
-            
+                ex.id,
+                trim( ex.nom ) AS nom,
+                " . colonneOuVide( $bd, $exposant, "ex", "libelle", "libelle" ) . ",
+                " . colonneOuVide( $bd, $exposant, "ex", "type", "type" ) . ",
+                l.nom AS nomLieu,
+                ex.numLieu" . $creneaux . "
+            FROM " . $exposant . " AS ex
+            INNER JOIN " . Connexion::$tables["lieu"] . " AS l ON l.num = ex.numLieu " ;
+
+    // Exposants associés à une personne
+    if( isset($_GET["idPersonne"]))
+    {
+        $sql .= " INNER JOIN " . $exposer . " AS ser ON ser.idExposant = ex.id AND ser.idPersonne = :idPersonne " ;
+    }
+
+    $sql .= " WHERE 1 " ;
+
+    // Exposants où est présente une personne de ce nom
     if( isset($_GET["nom"])) 
     {
-        $sql .= " and nom = :nom " ;
+        $sql .= " and exists ( select 1 from " . $exposer . " AS s INNER JOIN " . Connexion::$tables["personne"] . " AS p ON p.id = s.idPersonne"
+              . " where s.idExposant = ex.id and p.nom = :nom ) " ;
     }
 
     if( isset($_GET["nomLieu"])) 
     {
-        $sql .= " and nomLieu like :nomLieu " ;
+        $sql .= " and l.nom like :nomLieu " ;
     }
 
-    // Filtrer les exposants associés à une personne
-    if( isset($_GET["idPersonne"]))
-    {
-        $sql .= " and idPersonne = :idPersonne " ;
-    }
-
-    $sql .= " order by trim( nomExposant )" ;
+    $sql .= " order by trim( ex.nom )" ;
 
     $cursor = $bd->prepare( $sql ) ;
 
@@ -53,7 +61,6 @@ try
         $cursor->bindValue( ":nomLieu", $_GET["nomLieu"] . "%", PDO::PARAM_STR ) ;
     }
 
-    // Associer l'identifiant de la personne au paramètre SQL
     if( isset($_GET["idPersonne"]))
     {
         $cursor->bindValue( ":idPersonne", (int) $_GET["idPersonne"], PDO::PARAM_INT ) ;

@@ -1,6 +1,7 @@
 <?php
 
 require_once "../Connexion.php" ;
+require_once "../colonnes.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -8,7 +9,8 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct num, nom, libelle, type, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where num=:num " ;
+    $lieu = Connexion::$tables["lieu"] ;
+    $sql = "select distinct l.num, l.nom, " . colonneOuVide( $bd, $lieu, "l", "libelle", "libelle" ) . ", l.type, l.x1, l.y1, l.x2, l.y2 from " . $lieu . " as l where l.num=:num " ;
 
     $cursor = $bd->prepare( $sql ) ;
 
