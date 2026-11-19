@@ -154,3 +154,42 @@ ion-header.header-md:not(.header-collapse-condense)
   box-shadow: none;
   border-bottom: 1px solid var(--ion-border-color);
 }
+
+/* Listes des pages en blocs blancs arrondis au lieu de bandes d'un bord à l'autre */
+ion-content ion-list.list-md, ion-content ion-list.list-ios
+{
+  width: calc(100% - 24px);
+  max-width: 760px;
+  margin: 12px auto;
+  padding: 0;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* sauf dans les fenêtres de choix (select, popover) */
+ion-popover ion-content ion-list.list-md, ion-popover ion-content ion-list.list-ios
+{
+  width: auto;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Bouton Rechercher / filtrer des listes : arrondi et centré */
+ion-header ion-accordion-group
+{
+  display: block;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 12px 10px;
+}
+
+ion-header ion-accordion
+{
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+ion-header ion-accordion ion-item
+{
+  --ion-color-light: #ffffff;
+}
