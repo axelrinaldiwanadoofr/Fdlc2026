@@ -7,6 +7,12 @@
   --bordure: var(--ion-border-color, var(--ion-background-color-step-150, #d9d9d9));
   --fond-doux: var(--ion-background-color-step-50, var(--ion-color-step-50, #f4f4f4));
   --accent: var(--ion-color-primary, #3880ff);
+  --couleur: var(--ion-color-primary);
+  --couleur-rgb: var(--ion-color-primary-rgb);
+
+  &[data-couleur="secondary"] { --couleur: var(--ion-color-secondary); --couleur-rgb: var(--ion-color-secondary-rgb); }
+  &[data-couleur="tertiary"] { --couleur: var(--ion-color-tertiary); --couleur-rgb: var(--ion-color-tertiary-rgb); }
+  &[data-couleur="warning"] { --couleur: var(--ion-color-warning-shade); --couleur-rgb: var(--ion-color-warning-rgb); }
 
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
@@ -20,12 +26,14 @@
 
 .entete {
   .type {
-    margin: 0 0 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--accent);
+    display: inline-block;
+    margin: 0 0 8px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(var(--couleur-rgb), 0.12);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--couleur);
   }
 
   h1 {
@@ -48,9 +56,8 @@
   list-style: none;
   margin: 20px 0 0;
   padding: 4px 16px;
-  border-radius: 12px;
-  background: var(--fond-doux);
-  border: 1px solid var(--bordure);
+  border-radius: 16px;
+  background: #fff;
 
   li {
     display: flex;
@@ -65,7 +72,7 @@
     flex-shrink: 0;
     margin-top: 2px;
     font-size: 1.25rem;
-    color: var(--accent);
+    color: var(--couleur);
   }
 
   div { display: flex; flex-direction: column; }
@@ -93,7 +100,9 @@
 .livres {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: #fff;
 
   li + li { border-top: 1px solid var(--bordure); }
 

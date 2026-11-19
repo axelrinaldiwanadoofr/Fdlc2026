@@ -115,4 +115,13 @@ export class EvenementService {
   {
       return this.http.post( "php/evenement/supprime-evenement.php", { id: id } ) ;
   }
+
+  // Couleur de l'affiche pour un type d'evenement (toujours la meme pour un type)
+  couleurType( type: string ): string
+  {
+      let couleurs = ["primary", "secondary", "tertiary", "warning"] ;
+      let somme = 0 ;
+      for( let i = 0 ; i < ( type ?? "" ).length ; i++ ) somme += type.charCodeAt( i ) ;
+      return couleurs[ somme % couleurs.length ] ;
+  }
 }

@@ -14,7 +14,14 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
 
-  ion-select { min-width: 0; }
+  ion-select {
+    min-width: 0;
+    --background: #fff;
+    --border-width: 0;
+    --border-radius: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+  }
 }
 
 .resultat {
@@ -39,7 +46,5 @@
   .selections { grid-template-columns: 1fr 1fr; }
   .selections ion-select:last-child { grid-column: 1 / -1; }
 }
-
-ion-button { text-transform: none; }
 
 ion-button { text-transform: none; }
