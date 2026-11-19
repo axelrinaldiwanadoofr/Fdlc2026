@@ -12,26 +12,25 @@ export class Livre {
     // id de l'exposant qui édite le livre (page de config)
     public idEditeur: number = -1 ;
 
-    constructor(
-        id: number = -1,
-        titre: string = "",
-        editeur: string = "",
-        genre: string = "",
-        datepublication: string = "",
-        resume: string = "",
-        nom: string = "",
-        prenom: string = "",
-        nomExposant: string = ""
-    )
-    {
-        this.id = id ;
-        this.titre = titre ;
-        this.editeur = editeur ;
-        this.genre = genre ;
-        this.datepublication = datepublication ;
-        this.resume = resume ;
-        this.nom = nom ;
-        this.prenom = prenom ;
-        this.nomExposant = nomExposant ;
-    }
+  constructor(
+    id: number = -1,
+    titre: string = '',
+    editeur: string = '',
+    genre: string = '',
+    datepublication: string = '',
+    resume: string = '',
+    nom: string = '',
+    prenom: string = '',
+    nomExposant: string = ''
+  ) {
+    this.id = id;
+    this.titre = titre;
+    this.editeur = editeur;
+    this.genre = genre;
+    this.datepublication = datepublication;
+    this.resume = resume;
+    this.nom = nom;
+    this.prenom = prenom;
+    this.nomExposant = nomExposant;
+  }
 }

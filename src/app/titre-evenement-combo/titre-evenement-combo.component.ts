@@ -1,7 +1,7 @@
 
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { IonItem, IonSelect, IonSelectOption, IonSearchbar } from '@ionic/angular';
-import { EvenementService } from '../../servcies/evenement.service';
+import { EvenementService } from '../../services/evenement.service';
 
 @Component({
   selector: 'app-titre-evenement-combo',

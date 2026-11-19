@@ -1,3 +1,4 @@
+import { InvitesEvenementComponent } from '../../components/invites-evenement/invites-evenement.component';
 import { Component, OnInit, input, signal } from '@angular/core';
 
 import {
@@ -22,7 +23,7 @@ import { Evenement } from '../../modeles/Evenement';
   selector: 'app-page-evenement',
   templateUrl: './page-evenement.component.html',
   styleUrls: ['./page-evenement.component.scss'],
-  imports: [
+  imports: [InvitesEvenementComponent, 
     IonHeader,
     IonToolbar,
     IonButtons,
