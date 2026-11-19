@@ -2,7 +2,7 @@ import { Component, OnChanges, OnInit, input } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
-import { IonList, IonItem } from '@ionic/angular';
+import { IonList, IonItem, IonLabel } from '@ionic/angular';
 import { PersonneService } from '../../services/personne.service';
 import { Personne } from '../../modeles/Personne';
 
@@ -10,7 +10,7 @@ import { Personne } from '../../modeles/Personne';
   selector: 'app-liste-personnes',
   templateUrl: './liste-personnes.component.html',
   styleUrls: ['./liste-personnes.component.scss'],
-  imports: [IonList, IonItem, AsyncPipe, RouterLink],
+  imports: [IonList, IonItem, IonLabel, AsyncPipe, RouterLink],
 })
 export class ListePersonnesComponent implements OnInit, OnChanges {
   childHtml = input<string>("$civilite <strong>$prenom $nom</strong> — $specialite");

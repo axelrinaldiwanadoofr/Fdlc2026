@@ -7,6 +7,7 @@ import {Exposant} from "../../modeles/Exposant" ;
 import { 
   IonList,
   IonItem,
+  IonLabel,
  } from '@ionic/angular';
 
 @Component({
@@ -16,6 +17,7 @@ import {
   imports: [
     IonList,
     IonItem,
+    IonLabel,
     AsyncPipe,
     RouterLink
   ],
