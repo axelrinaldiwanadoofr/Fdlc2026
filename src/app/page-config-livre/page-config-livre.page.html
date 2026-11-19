@@ -8,7 +8,7 @@
     @if( !livre() )
     {
       <ion-buttons slot="end">
-        <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouveau livre</ion-button>
+        <ion-button fill="solid" color="primary" (click)="onNouveau()" aria-label="Nouveau livre"><ion-icon slot="start" name="add-outline"></ion-icon><span class="texte-bouton">Nouveau livre</span></ion-button>
       </ion-buttons>
     }
   </ion-toolbar>

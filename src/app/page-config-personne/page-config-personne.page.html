@@ -8,8 +8,8 @@
     @if( !personne() )
     {
       <ion-buttons slot="end">
-        <ion-button fill="outline" (click)="modalRoles.set(true)">Spécialités</ion-button>
-        <ion-button fill="solid" color="primary" (click)="onNouveau()">Nouvelle personne</ion-button>
+        <ion-button fill="outline" (click)="modalRoles.set(true)" aria-label="Spécialités"><ion-icon slot="start" name="pricetags-outline"></ion-icon><span class="texte-bouton">Spécialités</span></ion-button>
+        <ion-button fill="solid" color="primary" (click)="onNouveau()" aria-label="Nouvelle personne"><ion-icon slot="start" name="add-outline"></ion-icon><span class="texte-bouton">Nouvelle personne</span></ion-button>
       </ion-buttons>
     }
   </ion-toolbar>

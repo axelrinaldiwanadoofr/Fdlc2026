@@ -265,3 +265,25 @@ ion-content
 {
   --offset-top: 0px !important;
 }
+
+/* Titre de la barre à gauche aussi sur iPhone : centré, il passait sous les boutons */
+ion-toolbar ion-title.ios
+{
+  position: static;
+  padding-inline: 4px;
+  text-align: start;
+}
+
+/* Sur téléphone, les boutons de la barre du haut ne gardent que leur icône */
+@media (max-width: 599px)
+{
+  ion-toolbar .texte-bouton
+  {
+    display: none;
+  }
+
+  ion-toolbar ion-button ion-icon[slot="start"]
+  {
+    margin: 0;
+  }
+}

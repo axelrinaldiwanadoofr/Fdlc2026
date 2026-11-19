@@ -22,7 +22,10 @@ import {
   IonNote,
   IonToast,
   IonAlert,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { addOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { AnnonceService } from '../../services/annonce.service';
@@ -34,6 +37,7 @@ import { Annonce } from '../../modeles/Annonce';
   templateUrl: './page-config-annonce.page.html',
   styleUrls: ['./page-config-annonce.page.scss'],
   imports: [
+    IonIcon,
     IonContent,
     IonHeader,
     IonTitle,
@@ -82,6 +86,7 @@ export class PageConfigAnnoncePage
 
   constructor( serviceConfig: ConfigService, serviceAnnonce: AnnonceService, router: Router )
   {
+    addIcons( { addOutline } ) ;
     this.serviceConfig = serviceConfig ;
     this.serviceAnnonce = serviceAnnonce ;
     this.router = router ;

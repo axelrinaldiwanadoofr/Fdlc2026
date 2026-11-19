@@ -24,7 +24,10 @@ import {
   IonNote,
   IonToast,
   IonAlert,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { addOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { ExposantService } from '../../services/exposant.service';
@@ -38,6 +41,7 @@ import { Lieu } from '../../modeles/Lieu';
   templateUrl: './page-config-exposant.page.html',
   styleUrls: ['./page-config-exposant.page.scss'],
   imports: [
+    IonIcon,
     IonContent,
     IonHeader,
     IonTitle,
@@ -129,6 +133,7 @@ export class PageConfigExposantPage
 
   constructor( serviceConfig: ConfigService, serviceExposant: ExposantService, serviceLieu: LieuService, router: Router, route: ActivatedRoute )
   {
+    addIcons( { addOutline } ) ;
     this.serviceConfig = serviceConfig ;
     this.serviceExposant = serviceExposant ;
     this.serviceLieu = serviceLieu ;

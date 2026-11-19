@@ -30,7 +30,7 @@ import {
   IonAlert,
 } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { closeCircle } from 'ionicons/icons';
+import { closeCircle, addOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { LivreService } from '../../services/livre.service';
@@ -139,7 +139,7 @@ export class PageConfigLivrePage
     this.servicePersonne = servicePersonne ;
     this.router = router ;
     this.route = route ;
-    addIcons( { closeCircle } ) ;
+    addIcons( { closeCircle, addOutline } ) ;
   }
 
   // Sans mot de passe on retourne sur la page principale de config

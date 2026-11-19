@@ -17,7 +17,10 @@ import {
   IonSearchbar,
   IonModal,
   IonNote,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { personAddOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { PersonneService } from '../../services/personne.service';
@@ -31,6 +34,7 @@ import { AccesCompteComponent } from '../../components/acces-compte/acces-compte
   templateUrl: './page-config-comptes.page.html',
   styleUrls: ['./page-config-comptes.page.scss'],
   imports: [
+    IonIcon,
     FormsModule,
     IonContent,
     IonHeader,
@@ -80,6 +84,7 @@ export class PageConfigComptesPage
 
   constructor( serviceConfig: ConfigService, servicePersonne: PersonneService, router: Router )
   {
+    addIcons( { personAddOutline } ) ;
     this.serviceConfig = serviceConfig ;
     this.servicePersonne = servicePersonne ;
     this.router = router ;
