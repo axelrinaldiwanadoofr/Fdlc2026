@@ -193,3 +193,30 @@ ion-header ion-accordion ion-item
 {
   --ion-color-light: #ffffff;
 }
+
+/* Menu latéral : fond crème, lignes arrondies, page en cours surlignée */
+ion-menu ion-list.menu
+{
+  padding: 6px;
+}
+
+ion-menu ion-list.menu ion-item
+{
+  --border-radius: 12px;
+  --min-height: 48px;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+ion-menu ion-list.menu ion-icon
+{
+  margin-inline-end: 14px;
+  color: var(--ion-color-primary);
+}
+
+ion-menu ion-list.menu ion-item.actif
+{
+  --background: rgba(var(--ion-color-primary-rgb), 0.1);
+  --color: var(--ion-color-primary);
+  font-weight: 700;
+}
