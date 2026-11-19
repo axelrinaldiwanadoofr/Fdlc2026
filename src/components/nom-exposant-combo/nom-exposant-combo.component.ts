@@ -66,6 +66,13 @@ export class NomExposantComboComponent implements OnInit
     this.showList.set( !this.showList() ) ;
   }
 
+  // Vide le champ de recherche (bouton Réinitialiser)
+  vider()
+  {
+    this.nom = "" ;
+    this.masqueListe() ;
+  }
+
   masqueListe() 
   {
     this.showList.set( false ) ;

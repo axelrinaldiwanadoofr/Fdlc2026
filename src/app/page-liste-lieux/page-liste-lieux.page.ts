@@ -92,4 +92,17 @@ export class PageListeLieuxPage
     this.nomExposantCombo()?.masqueListe() ;
     this.nomPersonneCombo()?.masqueListe() ;
   }
+
+  // Vide tous les filtres et réaffiche tous les lieux
+  onReinitialiser()
+  {
+    this.flt_nom = "" ;
+    this.flt_nomExposant = "" ;
+    this.flt_nomPersonne = "" ;
+    this.flt_titreEvenement = "" ;
+    this.nomLieuCombo()?.vider() ;
+    this.nomExposantCombo()?.vider() ;
+    this.nomPersonneCombo()?.vider() ;
+    this.onFiltrer() ;
+  }
 }

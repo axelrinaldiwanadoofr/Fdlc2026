@@ -83,6 +83,13 @@ export class NomLieuComboComponent  implements OnInit
   }
 
   // Masque la liste
+  // Vide le champ de recherche (bouton Réinitialiser)
+  vider()
+  {
+    this.nom = "" ;
+    this.masqueListe() ;
+  }
+
   masqueListe()
   {
     this.showList.set( false ) ;
