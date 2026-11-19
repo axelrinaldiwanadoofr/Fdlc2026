@@ -4,7 +4,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward } from 'ionicons/icons';
+import { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } from 'ionicons/icons';
 
 import { AnnoncesComponent } from '../annonces/annonces.component';
 import { EvenementService } from '../../services/evenement.service';
@@ -39,7 +39,7 @@ export class AccueilNouveauComponent implements OnInit
   constructor( serviceEvenement: EvenementService )
   {
     this.serviceEvenement = serviceEvenement ;
-    addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward } ) ;
+    addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } ) ;
     this.moment = this.calculeMoment() ;
   }
 
