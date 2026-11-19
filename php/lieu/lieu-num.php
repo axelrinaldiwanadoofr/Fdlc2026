@@ -6,7 +6,8 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct num, nom, libelle, type, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where num=:num " ;
+   
+   $sql = "select distinct num, nom, libelle, type, hall, x1, y1, x2, y2 from " . Connexion::$tables["lieu"] . " where num=:num " ;
 
     $cursor = $bd->prepare( $sql ) ;
 
