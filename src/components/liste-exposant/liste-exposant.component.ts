@@ -56,13 +56,14 @@ export class ListeExposantComponent  implements OnInit, OnChanges
   // Met en forme le texte affiché dans chaque ligne de la liste
   itemText( exposant: Exposant) : string
   {
+    // $nomLieu avant $nom, sinon $nom remplace le début de $nomLieu
     let childHtml = this.childHtml() ;
-    childHtml = childHtml.replace("$id", exposant.id.toString() ) ;
-    childHtml = childHtml.replace("$nom", this.texte( exposant.nom ) ) ;
-    childHtml = childHtml.replace("$type", exposant.type ) ;
-    childHtml = childHtml.replace("$nomLieu", this.texte( exposant.nomLieu ) ) ;
-    childHtml = childHtml.replace("$numLieu", exposant.numLieu.toString() ) ;
-    childHtml = childHtml.replace("$stand", this.texte( this.stand( exposant ) ) ) ;
+    childHtml = childHtml.replaceAll("$id", exposant.id.toString() ) ;
+    childHtml = childHtml.replaceAll("$nomLieu", this.texte( exposant.nomLieu ) ) ;
+    childHtml = childHtml.replaceAll("$nom", this.texte( exposant.nom ) ) ;
+    childHtml = childHtml.replaceAll("$type", this.texte( exposant.type ) ) ;
+    childHtml = childHtml.replaceAll("$numLieu", String( exposant.numLieu ?? "" ) ) ;
+    childHtml = childHtml.replaceAll("$stand", this.texte( this.stand( exposant ) ) ) ;
     return childHtml ;
   }
 
@@ -75,7 +76,7 @@ export class ListeExposantComponent  implements OnInit, OnChanges
   // Numéro du stand suivi de son nom quand il en a un (ex : 328 | ADEB)
   stand( exposant: Exposant ) : string
   {
-    let stand = exposant.numLieu.toString() ;
+    let stand = String( exposant.numLieu ?? "" ) ;
     if( exposant.nomLieu && exposant.nomLieu != stand ) stand += " | " + exposant.nomLieu ;
     return stand ;
   }

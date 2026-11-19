@@ -33,10 +33,15 @@ export class ListePersonnesComponent implements OnInit, OnChanges {
 
   itemText(personne: Personne): string {
     return this.childHtml()
-      .replace("$id", String(personne.id))
-      .replace("$civilite", personne.civilite ?? "")
-      .replace("$prenom", personne.prenom ?? "")
-      .replace("$nom", personne.nom ?? "")
-      .replace("$specialite", (personne as any).specialite ?? "");
+      .replaceAll("$id", String(personne.id))
+      .replaceAll("$civilite", this.texte(personne.civilite))
+      .replaceAll("$prenom", this.texte(personne.prenom))
+      .replaceAll("$nom", this.texte(personne.nom))
+      .replaceAll("$specialite", this.texte((personne as any).specialite));
+  }
+
+  // Les textes viennent de la base : affichés comme du texte, pas comme du html
+  texte(valeur: string): string {
+    return (valeur ?? "").trim().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 }

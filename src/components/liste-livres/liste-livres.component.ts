@@ -71,15 +71,22 @@ export class ListeLivresComponent implements OnInit, OnChanges
   // Met en forme le texte affiché dans chaque ligne de la liste
   itemText( livre: Livre ): string 
   {
+    // $nomExposant avant $nom, sinon $nom remplace le début de $nomExposant
     let childHtml = this.childHtml() ;
-    childHtml = childHtml.replace( "$id", livre.id? livre.id.toString() : "" ) ;
-    childHtml = childHtml.replace( "$titre", livre.titre ) ;
-    childHtml = childHtml.replace( "$editeur", livre.editeur ) ;
-    childHtml = childHtml.replace( "$genre", livre.genre ) ;
-    childHtml = childHtml.replace( "$nom", livre.nom ) ;
-    childHtml = childHtml.replace( "$prenom", livre.prenom ) ;
-    childHtml = childHtml.replace( "$resume", livre.resume ) ;
-    childHtml = childHtml.replace( "$nomExposant", livre.nomExposant ) ;
+    childHtml = childHtml.replaceAll( "$id", livre.id ? livre.id.toString() : "" ) ;
+    childHtml = childHtml.replaceAll( "$titre", this.texte( livre.titre?.trim() || "Sans titre" ) ) ;
+    childHtml = childHtml.replaceAll( "$editeur", this.texte( livre.editeur ) ) ;
+    childHtml = childHtml.replaceAll( "$genre", this.texte( livre.genre ) ) ;
+    childHtml = childHtml.replaceAll( "$nomExposant", this.texte( livre.nomExposant ) ) ;
+    childHtml = childHtml.replaceAll( "$nom", this.texte( livre.nom ) ) ;
+    childHtml = childHtml.replaceAll( "$prenom", this.texte( livre.prenom ) ) ;
+    childHtml = childHtml.replaceAll( "$resume", this.texte( livre.resume ) ) ;
     return childHtml ;
+  }
+
+  // Les textes viennent de la base : affichés comme du texte, pas comme du html
+  texte( valeur: string ): string
+  {
+    return ( valeur ?? "" ).trim().replace( /&/g, "&amp;" ).replace( /</g, "&lt;" ).replace( />/g, "&gt;" ) ;
   }
 }
