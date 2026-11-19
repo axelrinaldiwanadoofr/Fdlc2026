@@ -25,7 +25,7 @@ import { Lieu } from '../../modeles/Lieu';
 })
 export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 {
-  // Numero du hall affiché
+  // Numero du hall affiché, 0 = plan général du salon
   public    numHall = input.required<number>() ;
 
   // Lieu à mettre en évidence sur le plan (-1 = aucun)
@@ -36,6 +36,9 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
   // Prévient le parent quand le plan est zoomé
   public    onZoom = output<boolean>() ;
+
+  // Hall touché sur le plan général
+  public    onHall = output<number>() ;
 
   protected serviceLieu: LieuService ;
   protected router: Router ;
@@ -73,7 +76,19 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   protected messageSituer = signal("") ;
 
   // Seulement les lieux qui ont une zone dessinée
-  protected zones = computed( () => this.lieux().filter( l => l.x1 != null && l.x2 != null ) ) ;
+  protected zones = computed( () => this.numHall() == 0 ? this.zonesHalls() : this.lieux().filter( l => l.x1 != null && l.x2 != null ) ) ;
+
+  // Place des 5 halls sur le plan général, en % de l'image pour marcher quelle que soit sa taille
+  private halls = [
+    { num: 1, x1: 0.7, y1: 12, x2: 25, y2: 92.5 },
+    { num: 2, x1: 28.5, y1: 34, x2: 51, y2: 91 },
+    { num: 3, x1: 51, y1: 34, x2: 77.1, y2: 96.6 },
+    { num: 4, x1: 77.1, y1: 34, x2: 99.2, y2: 91 },
+    { num: 5, x1: 82.5, y1: 1.5, x2: 99.2, y2: 34 }
+  ] ;
+
+  private zonesHalls = computed( () => this.halls.map( hall => new Lieu( hall.num, "Hall " + hall.num, "hall",
+    hall.x1 * this.largeur() / 100, hall.y1 * this.hauteur() / 100, hall.x2 * this.largeur() / 100, hall.y2 * this.hauteur() / 100, hall.num ) ) ) ;
 
   protected lieuSelectionne = computed( () => this.zones().find( l => l.num == this.numLieu() ) ) ;
 
@@ -102,6 +117,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   {
     this.lieuxCharges = false ;
     this.dejaSitue = false ;
+    if( this.numHall() == 0 ) return ;
     this.serviceLieu.getLieuxDuHall( this.numHall() ).subscribe( lieux =>
     {
       this.lieux.set( lieux ) ;
@@ -130,13 +146,17 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     this.calculeLargeurBase() ;
   }
 
-  // Plus grande largeur pour que l'image tienne en largeur et en hauteur (1100 px max)
+  // Plus grande largeur pour que l'image tienne en largeur et en hauteur
   private calculeLargeurBase()
   {
     let cadre = this.cadre().nativeElement ;
     if( this.largeur() == 0 || cadre.clientWidth == 0 ) return ;
 
-    let largeur = Math.min( cadre.clientWidth, cadre.clientHeight * this.largeur() / this.hauteur(), 1100 ) ;
+    let ratio = this.largeur() / this.hauteur() ;
+    let largeur = Math.min( cadre.clientWidth, cadre.clientHeight * ratio, this.numHall() == 0 ? 1800 : 1100 ) ;
+
+    // le plan général est très large : sur téléphone il prend toute la hauteur et défile de côté
+    if( this.numHall() == 0 && cadre.clientWidth < 700 ) largeur = cadre.clientHeight * ratio ;
     this.largeurBase.set( Math.floor( largeur ) ) ;
     this.situeLieu() ;
   }
@@ -156,6 +176,11 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
   onClickZone( lieu: Lieu )
   {
+    if( this.numHall() == 0 )
+    {
+      this.onHall.emit( lieu.num ) ;
+      return ;
+    }
     if( this.pageExiste() ) this.router.navigate( [this.lienPage(), lieu.num] ) ;
     else this.lieuClique.set( lieu ) ;
   }

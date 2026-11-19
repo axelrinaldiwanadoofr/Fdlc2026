@@ -39,7 +39,7 @@
 </div>
 
 <!-- par dessus le plan : aide en bas à gauche, zoom en bas à droite -->
-<p class="aide">Touchez un stand pour voir qui y expose</p>
+<p class="aide" [class.haut]="numHall() == 0">{{ numHall() == 0 ? "Touchez un hall pour l'ouvrir" : "Touchez un stand pour voir qui y expose" }}</p>
 <div class="boutons-zoom">
   <button aria-label="Agrandir le plan" (click)="changeZoom( 0.5 )" [disabled]="zoom() >= 3">
     <ion-icon name="add-outline"></ion-icon>

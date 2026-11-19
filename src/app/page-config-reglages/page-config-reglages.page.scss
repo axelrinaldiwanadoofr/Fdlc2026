@@ -97,3 +97,8 @@ ion-content ion-list.list-md, ion-content ion-list.list-ios
     font-size: 13px;
     text-align: center;
 }
+
+.image.general
+{
+    grid-column: 1 / -1;
+}

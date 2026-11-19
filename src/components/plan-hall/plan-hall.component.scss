@@ -159,3 +159,10 @@
     font-size: 12px;
     pointer-events: none;
 }
+
+// sur le plan général l'entrée est en bas : l'aide passe en haut
+.aide.haut
+{
+    top: 12px;
+    bottom: auto;
+}

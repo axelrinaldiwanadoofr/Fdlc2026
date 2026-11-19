@@ -14,7 +14,7 @@ function valeurValide( $cle, $valeur )
     if( $cle == "accueil" ) return in_array( $valeur, ["ancien", "nouveau"] ) ;
     if( $cle == "debut" || $cle == "fin" ) return preg_match( "/^\d{4}-\d{2}-\d{2}$/", $valeur ) == 1 ;
     if( $cle == "lienLycee" || $cle == "siteFestival" ) return $valeur == "" || preg_match( "/^https?:\/\/\S+$/", $valeur ) == 1 ;
-    if( $cle == "affiche" || preg_match( "/^plan[1-9]$/", $cle ) ) return $valeur == "" || preg_match( "/^assets\/reglages\/[\w.-]+$/", $valeur ) == 1 ;
+    if( $cle == "affiche" || preg_match( "/^plan[0-9]$/", $cle ) ) return $valeur == "" || preg_match( "/^assets\/reglages\/[\w.-]+$/", $valeur ) == 1 ;
     if( in_array( $cle, ["titre", "lieu", "professeur"] ) ) return mb_strlen( $valeur ) <= 200 ;
     if( $cle == "contact" ) return mb_strlen( $valeur ) <= 1000 ;
     if( preg_match( "/^nomHall[1-9]$/", $cle ) ) return mb_strlen( $valeur ) <= 40 ;

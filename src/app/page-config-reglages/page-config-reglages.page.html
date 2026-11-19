@@ -54,6 +54,20 @@
       <h2>Plans des halls</h2>
       <p class="aide">Le contenu s'affiche sous le nom du hall sur la page du plan. Un nouveau plan doit garder le même cadrage que l'ancien, sinon les stands placés ne tombent plus au bon endroit.</p>
       <div class="images">
+        <div class="image general">
+          <img [src]="apercu( 'plan0' )" alt="Plan général du salon">
+          <strong>Plan général</strong>
+          <div class="actions">
+            <ion-button size="small" fill="outline" (click)="choixGeneral.click()" [disabled]="envoi() != ''">
+              {{ envoi() == "plan0" ? "Envoi..." : "Changer" }}
+            </ion-button>
+            @if( v.plan0 )
+            {
+              <ion-button size="small" fill="clear" color="medium" (click)="onOrigine( 'plan0' )">Origine</ion-button>
+            }
+          </div>
+          <input #choixGeneral type="file" accept="image/jpeg,image/png,image/webp" hidden (change)="onFichier( 'plan0', $event )">
+        </div>
         @for( hall of halls; track hall )
         {
           <div class="image">

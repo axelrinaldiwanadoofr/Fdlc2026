@@ -62,8 +62,9 @@ export class TabsPage implements AfterViewInit
   public numHall = input<number>( -1 ) ;
   public numLieu = input<number>( -1 ) ;
 
+  // 0 = plan général du salon
   protected halls = [1, 2, 3, 4, 5] ;
-  protected hallCourant = signal( 1 ) ;
+  protected hallCourant = signal( 0 ) ;
 
   // Lieu choisi dans la recherche, sinon celui de la route
   protected numLieuCherche = signal( -1 ) ;
@@ -117,11 +118,11 @@ export class TabsPage implements AfterViewInit
                 micOutline, brushOutline, imageOutline, cameraOutline, diceOutline, peopleOutline, maleFemaleOutline, medkitOutline,
                 shirtOutline, informationOutline, cashOutline, swapHorizontalOutline } ) ;
 
-    // Hall demandé, sinon on le devine avec le numero du lieu (302 -> hall 3)
+    // Hall demandé, sinon on le devine avec le numero du lieu (302 -> hall 3), sinon le plan général
     effect( () =>
     {
       let hall = Number( this.numHall() ) ;
-      if( !this.halls.includes( hall ) ) hall = this.hallDuLieu( Number( this.numLieu() ) ) ;
+      if( !this.halls.includes( hall ) ) hall = Number( this.numLieu() ) > 0 ? this.hallDuLieu( Number( this.numLieu() ) ) : 0 ;
       this.numLieuCherche.set( -1 ) ;
       this.afficheHall( hall ) ;
     }) ;
@@ -136,7 +137,8 @@ export class TabsPage implements AfterViewInit
       threshold: 20,
       onEnd: detail =>
       {
-        if( this.zoomActif || Math.abs( detail.deltaX ) < 80 ) return ;
+        // le plan général défile de côté sur téléphone : pas de swipe dessus
+        if( this.zoomActif || this.hallCourant() == 0 || Math.abs( detail.deltaX ) < 80 ) return ;
 
         // glisser vers la gauche = hall suivant
         if( detail.deltaX < 0 ) this.afficheHall( this.hallCourant() + 1 ) ;
@@ -148,9 +150,12 @@ export class TabsPage implements AfterViewInit
 
   afficheHall( hall: number )
   {
-    if( !this.halls.includes( hall ) ) return ;
+    if( hall != 0 && !this.halls.includes( hall ) ) return ;
     this.hallCourant.set( hall ) ;
     this.zoomActif = false ;
+
+    // la pastille du hall reste visible quand la barre défile sur téléphone
+    setTimeout( () => this.element.nativeElement.querySelector( ".halls .actif" )?.scrollIntoView( { inline: "center", block: "nearest" } ) ) ;
   }
 
   private hallDuLieu( num: number ): number

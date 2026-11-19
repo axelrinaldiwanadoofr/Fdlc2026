@@ -27,6 +27,10 @@
     </div>
 
     <nav class="halls" aria-label="Choix du hall">
+      <button [class.actif]="hallCourant() == 0" (click)="afficheHall( 0 )">
+        <strong>Tout le salon</strong>
+        <span>Vue d'ensemble</span>
+      </button>
       @for( hall of halls; track hall )
       {
         <button [class.actif]="hall == hallCourant()" (click)="afficheHall( hall )">
@@ -65,7 +69,8 @@
   <app-plan-hall
     [numHall]="hallCourant()"
     [numLieu]="numLieuAffiche()"
-    (onZoom)="zoomActif = $event"></app-plan-hall>
+    (onZoom)="zoomActif = $event"
+    (onHall)="afficheHall( $event )"></app-plan-hall>
 
   <ion-modal [isOpen]="legendeOuverte()" (didDismiss)="legendeOuverte.set( false )" [initialBreakpoint]="0.75" [breakpoints]="[0, 0.75, 1]">
     <ng-template>

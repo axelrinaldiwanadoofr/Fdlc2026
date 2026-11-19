@@ -25,7 +25,8 @@ export class ParametreService
         professeur: "M. Axel RINALDI",
         etudiants: "Don-Divin KISSANGOU MABIALA\nÉlodie VERMOYAL-DESAPHY\nKevin MEYER\nKenisha HAAS\nLiam EHRHARD\nMathieu SIMON\n"
                   + "Merve YASAR\nNadir MAHI\nRabbi DZALAMOU\nRicardo PATTA\nSidi BENHADJEBA\nYannis Benewinde SILGA",
-        affiche: ""
+        affiche: "",
+        plan0: ""
     } ;
 
     // "ancien" ou "nouveau", vide tant que ce n'est pas chargé
@@ -77,10 +78,11 @@ export class ParametreService
         return this.http.post( "php/parametre/image-reglage.php", donnees ) ;
     }
 
-    // image du plan d'un hall, celle d'origine si aucune n'a été envoyée
+    // image du plan d'un hall (0 = plan général), celle d'origine si aucune n'a été envoyée
     plan( hall: number ): string
     {
-        return this.reglages()["plan" + hall] || "assets/plans/hall" + hall + ".png" ;
+        if( this.reglages()["plan" + hall] ) return this.reglages()["plan" + hall] ;
+        return hall == 0 ? "assets/plans/global.png" : "assets/plans/hall" + hall + ".png" ;
     }
 
     // "2026-11-21" => date locale à minuit
