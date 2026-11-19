@@ -11,7 +11,7 @@ try {
     $connexion = Connexion::getInstance();
 
     $sql = "SELECT DISTINCT titre
-            FROM evenement
+            FROM " . Connexion::$tables["evenement"] . "
             WHERE titre IS NOT NULL
             ORDER BY titre";
 
