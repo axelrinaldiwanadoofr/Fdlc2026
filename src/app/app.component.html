@@ -9,7 +9,7 @@
       <ion-list class="menu">
         @for( page of pages; track page.lien )
         {
-          <ion-menu-toggle auto-hide="false">
+          <ion-menu-toggle auto-hide="false" [class.groupe]="page.groupe">
             <ion-item [routerLink]="page.lien" routerLinkActive="actif" [routerLinkActiveOptions]="{ exact: true }" lines="none" [detail]="false">
               <ion-icon slot="start" [name]="page.icone"></ion-icon>
               <ion-label>{{page.titre}}</ion-label>

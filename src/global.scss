@@ -213,6 +213,15 @@ ion-menu ion-list.menu ion-item.actif
   font-weight: 700;
 }
 
+/* trait léger entre les groupes de pages du menu */
+ion-menu ion-list.menu ion-menu-toggle.groupe
+{
+  display: block;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ion-border-color);
+}
+
 /* Bas du menu : infos du festival et crédit du lycée */
 ion-footer.pied-menu
 {
