@@ -8,57 +8,26 @@
 
 <ion-content [fullscreen]="true">
   <div class="filtres">
-    <!-- Recherche toujours visible + bouton qui ouvre / range les autres filtres -->
-    <div class="barre">
-      <ion-searchbar
-        placeholder="Auteur, titre, livre…"
-        [value]="recherche()"
-        (ionInput)="recherche.set( $any($event).detail.value ?? '' )"
-        [debounce]="0"
-        inputmode="search"
-        aria-label="Rechercher un événement">
-      </ion-searchbar>
-
-      <ion-button class="bouton-filtres" [fill]="panneauOuvert() ? 'solid' : 'outline'"
-                  (click)="panneauOuvert.set( !panneauOuvert() )"
-                  [attr.aria-expanded]="panneauOuvert()" aria-controls="panneau-filtres">
-        <ion-icon slot="start" name="options-outline"></ion-icon>
-        <span class="texte-bouton">Filtres</span>
-        @if( filtresActifs().length > 0 ) { <span class="pastille-nb">{{ filtresActifs().length }}</span> }
-        <ion-icon slot="end" [name]="panneauOuvert() ? 'chevron-up' : 'chevron-down'"></ion-icon>
-      </ion-button>
+    <!-- Une pastille par filtre : chacune ouvre une liste défilante avec recherche.
+         Téléphone : la rangée défile horizontalement ; ordinateur : elle passe à la ligne. -->
+    <div class="pastilles" role="group" aria-label="Filtres">
+      @for( f of filtres; track f.label )
+      {
+        <app-filtre-choix
+          [label]="f.label"
+          [libelleVide]="f.libelleVide"
+          [options]="f.options()"
+          [valeur]="f.valeur()"
+          [valeurVide]="f.valeurVide"
+          (valeurChange)="f.valeur.set( $event )">
+        </app-filtre-choix>
+      }
     </div>
 
-    <!-- Panneau des filtres : chaque filtre ouvre une liste avec recherche -->
-    @if( panneauOuvert() )
-    {
-      <div class="panneau" id="panneau-filtres">
-        @for( f of filtres; track f.label )
-        {
-          <app-filtre-choix
-            [label]="f.label"
-            [libelleVide]="f.libelleVide"
-            [options]="f.options()"
-            [valeur]="f.valeur()"
-            [valeurVide]="f.valeurVide"
-            (valeurChange)="f.valeur.set( $event )">
-          </app-filtre-choix>
-        }
-      </div>
-    }
-
-    <!-- Filtres actifs (visibles même panneau rangé) + nombre de résultats -->
+    <!-- Nombre de résultats quand un filtre est utilisé -->
     @if( filtreActif() )
     {
-      <div class="actifs">
-        @for( a of filtresActifs(); track a.filtre.label )
-        {
-          <ion-chip color="primary" (click)="a.filtre.valeur.set( a.filtre.valeurVide )"
-                    [attr.aria-label]="'Retirer le filtre ' + a.filtre.label">
-            <ion-label><span class="nom-filtre">{{ a.filtre.label }} :</span> {{ a.libelle }}</ion-label>
-            <ion-icon name="close-circle"></ion-icon>
-          </ion-chip>
-        }
+      <div class="resume">
         <span class="resultat">
           @if( total() !== null )
           {
@@ -71,7 +40,6 @@
   </div>
 
   <app-liste-evenements
-    [recherche]="recherche()"
     [theme]="$any( theme() )"
     [numLieu]="nombre( numLieu() )"
     [idAnimateur]="nombre( idAnimateur() )"
