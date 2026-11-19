@@ -6,10 +6,20 @@ img
     width: 100%;
 }
 
-// Nom du lycée à gauche du logo
-.nom-lycee
+// Nom du lycée et logo dans une puce blanche
+.lycee
 {
-    margin-right: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 4px;
+    padding-right: 10px;
+    border-radius: 6px;
+    background: white;
+}
+
+.lycee span
+{
     font-size: 0.85em;
     font-weight: 600;
     color: var(--ion-color-medium);
