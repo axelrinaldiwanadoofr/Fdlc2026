@@ -85,6 +85,10 @@
             <ion-select-option [value]="specialite">{{specialite}}</ion-select-option>
           }
         </ion-select>
+        @if( rolesStaff().includes( p.specialite ) )
+        {
+          <span slot="end" class="staff">staff</span>
+        }
       </ion-item>
       <ion-item>
         <ion-select label="Public" labelPlacement="stacked" interface="popover" [(ngModel)]="p.type">
@@ -281,10 +285,12 @@
           @for( specialite of specialites(); track specialite )
           {
             <ion-item>
-              <ion-label>{{specialite}}</ion-label>
-              <ion-note slot="end">{{ nbAvecRole( specialite ) }}</ion-note>
+              <ion-label>
+                <h2>{{specialite}}</h2>
+                <p>{{ nbAvecRole( specialite ) }} personne(s)</p>
+              </ion-label>
               <ion-toggle slot="end" class="interrupteur" [checked]="rolesStaff().includes( specialite )"
-                          (ionChange)="onChangeStaff( specialite, $event.detail.checked )">STAFF</ion-toggle>
+                          (ionChange)="onChangeStaff( specialite, $event.detail.checked )">Staff</ion-toggle>
               <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="majRole( specialite, true )">
                 <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
               </ion-button>
