@@ -1,4 +1,4 @@
-import { Component, OnInit, input, output, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { FormsModule } from '@angular/forms';
@@ -67,10 +67,14 @@ export class NomExposantComboComponent implements OnInit
   }
 
   // Vide le champ de recherche (bouton Réinitialiser)
+  private cdr = inject( ChangeDetectorRef ) ;
+
   vider()
   {
     this.nom = "" ;
     this.masqueListe() ;
+    // Met à jour l'affichage du champ
+    this.cdr.detectChanges() ;
   }
 
   masqueListe() 
