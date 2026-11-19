@@ -18,13 +18,22 @@ $bd = Connexion::getInstance() ;
 $sql = "select prenom, nom from " . Connexion::$tables["personne"] . " where specialite = 'auteur' order by nom" ;
 $auteurs = $bd->query( $sql )->fetchAll( PDO::FETCH_ASSOC ) ;
 
+$nbOk = 0 ;
 foreach( $auteurs as $auteur )
 {
     $ok = xmlBnf( trim( $auteur["prenom"] ?? "" ), trim( $auteur["nom"] ?? "" ) ) !== false ;
+    if( $ok ) $nbOk++ ;
     echo ( $ok ? "ok     " : "erreur " ) . $auteur["prenom"] . " " . $auteur["nom"] . "\n" ;
     flush() ;
+
+    // la BnF ne répond plus : inutile de continuer, les auteurs déjà faits restent en cache
+    if( !$ok && bnfEnPause() )
+    {
+        echo "\nLa BnF ne répond plus. Relancer cette page dans 30 minutes : seuls les auteurs manquants seront demandés.\n" ;
+        break ;
+    }
 }
 
-echo "Fini, " . count( $auteurs ) . " auteurs" ;
+echo "Fini, " . $nbOk . " auteurs sur " . count( $auteurs ) . " en cache" ;
 
 ?>
