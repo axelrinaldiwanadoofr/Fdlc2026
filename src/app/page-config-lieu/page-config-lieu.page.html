@@ -114,6 +114,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer le lieu ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="'Le lieu n° ' + lieu()?.num + ' sera supprimé'"
     [buttons]="boutonsSupprimer">
   </ion-alert>

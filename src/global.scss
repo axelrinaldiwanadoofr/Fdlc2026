@@ -321,6 +321,13 @@ ion-toolbar ion-title.ios
   overflow: hidden;
 }
 
+/* en mode iOS le select n'a pas de fond rempli : on lui donne la même marge intérieure */
+.filtres .selections ion-select.ios
+{
+  --padding-start: 14px;
+  --padding-end: 12px;
+}
+
 .filtres .resultat
 {
   display: flex;
@@ -352,4 +359,19 @@ ion-toolbar ion-title.ios
   {
     grid-column: 1 / -1;
   }
+}
+
+/* Fenêtre de confirmation avant une suppression */
+ion-alert.alerte-suppression .alert-sub-title
+{
+  margin-top: 6px;
+  color: var(--ion-color-danger);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+ion-alert.alerte-suppression button.alert-button-role-destructive
+{
+  color: var(--ion-color-danger);
+  font-weight: 700;
 }

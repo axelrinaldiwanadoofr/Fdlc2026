@@ -97,6 +97,8 @@
   [isOpen]="alerteSupprimer()"
   (didDismiss)="alerteSupprimer.set(false)"
   header="Supprimer le compte ?"
+  subHeader="ATTENTION : cette action est définitive"
+  cssClass="alerte-suppression"
   message="La personne reste dans la base mais ne pourra plus se connecter."
   [buttons]="boutonsSupprimer">
 </ion-alert>

@@ -142,6 +142,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer l'exposant ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="exposant()?.nom + ' sera supprimé et ses personnes retirées du stand'"
     [buttons]="boutonsSupprimer">
   </ion-alert>
@@ -150,6 +152,8 @@
     [isOpen]="exposantGarde() != null"
     (didDismiss)="exposantGarde.set(null)"
     header="Fusionner ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="exposant()?.nom + ' sera supprimé, ses personnes et ses livres passent sur ' + exposantGarde()?.nom"
     [buttons]="boutonsFusion">
   </ion-alert>

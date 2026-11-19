@@ -291,7 +291,7 @@
               </ion-label>
               <ion-toggle slot="end" class="interrupteur" [checked]="rolesStaff().includes( specialite )"
                           (ionChange)="onChangeStaff( specialite, $event.detail.checked )">Staff</ion-toggle>
-              <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="majRole( specialite, true )">
+              <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="specialiteASupprimer.set( specialite )" aria-label="Supprimer la spécialité">
                 <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
               </ion-button>
             </ion-item>
@@ -313,6 +313,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer la personne ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="personne()?.prenom + ' ' + personne()?.nom + ' sera retiré(e) des stands et de ses livres'"
     [buttons]="boutonsSupprimer">
   </ion-alert>
@@ -323,4 +325,14 @@
     [duration]="2000"
     (didDismiss)="message.set('')">
   </ion-toast>
+  <ion-alert
+    [isOpen]="specialiteASupprimer() != ''"
+    (didDismiss)="specialiteASupprimer.set('')"
+    header="Supprimer la spécialité ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
+    [message]="'La spécialité ' + specialiteASupprimer() + ' ne sera plus proposée.'"
+    [buttons]="boutonsSupprimerSpecialite">
+  </ion-alert>
+
 </ion-content>

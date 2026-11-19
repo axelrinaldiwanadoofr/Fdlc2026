@@ -87,6 +87,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer la zone ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="'La zone du lieu ' + numChoisi + ' ne sera plus affichée sur le plan.'"
     [buttons]="boutonsSupprimer">
   </ion-alert>

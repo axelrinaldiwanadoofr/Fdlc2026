@@ -92,8 +92,8 @@
           <ion-input type="url" label="Site officiel du festival" labelPlacement="stacked" [(ngModel)]="v.siteFestival" placeholder="https://... (vide = pas de lien)"></ion-input>
         </ion-item>
         <ion-item>
-          <ion-input label="Contact pour les données personnelles" labelPlacement="stacked" [(ngModel)]="v.contact" maxlength="200"
-                     placeholder="ex : l'organisation du festival (contact@...)"></ion-input>
+          <ion-textarea label="Contact pour les données personnelles" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="v.contact" maxlength="1000"
+                        placeholder="ex : l'organisation du festival, contact@..., 03 89 ..."></ion-textarea>
         </ion-item>
       </ion-list>
 

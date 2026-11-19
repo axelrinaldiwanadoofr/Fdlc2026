@@ -32,16 +32,16 @@
         </ion-select>
       </ion-item>
       <ion-item>
-        <ion-input type="datetime-local" label="Afficher à partir de" labelPlacement="stacked" [(ngModel)]="a.debut"></ion-input>
+        <ion-input type="datetime-local" label="Afficher à partir de" labelPlacement="stacked" [(ngModel)]="a.debut" [min]="dateMin()" [max]="dateMax()"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input type="datetime-local" label="Jusqu'à" labelPlacement="stacked" [(ngModel)]="a.fin"></ion-input>
+        <ion-input type="datetime-local" label="Jusqu'à" labelPlacement="stacked" [(ngModel)]="a.fin" [min]="dateMin()" [max]="dateMax()"></ion-input>
       </ion-item>
       <ion-item>
         <ion-toggle [checked]="a.active == 1" (ionChange)="a.active = $event.detail.checked ? 1 : 0">Active</ion-toggle>
       </ion-item>
       <ion-item lines="none">
-        <ion-note>Sans date, l'annonce reste affichée tant qu'elle est active.</ion-note>
+        <ion-note>Les dates doivent être pendant le festival ({{ serviceParametre.dates() }}). Sans date, l'annonce reste affichée tant qu'elle est active.</ion-note>
       </ion-item>
     </ion-list>
 
@@ -85,6 +85,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer l'annonce ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [buttons]="boutonsSupprimer">
   </ion-alert>
 

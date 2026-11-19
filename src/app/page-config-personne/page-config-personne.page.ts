@@ -133,6 +133,13 @@ export class PageConfigPersonnePage
   // Fenetres de choix d'un stand, des livres et gestion des spécialités
   protected modalRoles = signal(false) ;
   protected nouveauRole: string = "" ;
+
+  // spécialité à supprimer, en attente de confirmation
+  protected specialiteASupprimer = signal( "" ) ;
+  protected boutonsSupprimerSpecialite = [
+    { text: "Annuler", role: "cancel" },
+    { text: "Supprimer", role: "destructive", handler: () => this.majRole( this.specialiteASupprimer(), true ) }
+  ] ;
   protected modalStand = signal(false) ;
   protected modalLivres = signal(false) ;
   protected rechercheModal = signal("") ;

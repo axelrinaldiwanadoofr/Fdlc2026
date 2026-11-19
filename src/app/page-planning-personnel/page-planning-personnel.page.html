@@ -86,6 +86,8 @@
   [isOpen]="alerteVider()"
   (didDismiss)="alerteVider.set(false)"
   header="Vider le planning ?"
+  subHeader="ATTENTION : cette action est définitive"
+  cssClass="alerte-suppression"
   message="Toutes les étapes seront supprimées."
   [buttons]="boutonsVider">
 </ion-alert>
