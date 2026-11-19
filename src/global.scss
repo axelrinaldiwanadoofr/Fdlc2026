@@ -220,3 +220,48 @@ ion-menu ion-list.menu ion-item.actif
   --color: var(--ion-color-primary);
   font-weight: 700;
 }
+
+/* Bas du menu : infos du festival et crédit du lycée */
+ion-footer.pied-menu
+{
+  padding: 16px 20px 20px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+}
+
+.pied-menu p
+{
+  margin: 0;
+}
+
+.pied-menu .dates
+{
+  font-weight: 700;
+  color: var(--ion-color-secondary);
+}
+
+.pied-menu a
+{
+  display: block;
+  margin-top: 10px;
+  color: var(--ion-color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pied-menu a.credit
+{
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ion-border-color);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+}
+
+/* Le contenu commence sous la barre du haut : sinon, quand la barre change de hauteur
+   (recherche ouverte, police chargée), le haut de la page passe dessous */
+ion-content
+{
+  --offset-top: 0px !important;
+}
