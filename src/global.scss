@@ -140,3 +140,10 @@ ion-list.liste, ion-list.formulaire
   border-radius: 16px;
   overflow: hidden;
 }
+
+/* Trait fin sous la barre du haut au lieu de l'ombre d'Android */
+ion-header.header-md:not(.header-collapse-condense)
+{
+  box-shadow: none;
+  border-bottom: 1px solid var(--ion-border-color);
+}
