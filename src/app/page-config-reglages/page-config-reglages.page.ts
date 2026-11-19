@@ -56,7 +56,7 @@ export class PageConfigReglagesPage
 
   protected valeurs = signal<any>( null ) ;
   protected halls = [1, 2, 3, 4, 5] ;
-  protected cles = ["titre", "debut", "fin", "lieu", "affiche", "plan1", "plan2", "plan3", "plan4", "plan5", "professeur", "etudiants", "lienLycee", "siteFestival", "contact"] ;
+  protected cles = ["titre", "debut", "fin", "lieu", "affiche", "plan1", "plan2", "plan3", "plan4", "plan5", "nomHall1", "nomHall2", "nomHall3", "nomHall4", "nomHall5", "professeur", "etudiants", "lienLycee", "siteFestival", "contact"] ;
 
   // image en cours d'envoi ("affiche", "plan2"...)
   protected envoi = signal( "" ) ;

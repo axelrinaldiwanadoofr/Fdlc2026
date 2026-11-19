@@ -52,13 +52,14 @@
       </div>
 
       <h2>Plans des halls</h2>
-      <p class="aide">Le nouveau plan doit garder le même cadrage que l'ancien, sinon les stands placés ne tombent plus au bon endroit.</p>
+      <p class="aide">Le contenu s'affiche sous le nom du hall sur la page du plan. Un nouveau plan doit garder le même cadrage que l'ancien, sinon les stands placés ne tombent plus au bon endroit.</p>
       <div class="images">
         @for( hall of halls; track hall )
         {
           <div class="image">
             <img [src]="apercu( 'plan' + hall )" [alt]="'Plan du hall ' + hall">
             <strong>Hall {{hall}}</strong>
+            <input class="contenu" [(ngModel)]="v['nomHall' + hall]" maxlength="40" placeholder="Contenu (ex : Éditeurs)" [attr.aria-label]="'Contenu du hall ' + hall">
             <div class="actions">
               <ion-button size="small" fill="outline" (click)="choixPlan.click()" [disabled]="envoi() != ''">
                 {{ envoi() == "plan" + hall ? "Envoi..." : "Changer" }}

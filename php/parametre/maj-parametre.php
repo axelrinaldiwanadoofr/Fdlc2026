@@ -17,6 +17,7 @@ function valeurValide( $cle, $valeur )
     if( $cle == "affiche" || preg_match( "/^plan[1-9]$/", $cle ) ) return $valeur == "" || preg_match( "/^assets\/reglages\/[\w.-]+$/", $valeur ) == 1 ;
     if( in_array( $cle, ["titre", "lieu", "professeur"] ) ) return mb_strlen( $valeur ) <= 200 ;
     if( $cle == "contact" ) return mb_strlen( $valeur ) <= 1000 ;
+    if( preg_match( "/^nomHall[1-9]$/", $cle ) ) return mb_strlen( $valeur ) <= 40 ;
     if( $cle == "etudiants" ) return mb_strlen( $valeur ) <= 3000 ;
     return false ;
 }

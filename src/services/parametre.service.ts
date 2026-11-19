@@ -20,6 +20,7 @@ export class ParametreService
         lieu: "Parc des Expositions de Colmar",
         lienLycee: "https://lyceecamilleseecolmar.fr",
         siteFestival: "",
+        nomHall1: "", nomHall2: "", nomHall3: "", nomHall4: "", nomHall5: "",
         contact: "Le lycée Camille Sée de Colmar, qui héberge l'application",
         professeur: "M. Axel RINALDI",
         etudiants: "Don-Divin KISSANGOU MABIALA\nÉlodie VERMOYAL-DESAPHY\nKevin MEYER\nKenisha HAAS\nLiam EHRHARD\nMathieu SIMON\n"

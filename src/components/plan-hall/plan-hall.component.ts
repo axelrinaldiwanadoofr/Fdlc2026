@@ -6,7 +6,6 @@ import { addIcons } from 'ionicons';
 import { addOutline, removeOutline } from 'ionicons/icons';
 
 import {
-  IonButton,
   IonIcon,
   IonToast,
  } from '@ionic/angular';
@@ -20,7 +19,6 @@ import { Lieu } from '../../modeles/Lieu';
   templateUrl: './plan-hall.component.html',
   styleUrls: ['./plan-hall.component.scss'],
   imports: [
-    IonButton,
     IonIcon,
     IonToast,
   ],
