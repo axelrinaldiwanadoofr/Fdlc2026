@@ -124,7 +124,7 @@
         <ion-item button (click)="onModifier( x )">
           <ion-label>
             <h2>{{x.nom}}</h2>
-            <p>{{ x.numLieu ? "Stand " + x.numLieu : "Sans stand" }}{{ x.type ? " | " + x.type : "" }}</p>
+            <p>{{ x.numLieu ? "Stand " + x.numLieu : "Sans stand" }}{{ x.type ? " | " + ( x.type | majuscule ) : "" }}</p>
           </ion-label>
           <ion-note slot="end">{{x.nbPersonnes}} pers. | {{x.nbLivres}} livres</ion-note>
         </ion-item>

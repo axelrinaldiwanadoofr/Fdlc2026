@@ -44,6 +44,7 @@ import { PresenceStand } from '../../modeles/PresenceStand';
 import { Exposant } from '../../modeles/Exposant';
 import { Livre } from '../../modeles/Livre';
 import { AccesCompteComponent } from '../../components/acces-compte/acces-compte.component';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Page de config des personnes : infos, photo, présence sur les stands et livres
 @Component({
@@ -79,7 +80,8 @@ import { AccesCompteComponent } from '../../components/acces-compte/acces-compte
     IonToast,
     IonAlert,
     FormsModule,
-    AccesCompteComponent
+    AccesCompteComponent,
+    MajusculePipe
   ]
 })
 export class PageConfigPersonnePage

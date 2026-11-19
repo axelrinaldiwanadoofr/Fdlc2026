@@ -160,7 +160,7 @@
         <ion-item button (click)="onModifier( l )">
           <ion-label class="ion-text-wrap">
             <h2>{{l.titre || "(sans titre)"}}</h2>
-            <p>{{ l.nom || "Sans auteur" }} | {{ l.editeur || "Sans éditeur" }}{{ l.genre ? " | " + l.genre : "" }}</p>
+            <p>{{ l.nom || "Sans auteur" }} | {{ l.editeur || "Sans éditeur" }}{{ l.genre ? " | " + ( l.genre | majuscule ) : "" }}</p>
           </ion-label>
         </ion-item>
       }

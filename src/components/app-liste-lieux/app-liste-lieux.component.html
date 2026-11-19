@@ -4,7 +4,7 @@
     <ion-item-group>
       <!-- Titre du groupe, reste en haut de l'écran pendant le défilement -->
       <ion-item-divider sticky="true" color="light">
-        <ion-label>{{ groupe.type }} ({{ groupe.lieux.length }})</ion-label>
+        <ion-label>{{ groupe.type | majuscule }} ({{ groupe.lieux.length }})</ion-label>
       </ion-item-divider>
 
       @for( lieu of groupe.lieux; track lieu.num )

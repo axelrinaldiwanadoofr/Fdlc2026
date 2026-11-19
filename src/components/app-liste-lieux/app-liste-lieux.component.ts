@@ -5,6 +5,7 @@ import { Observable, map } from 'rxjs';
 import { IonList, IonItem, IonLabel, IonItemDivider, IonItemGroup } from '@ionic/angular';
 import { LieuService } from '../../services/lieu.service';
 import { Lieu } from '../../modeles/Lieu';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Un groupe de lieux de même type (stand, théatre...)
 interface GroupeLieux
@@ -19,7 +20,7 @@ interface GroupeLieux
   selector: 'app-liste-lieux',
   templateUrl: './app-liste-lieux.component.html',
   styleUrls: ['./app-liste-lieux.component.scss'],
-  imports: [IonList, IonItem, IonLabel, IonItemDivider, IonItemGroup, AsyncPipe, RouterLink],
+  imports: [IonList, IonItem, IonLabel, IonItemDivider, IonItemGroup, AsyncPipe, RouterLink, MajusculePipe],
 })
 export class AppListeLieuxComponent implements OnInit, OnChanges
 {

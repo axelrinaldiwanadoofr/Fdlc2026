@@ -96,7 +96,7 @@
         <ion-item button (click)="onModifier( l )">
           <ion-label>
             <h2>{{l.num}} {{ l.nom && l.nom != l.num.toString() ? "| " + l.nom : "" }}</h2>
-            <p>{{l.type}} | Hall {{l.hall}} {{ l.libelle ? "| " + l.libelle : "" }}</p>
+            <p>{{ l.type | majuscule }} | Hall {{l.hall}} {{ l.libelle ? "| " + l.libelle : "" }}</p>
           </ion-label>
           <ion-note slot="end" [color]="l.x1 != null ? 'success' : 'medium'">{{ l.x1 != null ? "Sur le plan" : "Pas placé" }}</ion-note>
         </ion-item>

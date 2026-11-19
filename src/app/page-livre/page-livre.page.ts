@@ -23,6 +23,7 @@ import {
   IonCardSubtitle,
   IonCardContent,
 } from '@ionic/angular';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 interface AuteurLivre { id: number; prenom: string; nom: string; }
 interface ExposantLivre { id: number; nom: string; numLieu: number | null; }
@@ -49,7 +50,8 @@ interface LiensLivre { auteurs: AuteurLivre[]; exposants: ExposantLivre[]; evene
     IonCardSubtitle,
     IonCardContent,
     IonCard,
-    RouterLink
+    RouterLink,
+    MajusculePipe
   ]
 })
 export class PageLivrePage implements OnInit

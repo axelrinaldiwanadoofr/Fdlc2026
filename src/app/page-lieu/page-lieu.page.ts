@@ -18,6 +18,7 @@ import {
 import { Lieu } from '../../modeles/Lieu';
 import { LieuService } from '../../services/lieu.service' ;
 import { ListeExposantComponent } from '../../components/liste-exposant/liste-exposant.component';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 @Component({  
   selector: 'app-page-lieu',  
@@ -27,7 +28,8 @@ import { ListeExposantComponent } from '../../components/liste-exposant/liste-ex
     IonContent, IonHeader, IonTitle, IonToolbar,    
     IonButtons, IonMenuButton, IonBackButton,    
     IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton,    
-    AsyncPipe, ListeExposantComponent  ],
+    AsyncPipe, ListeExposantComponent, MajusculePipe
+  ],
 })
 export class PageLieuPage implements OnInit
 {  

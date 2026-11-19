@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { IonList, IonItem, IonLabel } from '@ionic/angular';
 import { PersonneService } from '../../services/personne.service';
 import { Personne } from '../../modeles/Personne';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 @Component({
   selector: 'app-liste-personnes',
@@ -37,10 +38,12 @@ export class ListePersonnesComponent implements OnInit, OnChanges {
       .replaceAll("$civilite", this.texte(personne.civilite))
       .replaceAll("$prenom", this.texte(personne.prenom))
       .replaceAll("$nom", this.texte(personne.nom))
-      .replaceAll("$specialite", this.texte((personne as any).specialite));
+      .replaceAll("$specialite", this.texte(this.majuscule.transform((personne as any).specialite)));
   }
 
   // Les textes viennent de la base : affichés comme du texte, pas comme du html
+  private majuscule = new MajusculePipe();
+
   texte(valeur: string): string {
     return (valeur ?? "").trim().replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }

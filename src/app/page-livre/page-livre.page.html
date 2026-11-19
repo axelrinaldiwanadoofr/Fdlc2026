@@ -26,7 +26,7 @@
         <ion-card-title>{{ livre.titre || "Sans titre" }}</ion-card-title>
         @if( livre.genre || livre.editeur ) {
           <ion-card-subtitle>
-            @if( livre.genre ) { Genre : {{livre.genre}} }
+            @if( livre.genre ) { Genre : {{ livre.genre | majuscule }} }
             @if( livre.genre && livre.editeur ) { | }
             @if( livre.editeur ) { Éditeur : {{livre.editeur}} }
           </ion-card-subtitle>

@@ -39,6 +39,7 @@ import { PersonneService } from '../../services/personne.service';
 import { Livre } from '../../modeles/Livre';
 import { Exposant } from '../../modeles/Exposant';
 import { Personne } from '../../modeles/Personne';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Page de config des livres : titre, résumé, genre, éditeur et auteurs
 @Component({
@@ -70,7 +71,8 @@ import { Personne } from '../../modeles/Personne';
     IonNote,
     IonToast,
     IonAlert,
-    FormsModule
+    FormsModule,
+    MajusculePipe
   ]
 })
 export class PageConfigLivrePage

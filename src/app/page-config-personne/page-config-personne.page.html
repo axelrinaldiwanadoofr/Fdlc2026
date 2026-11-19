@@ -82,7 +82,7 @@
         <ion-select label="Spécialité" labelPlacement="stacked" interface="popover" [(ngModel)]="p.specialite">
           @for( specialite of specialites(); track specialite )
           {
-            <ion-select-option [value]="specialite">{{specialite}}</ion-select-option>
+            <ion-select-option [value]="specialite">{{ specialite | majuscule }}</ion-select-option>
           }
         </ion-select>
         @if( rolesStaff().includes( p.specialite ) )
@@ -255,7 +255,7 @@
               {
                 <span class="staff">staff</span>
               }
-              {{p.specialite}}{{ p.type == "J" ? " | jeunesse" : "" }}{{ p.stands ? " | stand " + p.stands : "" }}
+              {{ p.specialite | majuscule }}{{ p.type == "J" ? " | jeunesse" : "" }}{{ p.stands ? " | stand " + p.stands : "" }}
             </p>
           </ion-label>
         </ion-item>
@@ -286,7 +286,7 @@
           {
             <ion-item>
               <ion-label>
-                <h2>{{specialite}}</h2>
+                <h2>{{ specialite | majuscule }}</h2>
                 <p>{{ nbAvecRole( specialite ) }} personne(s)</p>
               </ion-label>
               <ion-toggle slot="end" class="interrupteur" [checked]="rolesStaff().includes( specialite )"

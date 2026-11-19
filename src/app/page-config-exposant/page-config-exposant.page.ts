@@ -34,6 +34,7 @@ import { ExposantService } from '../../services/exposant.service';
 import { LieuService } from '../../services/lieu.service';
 import { Exposant } from '../../modeles/Exposant';
 import { Lieu } from '../../modeles/Lieu';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Page de config des exposants : nom, type, stand et fusion des doublons
 @Component({
@@ -62,7 +63,8 @@ import { Lieu } from '../../modeles/Lieu';
     IonNote,
     IonToast,
     IonAlert,
-    FormsModule
+    FormsModule,
+    MajusculePipe
   ]
 })
 export class PageConfigExposantPage
