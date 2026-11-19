@@ -21,20 +21,21 @@
         <p>Type : {{ lieu.type }}</p>
       </ion-card-content>
     </ion-card>
+    <ion-item>
+      @if( lieu.hall ) {
+        <ion-button fill="outline" [routerLink]="['/plans', lieu.hall]" [queryParams]="{ numLieu: lieu.num }">
+          <ion-icon slot="start" name="location-outline"></ion-icon>
+          Situer
+        </ion-button>
+      }
 
-    @if( lieu.hall ) {
-      <ion-button fill="outline" [routerLink]="['/plans', lieu.hall]" [queryParams]="{ numLieu: lieu.num }">
-        <ion-icon slot="start" name="location-outline"></ion-icon>
-        Situer
-      </ion-button>
-    }
-
-    <app-ajouter-etape-button
-      [nom]="lieu.nom"
-      [numLieu]="lieu.num">
-    </app-ajouter-etape-button>
-
+      <app-ajouter-etape-button slot="end"
+        [nom]="lieu.nom"
+        [numLieu]="lieu.num">
+      </app-ajouter-etape-button>
+    </ion-item>
     <!-- Annexe : liste des exposants du lieu -->
+    <ion-item-divider>Exposants sur le stand</ion-item-divider>
     <app-liste-exposant
       [nomLieu]="lieu.nom"
       lienPage="/page-exposant"

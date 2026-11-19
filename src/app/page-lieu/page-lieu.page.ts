@@ -17,6 +17,8 @@ import {
   IonCardTitle,
   IonCardContent,
   IonButton,
+  IonItem,
+  IonItemDivider,
   IonIcon,
 } from '@ionic/angular';
 import { Lieu } from '../../modeles/Lieu';
@@ -42,6 +44,8 @@ import { AjouterEtapeButtonComponent } from '../../components/ajouter-etape-butt
     IonCardContent,
     IonButton,
     IonIcon,
+    IonItem,
+    IonItemDivider,
     RouterLink,
     AsyncPipe,
     ListeExposantComponent,
