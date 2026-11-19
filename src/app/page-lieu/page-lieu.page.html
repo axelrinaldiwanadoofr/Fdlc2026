@@ -1,35 +1,44 @@
-<ion-header [translucent]="true">  
-  <ion-toolbar>    
-    <ion-title>Lieu n° {{num()}}</ion-title>    
-    <ion-buttons slot="start">      
-      <ion-back-button defaultHref="/"></ion-back-button>    
-    </ion-buttons>    
-    <ion-buttons slot="end">      
-      <ion-menu-button></ion-menu-button>    
-    </ion-buttons>  
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Lieu n° {{num()}}</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">  
-  @for( lieu of lieux | async; track lieu.num )  {    
-    <ion-card>      
-      <ion-card-header>        
-        <ion-card-title>{{ lieu.nom }}</ion-card-title>      
-      </ion-card-header>      
-      <ion-card-content>        
-        <p>N° {{ lieu.num }}</p>        
-        <p>Type : {{ lieu.type }}</p>      
-      </ion-card-content>    
-    </ion-card>    
-    <!-- Annexe : liste des exposants du lieu -->    
-    <app-liste-exposant      
-      [nomLieu]="lieu.nom"      
-      lienPage="/page-exposant"      
-      childHtml="<strong>$nom</strong>">
-    </app-liste-exposant>  
-  }  
+<ion-content [fullscreen]="true">
+  @for( lieu of lieux | async; track lieu.num ) {
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>{{ lieu.nom }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p>N° {{ lieu.num }}</p>
+        <p>Type : {{ lieu.type }}</p>
+      </ion-card-content>
+    </ion-card>
 
-  <!-- Boutons provisoires -->
-  <ion-button disabled>Planifier</ion-button>  
-  <ion-button disabled>Plan</ion-button>  
+    @if( lieu.hall ) {
+      <ion-button fill="outline" [routerLink]="['/plans', lieu.hall]" [queryParams]="{ numLieu: lieu.num }">
+        <ion-icon slot="start" name="location-outline"></ion-icon>
+        Situer
+      </ion-button>
+    }
+
+    <app-ajouter-etape-button
+      [nom]="lieu.nom"
+      [numLieu]="lieu.num">
+    </app-ajouter-etape-button>
+
+    <!-- Annexe : liste des exposants du lieu -->
+    <app-liste-exposant
+      [nomLieu]="lieu.nom"
+      lienPage="/page-exposant"
+      childHtml="<strong>$nom</strong>">
+    </app-liste-exposant>
+  }
 </ion-content>
