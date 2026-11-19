@@ -52,9 +52,9 @@ export class PageListePersonnesPage {
   protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
   protected nomExposantCombo = viewChild(NomExposantComboComponent);
 
-  public saisieNom = '';
+  public saisieNom: any = '';
   public saisieSpecialite = '';
-  public saisieNomExposant = '';
+  public saisieNomExposant: any = '';
   public saisieTitreEvenement = '';
 
   public nom = '';
@@ -62,11 +62,19 @@ export class PageListePersonnesPage {
   public exposant = '';
   public evenement = '';
 
+  private enTexte(valeur: any): string {
+    if (valeur == null) return '';
+    if (typeof valeur === 'string') return valeur.trim();
+    return String(valeur.nom ?? '').trim();
+  }
+
   onFiltrer() {
-    this.nom = this.saisieNom.trim();
-    this.evenement = this.saisieTitreEvenement.trim();
-    this.exposant = this.saisieNomExposant.trim();
+    console.log('saisieNom =', this.saisieNom, '| saisieNomExposant =', this.saisieNomExposant);
+
+    this.nom = this.enTexte(this.saisieNom);
+    this.exposant = this.enTexte(this.saisieNomExposant);
     this.specialite = this.saisieSpecialite.trim();
+    this.evenement = this.saisieTitreEvenement.trim();
   }
 
   reinitialiser() {

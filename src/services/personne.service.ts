@@ -73,6 +73,7 @@ export class PersonneService
                 first = false ;
             }
         }
+        console.log("URL liste personnes :", url);
 
         return this.http.get<Personne[]>( url ) ;
     }

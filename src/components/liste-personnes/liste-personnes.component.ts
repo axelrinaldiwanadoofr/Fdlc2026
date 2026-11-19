@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, input } from '@angular/core';
+import { Component, effect, input } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -12,11 +12,10 @@ import { Personne } from '../../modeles/Personne';
   styleUrls: ['./liste-personnes.component.scss'],
   imports: [IonList, IonItem, AsyncPipe, RouterLink],
 })
-export class ListePersonnesComponent implements OnInit, OnChanges {
+export class ListePersonnesComponent {
   childHtml = input<string>("$civilite <strong>$prenom $nom</strong> — $specialite");
   lienPage = input<string>("/page-personne");
 
-  // Critères de filtrage
   idPersonne = input<number>(-1);
   specialite = input<string>("");
   idExposant = input<number>(-1);
@@ -28,27 +27,19 @@ export class ListePersonnesComponent implements OnInit, OnChanges {
 
   protected listePersonnes: Observable<Personne[]> | null = null;
 
-  constructor(private servicePersonne: PersonneService) {}
-
-  ngOnInit() {
-    this.actualiserListe();
-  }
-
-  ngOnChanges() {
-    this.actualiserListe();
-  }
-
-  actualiserListe() {
-    this.listePersonnes = this.servicePersonne.getToutesLesPersonnesK(
-      this.idPersonne(),
-      this.specialite(),
-      this.idExposant(),
-      this.nom(),
-      this.titreLivre(),
-      this.titreEvenement(),
-      this.nomExposant(),
-      this.numLieu()
-    );
+  constructor(private servicePersonne: PersonneService) {
+    effect(() => {
+      this.listePersonnes = this.servicePersonne.getToutesLesPersonnesK(
+        this.idPersonne(),
+        this.specialite(),
+        this.idExposant(),
+        this.nom(),
+        this.titreLivre(),
+        this.titreEvenement(),
+        this.nomExposant(),
+        this.numLieu()
+      );
+    });
   }
 
   itemText(personne: Personne): string {
