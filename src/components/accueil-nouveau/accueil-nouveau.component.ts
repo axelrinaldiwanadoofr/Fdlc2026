@@ -57,24 +57,24 @@ export class AccueilNouveauComponent implements OnInit
     return ["Merci de votre visite", "à l'année prochaine"] ;
   }
 
-  // les 4 prochains événements a partir de maintenant
+  // les 4 prochains événements du programme à partir de maintenant
   ngOnInit()
   {
     let maintenant = new Date( Date.now() - new Date().getTimezoneOffset() * 60000 ).toISOString().slice( 0, 16 ).replace( "T", " " ) ;
 
-    this.serviceEvenement.getTousLesEvenements( "", maintenant ).subscribe( {
-      next: evenements =>
+    this.serviceEvenement.getProgramme().subscribe( {
+      next: programme =>
       {
-        this.evenements.set( evenements.slice( 0, 4 ) ) ;
+        let prochains: Evenement[] = [] ;
+        for( let jour of programme.jours )
+          for( let creneau of jour.creneaux )
+            for( let evenement of creneau.evenements )
+              if( evenement.debut >= maintenant && prochains.length < 4 ) prochains.push( evenement ) ;
+
+        this.evenements.set( prochains ) ;
         this.charge.set( true ) ;
       },
       error: () => this.charge.set( true )
     }) ;
-  }
-
-  jour( date: string ): string
-  {
-    let jours = ["Dim.", "Lun.", "Mar.", "Mer.", "Jeu.", "Ven.", "Sam."] ;
-    return jours[ new Date( date + "T12:00:00" ).getDay() ] ;
   }
 }

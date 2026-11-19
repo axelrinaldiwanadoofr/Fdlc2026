@@ -8,7 +8,10 @@
     <div class="droite">
       <a class="lycee" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener">
         <img src="assets/logo-lycee-petit.png" width="36" height="36" alt="">
-        <span>Lycée<br>Camille Sée</span>
+        <span>
+          <strong>Lycée Camille Sée</strong>
+          BTS SIO
+        </span>
       </a>
       <ion-menu-button class="menu"></ion-menu-button>
     </div>
@@ -34,15 +37,15 @@
     {
       <a class="evenement" [routerLink]="['/page-evenement', evenement.id]">
         <div class="date">
-          <span class="jour">{{ jour( evenement.jourdebut ) }}</span>
-          <span class="heure">{{evenement.heuredebut}}</span>
+          <span class="jour">{{ evenement.nomJour?.slice( 0, 3 ) }}.</span>
+          <span class="heure">{{evenement.heure}}</span>
         </div>
         <div class="infos">
           <strong>{{evenement.titre}}</strong>
-          <span>{{evenement.typeevenement}}@if( evenement.nomLieu ) { | {{evenement.nomLieu}} }</span>
-          @if( evenement.nomAnimateur )
+          <span>{{evenement.type}}@if( evenement.nomLieu ) { | {{evenement.nomLieu}} }</span>
+          @if( evenement.animateur )
           {
-            <span class="avec">Avec {{evenement.prenomAnimateur}} {{evenement.nomAnimateur}}</span>
+            <span class="avec">Avec {{evenement.animateur}}</span>
           }
         </div>
         <span class="fleche"><ion-icon name="chevron-forward"></ion-icon></span>
