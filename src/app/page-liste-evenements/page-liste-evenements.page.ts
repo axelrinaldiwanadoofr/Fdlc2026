@@ -81,7 +81,7 @@ export class PageListeEvenementsPage {
   );
 
   protected filtres: Filtre[] = [
-    { label: "Thème", libelleVide: "Tous les thèmes", valeur: this.theme, valeurVide: "",
+    { label: "Type", libelleVide: "Tous les types", valeur: this.theme, valeurVide: "",
       options: () => (this.choix()?.themes ?? []).map(t => ({ valeur: t, libelle: t })) },
     { label: "Lieu", libelleVide: "Tous les lieux", valeur: this.numLieu, valeurVide: -1,
       options: () => (this.choix()?.lieux ?? []).map(l => ({ valeur: l.num, libelle: l.nom })) },
