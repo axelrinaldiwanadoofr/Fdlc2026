@@ -1,0 +1,121 @@
+.fiche {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 20px 16px 32px;
+
+  --texte-doux: var(--ion-text-color-step-400, var(--ion-color-step-600, #666));
+  --bordure: var(--ion-border-color, var(--ion-background-color-step-150, #d9d9d9));
+  --fond-doux: var(--ion-background-color-step-50, var(--ion-color-step-50, #f4f4f4));
+  --accent: var(--ion-color-primary, #3880ff);
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  h2 {
+    margin: 28px 0 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+  }
+}
+
+.entete {
+  .type {
+    margin: 0 0 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .sous-titre {
+    margin: 6px 0 0;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--texte-doux);
+  }
+}
+
+.infos {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 4px 16px;
+  border-radius: 12px;
+  background: var(--fond-doux);
+  border: 1px solid var(--bordure);
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  li + li { border-top: 1px solid var(--bordure); }
+
+  ion-icon {
+    flex-shrink: 0;
+    margin-top: 2px;
+    font-size: 1.25rem;
+    color: var(--accent);
+  }
+
+  div { display: flex; flex-direction: column; }
+
+  .horaire {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .libelle {
+    font-size: 0.8rem;
+    color: var(--texte-doux);
+  }
+}
+
+.bouton-plan { margin-top: 12px; }
+
+.description {
+  margin: 0;
+  line-height: 1.6;
+  white-space: pre-line;
+}
+
+.livres {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+
+  li + li { border-top: 1px solid var(--bordure); }
+
+  a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    color: inherit;
+  }
+
+  span { flex: 1; display: flex; flex-direction: column; }
+  .auteurs { font-size: 0.85rem; color: var(--texte-doux); }
+  .chevron { color: var(--texte-doux); }
+}
+
+.message {
+  padding: 32px 16px;
+  text-align: center;
+  color: var(--ion-text-color-step-400, #666);
+}
+
+ion-button { text-transform: none; }
+
+ion-button { text-transform: none; }

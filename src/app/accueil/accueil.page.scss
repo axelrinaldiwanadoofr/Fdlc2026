@@ -5,3 +5,13 @@ img
     display: block;
     width: 100%;
 }
+
+// Logo du lycée dans la barre du haut
+img.logo-lycee
+{
+    width: auto;
+    height: 48px;
+    margin-right: 4px;
+    border-radius: 6px;
+    background: white;
+}
