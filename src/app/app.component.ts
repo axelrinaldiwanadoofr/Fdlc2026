@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { 
   IonApp, 
   IonMenu,
@@ -54,10 +54,16 @@ export class AppComponent
     { titre: "À propos", lien: "/a-propos", icone: "information-circle-outline" }
   ] ;
 
-  constructor()
+  constructor( router: Router )
   {
     addIcons( { homeOutline, calendarOutline, storefrontOutline, peopleOutline, locationOutline, bookOutline,
                 starOutline, mapOutline, informationCircleOutline } ) ;
+
+    // Ionic cache l'ancienne page (aria-hidden) : on retire le focus du lien cliqué avant de changer de page
+    router.events.subscribe( evenement =>
+    {
+      if( evenement instanceof NavigationStart ) ( document.activeElement as HTMLElement )?.blur() ;
+    }) ;
   }
 
   goToPage( page: string )
