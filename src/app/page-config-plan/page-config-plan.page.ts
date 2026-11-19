@@ -20,7 +20,10 @@ import {
   IonNote,
   IonToast,
   IonAlert,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { saveOutline, trashOutline } from 'ionicons/icons';
 
 import { LieuService } from '../../services/lieu.service';
 import { ConfigService } from '../../services/config.service';
@@ -34,6 +37,7 @@ import { Lieu } from '../../modeles/Lieu';
   templateUrl: './page-config-plan.page.html',
   styleUrls: ['./page-config-plan.page.scss'],
   imports: [
+    IonIcon,
     IonContent,
     IonHeader,
     IonTitle,
@@ -87,6 +91,7 @@ export class PageConfigPlanPage
 
   constructor( serviceLieu: LieuService, serviceConfig: ConfigService, router: Router, route: ActivatedRoute )
   {
+    addIcons( { saveOutline, trashOutline } ) ;
     this.serviceLieu = serviceLieu ;
     this.serviceConfig = serviceConfig ;
     this.router = router ;

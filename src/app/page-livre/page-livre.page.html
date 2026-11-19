@@ -23,7 +23,7 @@
             }
           }
         </div>
-        <ion-card-title>{{livre.titre}}</ion-card-title>
+        <ion-card-title>{{ livre.titre || "Sans titre" }}</ion-card-title>
         @if( livre.genre || livre.editeur ) {
           <ion-card-subtitle>
             @if( livre.genre ) { Genre : {{livre.genre}} }
@@ -44,7 +44,7 @@
               </ion-item>
             }
           </ion-list>
-        } @else {
+        } @else if( livre.nom ) {
           <p><strong>Auteur :</strong> {{livre.prenom}} {{livre.nom}}</p>
         }
 

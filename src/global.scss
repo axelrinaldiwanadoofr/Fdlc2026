@@ -92,7 +92,7 @@ ion-input, ion-textarea, ion-select, ion-item
   src: url("assets/fonts/shrikhand-latin-400-normal.woff2") format("woff2");
 }
 
-/* Titres des barres en bleu de l'affiche */
+/* Titres des barres en gras */
 ion-title
 {
   font-weight: 700;
@@ -138,14 +138,6 @@ ion-segment-button
 {
   text-transform: none;
   letter-spacing: 0;
-}
-
-/* Listes et formulaires des pages de config en blocs blancs arrondis */
-ion-list.liste, ion-list.formulaire
-{
-  padding: 0;
-  border-radius: 16px;
-  overflow: hidden;
 }
 
 /* Trait fin sous la barre du haut au lieu de l'ombre d'Android */
@@ -219,4 +211,71 @@ ion-menu ion-list.menu ion-item.actif
   --background: rgba(var(--ion-color-primary-rgb), 0.1);
   --color: var(--ion-color-primary);
   font-weight: 700;
+}
+
+/* Bas du menu : infos du festival et crédit du lycée */
+ion-footer.pied-menu
+{
+  padding: 16px 20px 20px;
+  font-size: 13px;
+  color: var(--ion-color-medium);
+}
+
+.pied-menu p
+{
+  margin: 0;
+}
+
+.pied-menu .dates
+{
+  font-weight: 700;
+  color: var(--ion-color-secondary);
+}
+
+.pied-menu a
+{
+  display: block;
+  margin-top: 10px;
+  color: var(--ion-color-primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.pied-menu a.credit
+{
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--ion-border-color);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+}
+
+/* Le contenu commence sous la barre du haut : sinon, quand la barre change de hauteur
+   (recherche ouverte, police chargée), le haut de la page passe dessous */
+ion-content
+{
+  --offset-top: 0px !important;
+}
+
+/* Titre de la barre à gauche aussi sur iPhone : centré, il passait sous les boutons */
+ion-toolbar ion-title.ios
+{
+  position: static;
+  padding-inline: 4px;
+  text-align: start;
+}
+
+/* Sur téléphone, les boutons de la barre du haut ne gardent que leur icône */
+@media (max-width: 599px)
+{
+  ion-toolbar .texte-bouton
+  {
+    display: none;
+  }
+
+  ion-toolbar ion-button ion-icon[slot="start"]
+  {
+    margin: 0;
+  }
 }

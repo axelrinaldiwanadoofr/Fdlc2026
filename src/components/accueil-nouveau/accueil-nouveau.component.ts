@@ -4,7 +4,7 @@ import { Component, OnInit, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
-import { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward } from 'ionicons/icons';
+import { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } from 'ionicons/icons';
 
 import { AnnoncesComponent } from '../annonces/annonces.component';
 import { EvenementService } from '../../services/evenement.service';
@@ -30,16 +30,16 @@ export class AccueilNouveauComponent implements OnInit
   protected moment: string[] = [] ;
 
   protected liens = [
-    { titre: "Programme", icone: "calendar-outline", couleur: "#1f8a5b", lien: "/page-liste-evenements" },
-    { titre: "Plan du salon", icone: "map-outline", couleur: "#c2569a", lien: "/plans" },
-    { titre: "Auteurs", icone: "people-outline", couleur: "#2b3990", lien: "/page-liste-personnes" },
-    { titre: "Mon planning", icone: "star-outline", couleur: "#e08a2c", lien: "/page-planning-personnel" }
+    { titre: "Programme", icone: "calendar-outline", couleur: "secondary", lien: "/page-liste-evenements" },
+    { titre: "Plan du salon", icone: "map-outline", couleur: "tertiary", lien: "/plans" },
+    { titre: "Auteurs", icone: "people-outline", couleur: "primary", lien: "/page-liste-personnes" },
+    { titre: "Mon planning", icone: "star-outline", couleur: "warning", lien: "/page-planning-personnel" }
   ] ;
 
   constructor( serviceEvenement: EvenementService )
   {
     this.serviceEvenement = serviceEvenement ;
-    addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward } ) ;
+    addIcons( { calendarOutline, mapOutline, peopleOutline, starOutline, chevronForward, openOutline } ) ;
     this.moment = this.calculeMoment() ;
   }
 
@@ -60,6 +60,7 @@ export class AccueilNouveauComponent implements OnInit
   // les 4 prochains événements du programme à partir de maintenant
   ngOnInit()
   {
+    // date et heure locales au format de la base : "AAAA-MM-JJ HH:MM"
     let maintenant = new Date( Date.now() - new Date().getTimezoneOffset() * 60000 ).toISOString().slice( 0, 16 ).replace( "T", " " ) ;
 
     this.serviceEvenement.getProgramme().subscribe( {

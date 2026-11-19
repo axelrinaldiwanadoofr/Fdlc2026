@@ -10,7 +10,7 @@ import { jetonInterceptor } from './services/jeton.interceptor';
 bootstrapApplication(AppComponent, {
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
+    provideIonicAngular( { backButtonText: "" } ),
     provideHttpClient( withInterceptors( [ jetonInterceptor ] ) ),
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
   ],

@@ -37,7 +37,8 @@ try
         $sql .= " and id = :idPersonne" ;
     }
 
-    $sql .= " order by titreLivre" ;
+    // tri sans les espaces insécables et les guillemets du début, titres vides à la fin
+    $sql .= " order by trim( titreLivre ) = '', trim( replace( replace( titreLivre, convert( unhex( 'C2A0' ) using utf8mb4 ), '' ), '«', '' ) )" ;
 
     // Préparation de la requête SQL
     $cursor = $bd->prepare($sql);

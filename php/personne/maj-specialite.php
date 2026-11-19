@@ -4,10 +4,11 @@
 
 require_once "../Connexion.php" ;
 require_once "../compte/securite.php" ;
+require_once "staff.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
-// Ajoute ou supprime un rôle (table specialite)
+// Ajoute ou supprime une spécialité, ou change son étiquette STAFF (table specialite)
 $compte = exigePermission( "personnes.modifier" ) ;
 $donnees = donneesPost() ;
 
@@ -27,7 +28,13 @@ try
 
     $table = Connexion::$tables["specialite"] ;
 
-    if( !empty( $donnees["supprimer"] ) )
+    if( isset( $donnees["staff"] ) )
+    {
+        colonneStaff( $bd ) ;
+        $bd->prepare( "update " . $table . " set staff = :staff where specialite = :specialite" )
+           ->execute( ["staff" => empty( $donnees["staff"] ) ? 0 : 1, "specialite" => $specialite] ) ;
+    }
+    else if( !empty( $donnees["supprimer"] ) )
     {
         $cursor = $bd->prepare( "select count(*) from " . Connexion::$tables["personne"] . " where specialite = :specialite" ) ;
         $cursor->execute( ["specialite" => $specialite] ) ;

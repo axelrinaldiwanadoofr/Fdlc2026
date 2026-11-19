@@ -66,10 +66,11 @@ try
     echo json_encode( $data ) ;
 
 }
-catch( PDOException $erreur )
+catch( Exception $erreur )
 {
     error_log( $erreur->getMessage() ) ;
-    echo "Probleme d'acces à la BD" ;
+    http_response_code( 500 ) ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>

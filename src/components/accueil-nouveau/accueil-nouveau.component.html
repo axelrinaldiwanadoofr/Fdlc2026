@@ -6,12 +6,13 @@
       {{moment[1]}}
     </span>
     <div class="droite">
-      <a class="lycee" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener">
-        <img src="assets/logo-lycee-petit.png" width="36" height="36" alt="">
+      <a class="lycee" href="https://lyceecamilleseecolmar.fr" target="_blank" rel="noopener" title="Site du lycée (nouvel onglet)">
+        <img src="assets/logo-lycee-petit.png" width="32" height="32" alt="">
         <span>
           <strong>Lycée Camille Sée</strong>
           BTS SIO
         </span>
+        <ion-icon name="open-outline" aria-hidden="true"></ion-icon>
       </a>
       <ion-menu-button class="menu"></ion-menu-button>
     </div>
@@ -26,7 +27,7 @@
       @for( lien of liens; track lien.titre )
       {
         <a [routerLink]="lien.lien">
-          <ion-icon [name]="lien.icone" [style.color]="lien.couleur"></ion-icon>
+          <ion-icon [name]="lien.icone" [color]="lien.couleur"></ion-icon>
           {{lien.titre}}
         </a>
       }
@@ -42,7 +43,7 @@
         </div>
         <div class="infos">
           <strong>{{evenement.titre}}</strong>
-          <span>{{evenement.type}}@if( evenement.nomLieu ) { | {{evenement.nomLieu}} }</span>
+          <span>{{evenement.type}}@if( evenement.type && evenement.nomLieu ) { | }{{evenement.nomLieu}}</span>
           @if( evenement.animateur )
           {
             <span class="avec">Avec {{evenement.animateur}}</span>

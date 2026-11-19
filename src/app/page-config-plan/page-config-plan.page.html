@@ -32,8 +32,8 @@
         <ion-note slot="end">{{nbZones()}} / {{lieux().length}} zones</ion-note>
       </ion-item>
       <ion-buttons slot="end">
-        <ion-button fill="solid" color="primary" [disabled]="!zone() || numChoisi < 0" (click)="onEnregistrer()">Enregistrer</ion-button>
-        <ion-button fill="outline" color="danger" [disabled]="lieuChoisi()?.x1 == null" (click)="alerteSupprimer.set(true)">Supprimer</ion-button>
+        <ion-button fill="solid" color="primary" [disabled]="!zone() || numChoisi < 0" (click)="onEnregistrer()" aria-label="Enregistrer"><ion-icon slot="start" name="save-outline"></ion-icon><span class="texte-bouton">Enregistrer</span></ion-button>
+        <ion-button fill="outline" color="danger" [disabled]="lieuChoisi()?.x1 == null" (click)="alerteSupprimer.set(true)" aria-label="Supprimer"><ion-icon slot="start" name="trash-outline"></ion-icon><span class="texte-bouton">Supprimer</span></ion-button>
       </ion-buttons>
     </ion-toolbar>
   }

@@ -2,6 +2,8 @@
 
 require_once "../Connexion.php" ;
 
+header( "Content-Type: application/json; charset=utf-8" ) ;
+
 try
 {
     $bd = Connexion::getInstance() ;
@@ -71,13 +73,15 @@ try
 
     $data = $cursor->fetchAll( PDO::FETCH_ASSOC ) ;
 
-    echo json_encode( $data ) ;
+    echo json_encode( $data, JSON_UNESCAPED_UNICODE ) ;
 
 }
-catch( PDOException $erreur )
+catch( Exception $erreur )
 {
+    // une réponse JSON, sinon l'appli n'arrive pas à lire le message
+    http_response_code( 500 ) ;
     error_log( $erreur->getMessage() ) ;
-    echo "Probleme d'acces à la BD" ;
+    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
 }
 
 ?>
