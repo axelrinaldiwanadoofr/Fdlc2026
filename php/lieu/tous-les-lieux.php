@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 require_once "../Connexion.php" ;
 require_once "../colonnes.php" ;

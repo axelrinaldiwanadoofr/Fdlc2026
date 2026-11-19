@@ -5,6 +5,7 @@
 // Comptes de la configuration : session, rôles, permissions
 
 require_once __DIR__ . "/../Connexion.php" ;
+require_once __DIR__ . "/../cache.php" ;
 
 // Tables ajoutées depuis la base de départ : si un Connexion.php ne les a pas,
 // elles prennent le même préfixe que la table personne (fdlc_compte...)
@@ -254,6 +255,8 @@ function compteConnecte()
     if( $compte !== false ) return $compte ;
 
     $compte = null ;
+    // visiteur sans cookie : pas de session a ouvrir
+    if( session_status() != PHP_SESSION_ACTIVE && !isset( $_COOKIE["fdlc2026"] ) ) return null ;
     demarreSession() ;
     if( !isset( $_SESSION["idCompte"] ) ) return null ;
 
@@ -296,6 +299,7 @@ function exigePermission( $code, $avecJeton = true )
     if( $avecJeton ) verifieJeton() ;
     if( $compte["doitChanger"] == 1 ) refuse( "Changez d'abord le mot de passe qu'on vous a donné" ) ;
     if( !peut( $compte, $code ) ) refuse( "Vous n'avez pas la permission de faire ça" ) ;
+    if( $avecJeton ) register_shutdown_function( "videCache" ) ;
     return $compte ;
 }
 
@@ -356,40 +360,7 @@ function motDePasseAleatoire()
     return $mdp ;
 }
 
-// Essais ratés par adresse IP
-function fichierEssais()
-{
-    return sys_get_temp_dir() . "/fdlc2026-essais-ip.json" ;
-}
-
-function essaisIp()
-{
-    $essais = [] ;
-    if( is_file( fichierEssais() ) ) $essais = json_decode( file_get_contents( fichierEssais() ), true ) ?? [] ;
-    foreach( $essais as $ip => $essai ) if( time() - $essai["debut"] >= DUREE_BLOCAGE ) unset( $essais[$ip] ) ;
-    return $essais ;
-}
-
-function ipBloquee()
-{
-    $essais = essaisIp() ;
-    $ip = $_SERVER["REMOTE_ADDR"] ?? "" ;
-    return isset( $essais[$ip] ) && $essais[$ip]["nb"] >= 3 * ESSAIS_MAX ;
-}
-
-function noteEssaiIp( $reussi )
-{
-    $essais = essaisIp() ;
-    $ip = $_SERVER["REMOTE_ADDR"] ?? "" ;
-    if( $reussi ) unset( $essais[$ip] ) ;
-    else
-    {
-        if( !isset( $essais[$ip] ) ) $essais[$ip] = ["nb" => 0, "debut" => time()] ;
-        $essais[$ip]["nb"]++ ;
-    }
-    file_put_contents( fichierEssais(), json_encode( $essais ), LOCK_EX ) ;
-}
-
+// Vrai si root a encore le mot de passe d'installation
 function rootParDefaut()
 {
     $hash = bd()->query( "select hash from " . table( "compte" ) . " where estRoot = 1" )->fetchColumn() ;

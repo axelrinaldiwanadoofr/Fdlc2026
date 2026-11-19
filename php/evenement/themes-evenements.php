@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 // Auteur: Kevin MEYER - 02/11/2026
 

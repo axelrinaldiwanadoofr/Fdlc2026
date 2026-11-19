@@ -1,5 +1,7 @@
 
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 /*
  * Fichier : toutes-les-personnes.php

@@ -13,4 +13,6 @@ if( php_sapi_name() != "cli" && !peut( compteConnecte(), $permissionGarde ?? "im
     exit ;
 }
 
+register_shutdown_function( "videCache" ) ;
+
 ?>
