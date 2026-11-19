@@ -17,9 +17,24 @@
 
 .moment
 {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--ion-color-secondary);
+}
+
+.droite
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.logo-lycee
+{
+    height: 44px;
+    border-radius: 12px;
+    background: #ffffff;
 }
 
 .menu
