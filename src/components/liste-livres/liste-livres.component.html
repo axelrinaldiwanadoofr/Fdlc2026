@@ -1,8 +1,12 @@
 <ion-list>
-  @for( livre of listeLivres | async; track livre.id )
+  @for( livre of livresFiltres(); track livre.id )
   {
     <ion-item [routerLink]="[lienPage(), livre.id]">
       <ion-label class="ion-text-wrap"><div [innerHTML]="itemText(livre)"></div></ion-label>
     </ion-item>
   }
 </ion-list>
+@if( livres() && livresFiltres().length == 0 && messageVide() )
+{
+  <p class="liste-vide">{{ messageVide() }}</p>
+}

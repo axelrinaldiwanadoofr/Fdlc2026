@@ -1,50 +1,9 @@
-.filtres {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 8px 16px 4px;
-
-  ion-searchbar {
-    padding: 0;
-    margin-bottom: 8px;
-  }
-}
-
-.selections {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 8px;
-
-  ion-select {
-    min-width: 0;
-    --background: #fff;
-    --border-width: 0;
-    --border-radius: 12px;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-}
-
-.resultat {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-top: 4px;
-  font-size: 0.9rem;
-  color: var(--ion-text-color-step-400, #666);
-}
-
 .message {
   max-width: 800px;
   margin: 0 auto;
   padding: 32px 16px;
   text-align: center;
   color: var(--ion-text-color-step-400, #666);
-}
-
-@media (max-width: 600px) {
-  .selections { grid-template-columns: 1fr 1fr; }
-  .selections ion-select:last-child { grid-column: 1 / -1; }
 }
 
 ion-button { text-transform: none; }

@@ -1,6 +1,4 @@
-import { Component, OnInit, viewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, signal, viewChild } from '@angular/core';
 import { 
   IonContent, 
   IonHeader, 
@@ -9,19 +7,16 @@ import {
   IonButtons, 
   IonMenuButton, 
   IonBackButton, 
-  IonAccordion, 
-  IonList,
-  IonItem, 
-  IonLabel, 
+  IonSearchbar,
+  IonSelect,
+  IonSelectOption,
   IonButton,
-  IonAccordionGroup,
+  IonIcon,
 } from '@ionic/angular';
-
+import { addIcons } from 'ionicons';
+import { closeCircleOutline } from 'ionicons/icons';
 import { ListeLivresComponent } from '../../components/liste-livres/liste-livres.component';
-import { TitreLivreComboComponent } from '../../components/titre-livre-combo/titre-livre-combo.component';
-import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
-import { GenreComboComponent } from '../../components/genre-combo/genre-combo.component';
-import { NomExposantComboComponent } from '../../components/nom-exposant-combo/nom-exposant-combo.component';
+import { Livre } from '../../modeles/Livre';
 
 @Component({
   selector: 'app-liste-livres-page',
@@ -35,105 +30,60 @@ import { NomExposantComboComponent } from '../../components/nom-exposant-combo/n
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    IonAccordion,
-    IonList,
-    IonItem,
-    IonLabel,
+    IonSearchbar,
+    IonSelect,
+    IonSelectOption,
     IonButton,
-    IonAccordionGroup,
-    CommonModule,
-    FormsModule,
-    ListeLivresComponent,
-    TitreLivreComboComponent,
-    NomPersonneComboComponent,
-    // GenreComboComponent, (filtre genre en commentaire dans la page)
-    NomExposantComboComponent
+    IonIcon,
+    ListeLivresComponent
   ]
 })
-export class ListeLivresPagePage implements OnInit 
+export class ListeLivresPagePage
 {
-  // Récupère les références des web components fils
-  protected listeLivres = viewChild(ListeLivresComponent);
-  protected titreLivreCombo = viewChild(TitreLivreComboComponent);
-  protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
-  protected genreCombo = viewChild(GenreComboComponent);
-  protected nomExposantCombo = viewChild(NomExposantComboComponent);
+  protected listeLivres = viewChild( ListeLivresComponent ) ;
 
-  // Valeurs temporaires sélectionnées dans les combos
-  public flt_titre: string = "" ;
-  public flt_nomAuteur: string = "" ;
-  public flt_genre: string = "" ;
-  public flt_nomExposant: string = "" ;
+  // Filtres ("" = pas de filtre)
+  protected recherche = signal( "" ) ;
+  protected auteur = signal( "" ) ;
+  protected editeur = signal( "" ) ;
 
-  // Critères appliqués pour la filtration des livres
-  public titre: string = "" ;
-  public nomAuteur: string = "" ;
-  public genre: string = "" ;
-  public nomExposant: string = "" ;
+  // Choix des listes déroulantes, pris dans les livres chargés
+  protected auteurs = signal<string[]>( [] ) ;
+  protected editeurs = signal<string[]>( [] ) ;
 
-  constructor() {}
+  // Nombre de livres trouvés (renvoyé par la liste)
+  protected total = signal( 0 ) ;
 
-  ngOnInit() {}
+  protected filtreActif = computed( () => this.recherche().trim() != "" || this.auteur() != "" || this.editeur() != "" ) ;
 
-  onTitreSelected( titre: string ) 
+  constructor()
   {
-    this.flt_titre = titre ;
+    addIcons( { closeCircleOutline } ) ;
   }
 
-  onAuteurSelected( nom: string ) 
+  onRecherche( event: any )
   {
-    this.flt_nomAuteur = nom ;
+    this.recherche.set( event.detail.value ?? "" ) ;
   }
 
-  onGenreSelected( genre: string ) 
+  onCharge( livres: Livre[] )
   {
-    this.flt_genre = genre ;
+    let auteurs = new Set<string>() ;
+    let editeurs = new Set<string>() ;
+    for( let livre of livres )
+    {
+      let auteur = this.listeLivres()?.nomAuteurLivre( livre ) ?? "" ;
+      if( auteur != "" ) auteurs.add( auteur ) ;
+      if( ( livre.editeur ?? "" ).trim() != "" ) editeurs.add( livre.editeur.trim() ) ;
+    }
+    this.auteurs.set( Array.from( auteurs ).sort( ( a, b ) => a.localeCompare( b ) ) ) ;
+    this.editeurs.set( Array.from( editeurs ).sort( ( a, b ) => a.localeCompare( b ) ) ) ;
   }
 
-  onExposantSelected( exposant: string ) 
+  effacer()
   {
-    this.flt_nomExposant = exposant ;
-  }
-
-  fermeRechercherFiltrer() 
-  {
-    let accordionGroup = document.getElementById( "liste-livres-page-accordion" ) ;
-    if( accordionGroup ) (accordionGroup as HTMLInputElement).value = "" ;
-  }
-
-  onFiltrer() 
-  {
-    this.titre = this.flt_titre ;
-    this.nomAuteur = this.flt_nomAuteur ;
-    this.genre = this.flt_genre ;
-    this.nomExposant = this.flt_nomExposant ;
-
-    // Masque les listes déroulantes de recherche
-    this.titreLivreCombo()?.masqueListe() ;
-    this.nomPersonneCombo()?.masqueListe() ;
-    this.genreCombo()?.masqueListe() ;
-    this.nomExposantCombo()?.masqueListe() ;
-
-    this.fermeRechercherFiltrer() ;
-  }
-
-  onReinitialiser() 
-  {
-    this.flt_titre = "" ;
-    this.flt_nomAuteur = "" ;
-    this.flt_genre = "" ;
-    this.flt_nomExposant = "" ;
-
-    this.titre = "" ;
-    this.nomAuteur = "" ;
-    this.genre = "" ;
-    this.nomExposant = "" ;
-
-    this.titreLivreCombo()?.reset() ;
-    this.nomPersonneCombo()?.masqueListe() ;
-    this.genreCombo()?.reset() ;
-    this.nomExposantCombo()?.reset() ;
-
-    this.fermeRechercherFiltrer() ;
+    this.recherche.set( "" ) ;
+    this.auteur.set( "" ) ;
+    this.editeur.set( "" ) ;
   }
 }

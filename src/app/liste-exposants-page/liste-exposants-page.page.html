@@ -1,55 +1,66 @@
-
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Liste des exposants</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
     </ion-buttons>
+    <ion-title>Liste des exposants</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
-  <ion-accordion-group id="liste-exposants-page-accordion">
-    <ion-accordion value="first">
-      <ion-item slot="header" color="light">
-        <ion-label>Rechercher / filtrer</ion-label>
-      </ion-item>
-      <div class="ion-padding" slot="content">
-        <ion-list>
-          <ion-item>
-            <app-nom-exposant-combo 
-              label="Exposant:"
-              (onExposantSelected)="onExposantSelected( $event )">
-            </app-nom-exposant-combo>
-          </ion-item>
-          <ion-item>
-            <app-nom-lieu-combo
-              label="Stand:"
-              [avecExposant]="true"
-              (onLieuSelected)="onLieuSelected( $event )"></app-nom-lieu-combo>
-          </ion-item>
-          <ion-item>
-            <app-nom-personne-combo 
-              label="Auteur:"
-              (onPersonneSelected)="onAuteurSelected( $event )"></app-nom-personne-combo>
-          </ion-item>
-          <ion-item><ion-button (click)="onFiltrer()">Filtrer</ion-button></ion-item>
-        </ion-list>
-      </div>
-    </ion-accordion>  
-  </ion-accordion-group>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">liste-exposants-page</ion-title>
-    </ion-toolbar>
-    </ion-header>
-    <app-liste-exposant 
-      id="listeExposant" 
-      childHtml="<strong>$nom</strong> : stand n° $stand"
-      lienPage="/page-exposant"
-      [nomPersonne]="nomAuteur"
-      [nomLieu]="nomLieu"></app-liste-exposant>
+  <!-- Filtres de la page, appliqués directement à la liste -->
+  <div class="filtres">
+    <ion-searchbar
+      placeholder="Exposant, numéro ou nom du stand"
+      [value]="recherche()"
+      (ionInput)="onRecherche( $event )"
+      [debounce]="0"
+      inputmode="search"
+      aria-label="Rechercher un exposant">
+    </ion-searchbar>
+
+    <div class="selections deux">
+      <ion-select label="Type" labelPlacement="stacked" interface="popover" fill="solid"
+                  [value]="type()" (ionChange)="type.set( $event.detail.value ?? '' )">
+        <ion-select-option value="">Tous les types</ion-select-option>
+        @for( t of types(); track t )
+        {
+          <ion-select-option [value]="t">{{ t }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-select label="Espace" labelPlacement="stacked" interface="popover" fill="solid"
+                  [value]="espace()" (ionChange)="espace.set( $event.detail.value ?? '' )">
+        <ion-select-option value="">Tous les espaces</ion-select-option>
+        @for( e of espaces(); track e )
+        {
+          <ion-select-option [value]="e">{{ e }}</ion-select-option>
+        }
+      </ion-select>
+    </div>
+
+    @if( filtreActif() )
+    {
+      <div class="resultat">
+        <span>{{ total() }} exposant{{ total() > 1 ? "s" : "" }} trouvé{{ total() > 1 ? "s" : "" }}</span>
+        <ion-button fill="clear" size="small" (click)="effacer()">
+          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+          Effacer les filtres
+        </ion-button>
+      </div>
+    }
+  </div>
+
+  <app-liste-exposant
+    childHtml="<strong>$nom</strong> : stand n° $stand"
+    lienPage="/page-exposant"
+    [recherche]="recherche()"
+    [type]="type()"
+    [espace]="espace()"
+    messageVide="Aucun exposant ne correspond à ces critères."
+    (total)="total.set( $event )"
+    (charge)="onCharge( $event )"></app-liste-exposant>
 </ion-content>

@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http" ;
 import {Observable} from "rxjs" ;
 import {Exposant} from "../modeles/Exposant" ;
 import {PersonneStand} from "../modeles/PersonneStand" ;
+import {simplifie} from "../outils/recherche" ;
 
 @Injectable( {
     providedIn: "root" 
@@ -38,6 +39,16 @@ export class ExposantService
 
         return this.http.get<Exposant[]>( url ) ;
         
+    }
+
+    // Type affiché dans les filtres : "editeur" et "éditeur", "libraire" et "librairie" sont le même
+    nomType( type: string ): string
+    {
+        let simple = simplifie( type ) ;
+        if( simple == "" ) return "Autre" ;
+        if( simple.startsWith( "edit" ) ) return "Éditeur" ;
+        if( simple.startsWith( "librair" ) ) return "Librairie" ;
+        return type.trim().charAt( 0 ).toUpperCase() + type.trim().slice( 1 ).toLowerCase() ;
     }
 
     getExposantById( id: number = -1 ): Observable<Exposant[]>

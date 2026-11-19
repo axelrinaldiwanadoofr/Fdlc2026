@@ -1,10 +1,4 @@
-import { Component, OnInit, viewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import {Observable} from "rxjs" ;
-import { ExposantService } from '../../services/exposant.service';
-import {Exposant} from "../../modeles/Exposant" ;
-import {ListeExposantComponent} from "../../components/liste-exposant/liste-exposant.component"
+import { Component, computed, signal } from '@angular/core';
 import { 
   IonContent, 
   IonHeader, 
@@ -13,17 +7,17 @@ import {
   IonButtons, 
   IonMenuButton, 
   IonBackButton, 
-  IonAccordion, 
-  IonList,
-  IonItem, 
-  IonLabel, 
+  IonSearchbar,
+  IonSelect,
+  IonSelectOption,
   IonButton,
-  IonAccordionGroup,
+  IonIcon,
 } from '@ionic/angular';
-
-import {NomLieuComboComponent} from "../../components/nom-lieu-combo/nom-lieu-combo.component" ;
-import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
-import {NomExposantComboComponent} from "../../components/nom-exposant-combo/nom-exposant-combo.component" ;
+import { addIcons } from 'ionicons';
+import { closeCircleOutline } from 'ionicons/icons';
+import { ExposantService } from '../../services/exposant.service';
+import {Exposant} from "../../modeles/Exposant" ;
+import {ListeExposantComponent} from "../../components/liste-exposant/liste-exposant.component"
 
 @Component({
   selector: 'app-liste-exposants-page',
@@ -37,76 +31,61 @@ import {NomExposantComboComponent} from "../../components/nom-exposant-combo/nom
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    IonAccordion,
-    IonList,
-    IonItem,
-    IonLabel,
+    IonSearchbar,
+    IonSelect,
+    IonSelectOption,
     IonButton,
-    CommonModule,
-    ListeExposantComponent,
-    FormsModule,
-    IonAccordionGroup,
-    NomLieuComboComponent,
-    NomPersonneComboComponent,
-    NomExposantComboComponent
-]
+    IonIcon,
+    ListeExposantComponent
+  ]
 })
-export class ListeExposantsPagePage implements OnInit 
+export class ListeExposantsPagePage
 {
-  // Recupère les références de web component fils
-  protected listeExposant = viewChild(ListeExposantComponent);
-  protected nomLieuCombo = viewChild(NomLieuComboComponent);
-  protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
-  protected nomExposantCombo = viewChild(NomExposantComboComponent);
+  protected serviceExposant: ExposantService ;
 
-  // Valeurs récupérées des web component de filtration
-  public flt_nomAuteur: string = "" ;
-  public flt_nomLieu: string = "" ;
-  public flt_nomExposant: string = "" ;
+  // Filtres ("" = pas de filtre)
+  protected recherche = signal( "" ) ;
+  protected type = signal( "" ) ;
+  protected espace = signal( "" ) ;
 
-  // Critères de rechercher d'un ensemble d'exposant
-  public nomAuteur: string = "" ;
-  public nomLieu: string = "" ;
-  public nomExposant: string = "" ;
+  // Choix des listes déroulantes, pris dans les exposants chargés
+  protected types = signal<string[]>( [] ) ;
+  protected espaces = signal<string[]>( [] ) ;
 
-  constructor() 
+  // Nombre d'exposants trouvés (renvoyé par la liste)
+  protected total = signal( 0 ) ;
+
+  protected filtreActif = computed( () => this.recherche().trim() != "" || this.type() != "" || this.espace() != "" ) ;
+
+  constructor( serviceExposant: ExposantService ) 
   { 
+    this.serviceExposant = serviceExposant ;
+    addIcons( { closeCircleOutline } ) ;
   }
 
-  ngOnInit() 
+  onRecherche( event: any )
   {
+    this.recherche.set( event.detail.value ?? "" ) ;
   }
 
-  onAuteurSelected( nom: string )
+  // Types et espaces différents, rangés par ordre alphabétique
+  onCharge( exposants: Exposant[] )
   {
-    this.flt_nomAuteur = nom ;
+    let types = new Set<string>() ;
+    let espaces = new Set<string>() ;
+    for( let exposant of exposants )
+    {
+      types.add( this.serviceExposant.nomType( exposant.type ) ) ;
+      if( exposant.nomLieu && exposant.nomLieu != String( exposant.numLieu ) ) espaces.add( exposant.nomLieu ) ;
+    }
+    this.types.set( Array.from( types ).sort( ( a, b ) => a.localeCompare( b ) ) ) ;
+    this.espaces.set( Array.from( espaces ).sort( ( a, b ) => a.localeCompare( b ) ) ) ;
   }
 
-  onLieuSelected( nom: string )
+  effacer()
   {
-    this.flt_nomLieu = nom ;
-  }
-
-  onExposantSelected( nom: string )
-  {
-    this.flt_nomExposant = nom ;
-  }
-
-  fermeRechercherFiltrer()
-  {
-    // Referme l'accordion group
-    let accordionGroup = document.getElementById( "liste-exposants-page-accordion" ) ;
-    if( accordionGroup ) (accordionGroup as HTMLInputElement).value = "" ;
-  }
-
-  onFiltrer()
-  {
-    this.nomAuteur = this.flt_nomAuteur ;
-    this.nomLieu = this.flt_nomLieu ;
-    this.nomExposant = this.flt_nomExposant ;
-    // Masque les listes de recherche 
-    this.nomLieuCombo()?.masqueListe() ;
-    this.nomPersonneCombo()?.masqueListe() ;
-    this.nomExposantCombo()?.masqueListe() ;
+    this.recherche.set( "" ) ;
+    this.type.set( "" ) ;
+    this.espace.set( "" ) ;
   }
 }

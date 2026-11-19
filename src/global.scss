@@ -279,3 +279,77 @@ ion-toolbar ion-title.ios
     margin: 0;
   }
 }
+
+/* Filtres en haut des listes (programme, exposants, personnes, lieux, livres) */
+.filtres
+{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 8px 16px 4px;
+}
+
+.filtres ion-searchbar
+{
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.filtres .selections
+{
+  display: grid;
+  grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
+  gap: 8px;
+}
+
+.filtres .selections.deux
+{
+  grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+}
+
+.filtres .selections.une
+{
+  grid-template-columns: minmax( 0, 1fr );
+}
+
+.filtres .selections ion-select
+{
+  min-width: 0;
+  --background: #fff;
+  --border-width: 0;
+  --border-radius: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.filtres .resultat
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--ion-text-color-step-400, #666);
+}
+
+.liste-vide
+{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--ion-text-color-step-400, #666);
+}
+
+@media (max-width: 600px)
+{
+  .filtres .selections
+  {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filtres .selections ion-select:last-child:nth-child(odd)
+  {
+    grid-column: 1 / -1;
+  }
+}

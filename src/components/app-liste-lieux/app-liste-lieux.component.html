@@ -1,5 +1,5 @@
 <ion-list>
-  @for( groupe of groupesLieux | async; track groupe.type )
+  @for( groupe of groupesLieux(); track groupe.type )
   {
     <ion-item-group>
       <!-- Titre du groupe, reste en haut de l'écran pendant le défilement -->
@@ -16,7 +16,7 @@
             <h2><strong>n° {{ lieu.num }}</strong>
               @if( lieu.nom && lieu.nom != lieu.num.toString() )
               {
-                — {{ lieu.nom }}
+                | {{ lieu.nom }}
               }
             </h2>
             @if( lieu.libelle )
@@ -32,8 +32,8 @@
       }
     </ion-item-group>
   }
-  @empty
-  {
-    <ion-item lines="none">Aucun lieu trouvé</ion-item>
-  }
 </ion-list>
+@if( lieux() && groupesLieux().length == 0 )
+{
+  <p class="liste-vide">Aucun lieu ne correspond à ces critères.</p>
+}

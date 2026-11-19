@@ -1,9 +1,8 @@
-import { Component, OnInit, OnChanges, input } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { Component, OnInit, OnChanges, computed, effect, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
 import { LivreService } from '../../services/livre.service';
 import { Livre } from '../../modeles/Livre';
+import { correspond } from '../../outils/recherche';
 import { 
   IonList,
   IonItem,
@@ -18,7 +17,6 @@ import {
     IonList,
     IonItem,
     IonLabel,
-    AsyncPipe,
     RouterLink
   ],
 })
@@ -30,7 +28,7 @@ export class ListeLivresComponent implements OnInit, OnChanges
   // Route de la page à appeler quand on clique sur une ligne de la liste
   lienPage = input<string>( "/page-livre" ) ;
 
-  // Critères de filtration
+  // Critères de filtration envoyés au serveur
   idLivre = input<number>( -1 ) ;
   titreLivre = input<string>( "" ) ;
   nomAuteur = input<string>( "" ) ;
@@ -38,12 +36,32 @@ export class ListeLivresComponent implements OnInit, OnChanges
   nomExposant = input<string>( "" ) ;
   titreEvenement = input<string>( "" ) ;
 
-  protected listeLivres: Observable<Array<Livre>> | null = null ;
+  // Filtres appliqués sur la liste déjà chargée (page Liste des livres)
+  recherche = input<string>( "" ) ;
+  auteur = input<string>( "" ) ;
+  editeur = input<string>( "" ) ;
+  messageVide = input<string>( "" ) ;
+
+  // Nombre de livres affichés, et liste complète une fois chargée
+  total = output<number>() ;
+  charge = output<Livre[]>() ;
+
   protected serviceLivre: LivreService ;
+  protected livres = signal<Livre[] | null>( null ) ;
+  private criteres: string | null = null ;
+
+  protected livresFiltres = computed( () => ( this.livres() ?? [] ).filter( livre =>
+    ( this.auteur() == "" || this.nomAuteurLivre( livre ) == this.auteur() ) &&
+    ( this.editeur() == "" || ( livre.editeur ?? "" ).trim() == this.editeur() ) &&
+    correspond( livre.titre + " " + this.nomAuteurLivre( livre ) + " " + ( livre.editeur ?? "" ), this.recherche() ) ) ) ;
 
   constructor( serviceLivre: LivreService ) 
   { 
     this.serviceLivre = serviceLivre ;
+    effect( () =>
+    {
+      if( this.livres() ) this.total.emit( this.livresFiltres().length ) ;
+    }) ;
   }
 
   ngOnInit() 
@@ -57,15 +75,25 @@ export class ListeLivresComponent implements OnInit, OnChanges
     this.rafraichirListe() ;
   }
 
+  // Ne redemande la liste au serveur que si ses critères ont changé
   rafraichirListe() 
   {
-    this.listeLivres = this.serviceLivre.getTousLesLivres(
-      this.titreLivre(),
-      this.nomAuteur(),
-      this.genre(),
-      this.nomExposant(),
-      this.titreEvenement()
-    ) ;
+    let criteres = [this.titreLivre(), this.nomAuteur(), this.genre(), this.nomExposant(), this.titreEvenement()].join( "|" ) ;
+    if( criteres == this.criteres ) return ;
+    this.criteres = criteres ;
+
+    this.serviceLivre.getTousLesLivres( this.titreLivre(), this.nomAuteur(), this.genre(), this.nomExposant(), this.titreEvenement() )
+      .subscribe( livres =>
+      {
+        this.livres.set( livres ) ;
+        this.charge.emit( livres ) ;
+      }) ;
+  }
+
+  // "Prénom Nom" de l'auteur du livre
+  nomAuteurLivre( livre: Livre ): string
+  {
+    return ( ( livre.prenom ?? "" ).trim() + " " + ( livre.nom ?? "" ).trim() ).trim() ;
   }
 
   // Met en forme le texte affiché dans chaque ligne de la liste
