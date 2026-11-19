@@ -1,0 +1,217 @@
+// Auteur: Kevin MEYER - 19/11/2026
+
+.accueil
+{
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 18px 20px 32px;
+}
+
+.haut
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.edition
+{
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ion-color-secondary);
+}
+
+.menu
+{
+    --background: #ffffff;
+    --border-radius: 12px;
+    --color: var(--ion-color-primary);
+    width: 44px;
+    height: 44px;
+}
+
+.affiche
+{
+    display: block;
+    width: 100%;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(28, 31, 58, 0.15);
+}
+
+.colonne
+{
+    margin-top: 16px;
+}
+
+// annule la marge du bandeau des annonces
+app-annonces
+{
+    display: block;
+    margin: -8px -8px 8px;
+}
+
+.raccourcis
+{
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.raccourcis a
+{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 56px;
+    padding: 0 14px;
+    border-radius: 16px;
+    background: #ffffff;
+    color: var(--ion-color-dark);
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.raccourcis ion-icon
+{
+    flex-shrink: 0;
+    font-size: 22px;
+}
+
+h2
+{
+    margin: 24px 0 10px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ion-color-medium);
+}
+
+.evenement
+{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+    padding: 14px;
+    border-radius: 20px;
+    background: #ffffff;
+    color: var(--ion-color-dark);
+    text-decoration: none;
+}
+
+// pastille ronde avec le jour et l'heure
+.date
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #f3dcea;
+    color: var(--ion-color-tertiary);
+}
+
+.jour
+{
+    font-family: Shrikhand, serif;
+    font-size: 17px;
+    line-height: 1.1;
+}
+
+.heure
+{
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.infos
+{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    flex: 1;
+    min-width: 0;
+}
+
+.infos strong
+{
+    font-size: 16px;
+}
+
+.infos span
+{
+    font-size: 13px;
+    color: var(--ion-color-medium);
+}
+
+.infos .avec
+{
+    font-weight: 600;
+    color: var(--ion-color-secondary);
+}
+
+.fleche
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ion-color-primary);
+    color: #ffffff;
+    font-size: 20px;
+}
+
+.vide
+{
+    color: var(--ion-color-medium);
+}
+
+.programme
+{
+    display: block;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: center;
+    color: var(--ion-color-primary);
+}
+
+// sur ordinateur l'affiche passe a gauche
+@media (min-width: 960px)
+{
+    .accueil
+    {
+        max-width: 1040px;
+        display: grid;
+        grid-template-columns: 420px 1fr;
+        column-gap: 40px;
+        align-items: start;
+    }
+
+    .haut
+    {
+        grid-column: 1 / 3;
+    }
+
+    .affiche
+    {
+        position: sticky;
+        top: 20px;
+    }
+
+    .colonne
+    {
+        margin-top: 0;
+    }
+}

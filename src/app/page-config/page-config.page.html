@@ -77,6 +77,24 @@
     {
       <p class="vide">Votre rôle ne donne accès à aucune page de configuration pour l'instant.</p>
     }
+
+    @if( serviceConfig.peut( "accueil.modifier" ) )
+    {
+      <h3 class="section">Le site</h3>
+      <div class="grille">
+        <div class="tuile reglage">
+          <div class="icone site">
+            <ion-icon name="home-outline"></ion-icon>
+          </div>
+          <div class="texte">
+            <strong>Nouvelle page d'accueil</strong>
+            <span>{{ serviceParametre.accueil() == "nouveau" ? "Affichée pour tous les visiteurs" : "L'ancienne page est affichée" }}</span>
+          </div>
+          <ion-toggle class="interrupteur" aria-label="Nouvelle page d'accueil" [checked]="serviceParametre.accueil() == 'nouveau'"
+                      (ionChange)="onChangeAccueil( $event )"></ion-toggle>
+        </div>
+      </div>
+    }
   }
   @else
   {

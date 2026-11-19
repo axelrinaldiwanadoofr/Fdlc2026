@@ -43,6 +43,7 @@ const PERMISSIONS = [
     ],
     "Pendant le festival" => [
         "annonces.modifier" => "Publier des annonces sur l'accueil",
+        "accueil.modifier" => "Choisir la page d'accueil du site",
         "controle.voir" => "Voir le contrôle des données"
     ],
     "Outils" => [

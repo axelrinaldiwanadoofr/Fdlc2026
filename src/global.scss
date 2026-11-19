@@ -34,13 +34,13 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
 
 /* Interrupteurs oui / non en vert et rouge (comptes, rôles et permissions) */
 ion-toggle.interrupteur
 {
-  --track-background: #e5484d;
-  --track-background-checked: #2a9a6a;
+  --track-background: #d64545;
+  --track-background-checked: #1f8a5b;
   --handle-background: #ffffff;
   --handle-background-checked: #ffffff;
 }
@@ -49,4 +49,51 @@ ion-toggle.interrupteur
 ion-input, ion-textarea, ion-select, ion-item
 {
   --highlight-color-valid: var(--ion-color-primary);
+}
+
+/* Polices de la nouvelle DA */
+@font-face
+{
+  font-family: Inter;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Inter;
+  font-weight: 500;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-500-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Inter;
+  font-weight: 600;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Inter;
+  font-weight: 700;
+  font-display: swap;
+  src: url("assets/fonts/inter-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face
+{
+  font-family: Shrikhand;
+  font-weight: 400;
+  font-display: swap;
+  src: url("assets/fonts/shrikhand-latin-400-normal.woff2") format("woff2");
+}
+
+/* Titres des barres en bleu de l'affiche */
+ion-title
+{
+  font-weight: 700;
 }

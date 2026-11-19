@@ -10,6 +10,8 @@ import {
   IonMenuButton,
  } from '@ionic/angular';
 import { AnnoncesComponent } from '../../components/annonces/annonces.component';
+import { AccueilNouveauComponent } from '../../components/accueil-nouveau/accueil-nouveau.component';
+import { ParametreService } from '../../services/parametre.service';
 
 @Component({
   selector: 'app-accueil',
@@ -24,11 +26,18 @@ import { AnnoncesComponent } from '../../components/annonces/annonces.component'
     IonMenuButton,
     CommonModule, 
     FormsModule,
-    AnnoncesComponent]
+    AnnoncesComponent,
+    AccueilNouveauComponent]
 })
 export class AccueilPage implements OnInit {
 
-  constructor() { }
+  protected serviceParametre: ParametreService ;
+
+  // l'ancienne ou la nouvelle page selon le reglage choisi dans la config
+  constructor( serviceParametre: ParametreService )
+  {
+    this.serviceParametre = serviceParametre ;
+  }
 
   ngOnInit() {
   }
