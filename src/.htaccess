@@ -33,12 +33,6 @@ Options -Indexes -MultiViews
     RewriteRule ^ index.html [L]
 </IfModule>
 
-# Serveur sans mod_rewrite (celui du lycée) : une adresse de l'appli comme /fdlc/plans
-# n'est pas un fichier, on envoie quand même l'appli au lieu de la page 404 du site
-<IfModule !mod_rewrite.c>
-    ErrorDocument 404 /fdlc/index.html
-</IfModule>
-
 <IfModule mod_headers.c>
     # Le site ne peut pas être affiché dans une iframe d'un autre site,
     # et le navigateur ne devine pas le type d'un fichier (photo envoyée qui contiendrait du html)
