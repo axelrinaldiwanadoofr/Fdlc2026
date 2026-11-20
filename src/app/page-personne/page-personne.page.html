@@ -99,6 +99,10 @@
     <app-livres-auteur [idPersonne]="p.id" [prenom]="p.prenom" [nom]="p.nom" [auteur]="p.specialite == 'auteur'"></app-livres-auteur>
     </div>
   }
+  @else if( introuvable() )
+  {
+    <p class="liste-vide">Cette personne n'existe pas ou n'existe plus.</p>
+  }
   @else
   {
     <p class="ion-padding">Chargement...</p>

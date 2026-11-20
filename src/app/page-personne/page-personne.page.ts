@@ -1,7 +1,7 @@
 import { Component, OnInit, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { storefrontOutline } from 'ionicons/icons';
 
@@ -63,6 +63,8 @@ export class PagePersonnePage implements OnInit
 
   // la photo n'a pas pu être chargée
   protected photoErreur = signal( false ) ;
+  // la personne n'existe pas (ancien lien, personne supprimée)
+  protected introuvable = signal( false ) ;
   // Nombre d'événements de la personne (renvoyé par app-liste-evenements), section masquée si 0
   protected nbEvenements = signal( 0 ) ;
 
@@ -89,7 +91,7 @@ export class PagePersonnePage implements OnInit
   {
     if( this.id() > -1 )
     {
-      this.personne = this.personneService.getPersonneById( this.id() ) ;
+      this.personne = this.personneService.getPersonneById( this.id() ).pipe( tap( p => this.introuvable.set( !p ) ) ) ;
       this.exposants = this.exposantService.getExposantsByPersonne( this.id() ) ;
     }
   }
