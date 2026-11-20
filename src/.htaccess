@@ -2,18 +2,22 @@
 # MultiViews enlevé sinon /page-personne/3 renvoie vers le fichier page-personne.page-xxx.js
 Options -Indexes -MultiViews
 
-# Les adresses de l'appli (/config, /plans/2...) ne sont pas des fichiers,
-# on renvoie vers index.html et c'est Angular qui affiche la bonne page
+# Les pages de l'appli sont en #/ (/fdlc/#/plans), une adresse qui n'est pas un fichier
+# vient d'un ancien lien : on renvoie vers l'accueil de l'appli
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # dossier de l'appli (ex : /fdlc/), le même fichier marche en local et en ligne
+    RewriteCond $0#%{REQUEST_URI} ^([^#]*)#(.*)\1$
+    RewriteRule ^.*$ - [E=DOSSIER:%2]
+
     # Fichiers qui ne doivent pas être servis (phpinfo, scripts sql, php dans les images)
     # et code source si ce fichier est lu dans src : on affiche l'appli à la place
-    RewriteRule (^|/)phpinfo\.php$ index.html [L]
-    RewriteRule \.sql$ index.html [L]
-    RewriteRule ^assets/.*\.(php|phtml|phar)$ index.html [L]
-    RewriteRule ^(app|components|services|modeles|sql|theme|environments)(/|$) index.html [L]
-    RewriteRule \.(ts|scss)$ index.html [L]
+    RewriteRule (^|/)phpinfo\.php$ %{ENV:DOSSIER} [R=302,L]
+    RewriteRule \.sql$ %{ENV:DOSSIER} [R=302,L]
+    RewriteRule ^assets/.*\.(php|phtml|phar)$ %{ENV:DOSSIER} [R=302,L]
+    RewriteRule ^(app|components|services|modeles|sql|theme|environments)(/|$) %{ENV:DOSSIER} [R=302,L]
+    RewriteRule \.(ts|scss)$ %{ENV:DOSSIER} [R=302,L]
 
     # Le site final est en https : on y renvoie si on arrive en http
     # (pas en local, et pas si un proxy devant le serveur fait déjà le https)
@@ -24,13 +28,13 @@ Options -Indexes -MultiViews
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ index.html [L]
+    RewriteRule ^ %{ENV:DOSSIER} [R=302,L]
 
     # dossier sans page d'accueil (assets, php/livre...) : l'appli plutôt que "Forbidden"
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteCond %{REQUEST_FILENAME}/index.html !-f
     RewriteCond %{REQUEST_FILENAME}/index.php !-f
-    RewriteRule ^ index.html [L]
+    RewriteRule ^ %{ENV:DOSSIER} [R=302,L]
 </IfModule>
 
 <IfModule mod_headers.c>
