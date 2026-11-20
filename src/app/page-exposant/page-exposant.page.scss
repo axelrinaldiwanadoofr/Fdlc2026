@@ -1,0 +1,13 @@
+// tout le contenu sur la même largeur que les listes
+.page
+{
+    max-width: 792px;
+    margin: 0 auto;
+    padding-bottom: 24px;
+}
+
+// le stand est un lien vers la page du lieu
+a.emplacement
+{
+    text-decoration: none;
+}

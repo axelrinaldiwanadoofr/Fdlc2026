@@ -1,3 +1,4 @@
+import { isDevMode } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideHttpClient,withInterceptors } from '@angular/common/http';
 import { RouteReuseStrategy, provideRouter, withComponentInputBinding, withPreloading, PreloadAllModules } from '@angular/router';
@@ -15,3 +16,6 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
   ],
 });
+
+// garde le site et les données du festival pour quand le réseau du salon sature (sw.js)
+if( "serviceWorker" in navigator && !isDevMode() ) navigator.serviceWorker.register( "sw.js" ) ;

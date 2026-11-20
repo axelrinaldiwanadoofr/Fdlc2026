@@ -7,6 +7,7 @@ header("Access-Control-Allow-Origin: http://localhost:8101");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once "../Connexion.php";
+require_once "../colonnes.php";
 
 try
 {
@@ -21,9 +22,12 @@ try
         exit;
     }
 
-    $sql = "select distinct idExposant as id, nomExposant as nom, numLieu, nomLieu, hall from "
-         . Connexion::$tables["PersonneExposantExposerLieu"]
-         . " where idExposant = :id";
+    // tables de base : la vue ne contient que les exposants qui ont au moins une personne
+    $exposant = Connexion::$tables["exposant"] ;
+    $sql = "select x.id, trim( x.nom ) as nom, x.numLieu, l.nom as nomLieu, l.hall, "
+         . colonneOuVide( $bd, $exposant, "x", "libelle", "libelle" ) . ", " . colonneOuVide( $bd, $exposant, "x", "type", "type" )
+         . " from " . $exposant . " x left join " . Connexion::$tables["lieu"] . " l on l.num = x.numLieu"
+         . " where x.id = :id";
 
     $cursor = $bd->prepare($sql);
     $cursor->bindValue(":id", $id, PDO::PARAM_INT);

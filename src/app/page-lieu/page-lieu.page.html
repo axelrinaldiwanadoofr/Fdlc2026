@@ -13,7 +13,7 @@
 <ion-content>
   @if( lieu(); as l )
   {
-    <div class="page">
+    <div class="page fiche">
       <!-- en-tête : type, nom et emplacement -->
       <div class="entete">
         @if( l.type )
@@ -51,10 +51,10 @@
             <ion-note slot="end">{{ exposants().length }}</ion-note>
           </ion-item-divider>
         </ion-list>
-        <div class="exposants">
+        <div class="tuiles">
           @for( x of exposants(); track x.id )
           {
-            <a class="exposant" [routerLink]="['/page-exposant', x.id]">
+            <a class="tuile" [routerLink]="['/page-exposant', x.id]">
               <ion-icon name="storefront-outline" aria-hidden="true"></ion-icon>
               <span class="texte">
                 <strong>{{ x.nom }}</strong>

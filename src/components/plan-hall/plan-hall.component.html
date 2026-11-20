@@ -4,8 +4,8 @@
      (touchstart)="onTouchStart($event)"
      (touchmove)="onTouchMove($event)"
      (touchend)="onTouchEnd($event)">
-  <div class="plan" #plan [style.width]="largeurBase() > 0 ? largeurBase() * zoom() + 'px' : '100%'">
-    <img [src]="serviceParametre.plan( numHall() )" [alt]="'Plan du hall ' + numHall()" draggable="false" (load)="onImageChargee($event)">
+  <div class="plan" #plan [class.cache]="cache()" [style.width]="largeurBase() > 0 ? largeurBase() * zoom() + 'px' : '100%'">
+    <img [src]="serviceParametre.plan( numHall() )" [alt]="'Plan du hall ' + numHall()" draggable="false" (load)="onImageChargee($event)" (error)="cache.set( false )">
 
     @if( largeur() > 0 )
     {

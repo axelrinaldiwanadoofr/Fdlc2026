@@ -72,6 +72,12 @@ export class ExposantService
     }
 
     // Autres exposants qui partagent le stand
+    // Livres publiés par l'exposant, avec leurs auteurs
+    getLivresExposant( id: number ): Observable<any[]>
+    {
+        return this.http.get<any[]>( "php/exposant/livres-exposant.php?id=" + id ) ;
+    }
+
     // Personnes présentes sur un lieu, tous exposants confondus
     getPersonnesLieu( num: number ): Observable<PersonneStand[]>
     {

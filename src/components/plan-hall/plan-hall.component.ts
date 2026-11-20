@@ -54,6 +54,10 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
   protected zoom = signal(1) ;
 
+  // plan masqué le temps que l'image du nouveau hall arrive, puis fondu
+  protected cache = signal( true ) ;
+  private hallAffiche: number = -1 ;
+
   // Largeur du plan sans zoom : le hall doit tenir en entier dans le cadre
   protected largeurBase = signal(0) ;
   private observateur: ResizeObserver | null = null ;
@@ -116,6 +120,12 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
 
   ngOnChanges()
   {
+    if( this.numHall() != this.hallAffiche )
+    {
+      this.hallAffiche = this.numHall() ;
+      this.cache.set( true ) ;
+    }
+
     this.lieuxCharges = false ;
     this.dejaSitue = false ;
     if( this.numHall() == 0 ) return ;
@@ -142,6 +152,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   onImageChargee( event: Event )
   {
     let image = event.target as HTMLImageElement ;
+    this.cache.set( false ) ;
     this.largeur.set( image.naturalWidth ) ;
     this.hauteur.set( image.naturalHeight ) ;
     this.calculeLargeurBase() ;
@@ -192,16 +203,26 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     return lieu.nom || "Lieu " + lieu.num ;
   }
 
-  // Boutons + et - : on zoome sur le centre de l'écran
+  // Boutons + et - : zoom progressif (0,2 s) sur le centre de l'écran
   changeZoom( pas: number )
   {
     let cadre = this.cadre().nativeElement.getBoundingClientRect() ;
     let x = cadre.left + cadre.width / 2 ;
     let y = cadre.top + cadre.height / 2 ;
+    let depart = this.zoom() ;
+    let cible = Math.min( 3, Math.max( 1, depart + pas ) ) ;
+    let duree = matchMedia( "(prefers-reduced-motion: reduce)" ).matches ? 0 : 200 ;
+    let debut = performance.now() ;
 
     this.retientPoint( x, y ) ;
-    this.zoomeSur( this.zoom() + pas, x, y ) ;
-    this.onZoom.emit( this.zoom() > 1 ) ;
+    let etape = ( temps: number ) =>
+    {
+      let avance = duree == 0 ? 1 : Math.min( 1, Math.max( 0, temps - debut ) / duree ) ;
+      this.zoomeSur( depart + ( cible - depart ) * ( 1 - Math.pow( 1 - avance, 3 ) ), x, y ) ;
+      if( avance < 1 ) requestAnimationFrame( etape ) ;
+      else this.onZoom.emit( this.zoom() > 1 ) ;
+    } ;
+    requestAnimationFrame( etape ) ;
   }
 
   // Mémorise quel point du plan se trouve sous la position x, y de l'écran

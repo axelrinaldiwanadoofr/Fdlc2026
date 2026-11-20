@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { NavigationStart, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { 
   IonApp, 
@@ -58,9 +58,14 @@ export class AppComponent
 
   protected serviceParametre: ParametreService ;
 
+  // vrai quand le téléphone n'a plus de réseau : on prévient que les infos sont celles déjà chargées
+  protected horsLigne = signal( !navigator.onLine ) ;
+
   constructor( router: Router, serviceParametre: ParametreService )
   {
     this.serviceParametre = serviceParametre ;
+    addEventListener( "online", () => this.horsLigne.set( false ) ) ;
+    addEventListener( "offline", () => this.horsLigne.set( true ) ) ;
     addIcons( { homeOutline, calendarOutline, storefrontOutline, peopleOutline, locationOutline, bookOutline,
                 starOutline, mapOutline, shareSocialOutline, informationCircleOutline } ) ;
 

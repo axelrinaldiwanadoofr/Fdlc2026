@@ -161,3 +161,15 @@
     top: 12px;
     bottom: auto;
 }
+
+// fondu quand on change de hall
+.plan
+{
+    transition: opacity 0.2s ease-out;
+}
+
+.plan.cache
+{
+    opacity: 0;
+    transition: none;
+}

@@ -1,60 +1,88 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>
-        @for( exposant of exposants | async;  track exposant.id )
-        {
-          {{exposant.nom}}
-        }
-    </ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>    
+      <ion-back-button defaultHref="/liste-exposants-page"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ exposant()?.nom ?? "Exposant" }}</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>    
-
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-    </ion-toolbar>
-  </ion-header>
-  <ion-list>
-    @for( exposant of exposants | async;  track exposant.id )
-    {
-      <ion-item>
-        <ion-label>
-          <h2>{{exposant.nom}}</h2>
-          @if( exposant.libelleExposant != "" )
-          {
-            <h3>{{exposant.libelleExposant}}</h3>
-          }
-          <p>Stand n° {{exposant.numLieu}}</p>
-          @if( exposant.numLieu.toString() != exposant.nomLieu )
-          {
-            <p>{{exposant.nomLieu}}</p>
-          }
-        </ion-label>      
-      </ion-item>
-      <ion-item>
-        <!-- ouvre le plan du hall sur le stand de l'exposant -->
-        @if( exposant.numLieu )
+<ion-content>
+  @if( exposant(); as x )
+  {
+    <div class="page fiche">
+      <!-- en-tête : type, nom et stand -->
+      <div class="entete">
+        @if( x.type )
         {
-          <ion-button slot="start" fill="outline" [routerLink]="['/plans', exposant.hall]" [queryParams]="{ numLieu: exposant.numLieu }">
-            <ion-icon slot="start" name="location-outline"></ion-icon>
-            Situer
-          </ion-button>
+          <span class="type" [style.background]="couleurType( x.type )">{{ serviceExposant.nomType( x.type ) }}</span>
         }
-        <app-ajouter-etape-button slot="end"
-          [nom]="exposant.nom"
-          [idExposant]="exposant.id"
-          [numLieu]="exposant.numLieu"
-          label="Planifier la visite"></app-ajouter-etape-button>
-      </ion-item>
-    }
-  </ion-list>
+        <h1>{{ x.nom }}</h1>
+        @if( x.libelle )
+        {
+          <p class="libelle">{{ x.libelle }}</p>
+        }
+        @if( x.numLieu > 0 )
+        {
+          <a class="emplacement" [routerLink]="['/page-lieu', x.numLieu]">
+            <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+            Stand {{ x.numLieu }} | Hall {{ x.hall }}
+            @if( x.nomLieu && x.nomLieu != x.numLieu.toString() )
+            {
+              | {{ x.nomLieu }}
+            }
+          </a>
+        }
+      </div>
 
-  <app-personnes-stand [idExposant]="id()"></app-personnes-stand>
+      @if( x.numLieu > 0 )
+      {
+        <div class="mini-plan">
+          <app-plan-hall [numHall]="x.hall" [numLieu]="x.numLieu" [compact]="true"></app-plan-hall>
+        </div>
+        <div class="actions">
+          <ion-button fill="outline" [routerLink]="['/plans', x.hall]" [queryParams]="{ numLieu: x.numLieu }">
+            <ion-icon slot="start" name="map-outline"></ion-icon>
+            Ouvrir le plan
+          </ion-button>
+          <app-ajouter-etape-button [nom]="x.nom" [idExposant]="x.id" [numLieu]="x.numLieu" label="Planifier la visite"></app-ajouter-etape-button>
+        </div>
+      }
+
+      @if( livres().length > 0 )
+      {
+        <ion-list>
+          <ion-item-divider color="light">
+            <ion-label>Livres publiés</ion-label>
+            <ion-note slot="end">{{ livres().length }}</ion-note>
+          </ion-item-divider>
+        </ion-list>
+        <div class="tuiles">
+          @for( livre of livres(); track livre.id )
+          {
+            <a class="tuile" [routerLink]="['/page-livre', livre.id]">
+              <ion-icon name="book-outline" aria-hidden="true"></ion-icon>
+              <span class="texte">
+                <strong>{{ livre.titre || "Sans titre" }}</strong>
+                @if( livre.auteurs )
+                {
+                  <span>{{ livre.auteurs }}</span>
+                }
+              </span>
+              <ion-icon class="suite" name="chevron-forward" aria-hidden="true"></ion-icon>
+            </a>
+          }
+        </div>
+      }
+
+      <app-personnes-stand [idExposant]="x.id"></app-personnes-stand>
+    </div>
+  }
+  @else if( introuvable() )
+  {
+    <p class="liste-vide">Cet exposant n'existe pas ou n'existe plus.</p>
+  }
 </ion-content>
