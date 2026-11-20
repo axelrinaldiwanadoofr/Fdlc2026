@@ -8,6 +8,7 @@ header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Envoi de l'affiche ou d'un plan de hall, rangé dans assets/reglages
 exigePermission( "reglages.modifier" ) ;
+if( !function_exists( "imagecreatefromstring" ) ) refuse( "L'extension GD de PHP n'est pas activée sur le serveur", 500 ) ;
 
 $pour = $_POST["pour"] ?? "" ;
 $fichier = $_FILES["image"] ?? null ;
@@ -21,7 +22,7 @@ if( !$image || !in_array( $infos[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_W
 }
 
 $dossier = dirname( __DIR__, 2 ) . "/assets/reglages" ;
-if( !is_dir( $dossier ) ) mkdir( $dossier, 0777, true ) ;
+if( !is_dir( $dossier ) && !@mkdir( $dossier, 0777, true ) ) refuse( "Le dossier assets/reglages ne peut pas être créé sur le serveur", 500 ) ;
 
 // l'image est refaite : plus légère et sans code caché dedans
 if( $pour == "affiche" )
