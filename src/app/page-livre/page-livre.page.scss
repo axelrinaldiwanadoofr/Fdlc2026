@@ -1,16 +1,27 @@
-ion-card {
-  margin: 16px 0;
+// tout le contenu sur la même largeur que les listes
+.page
+{
+  max-width: 792px;
+  margin: 0 auto;
+  padding-bottom: 24px;
 }
 
-// couverture du livre, comme sur la page de l'auteur
+// couverture à gauche, textes à droite
+.entete.livre
+{
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
 .couverture
 {
-  width: 140px;
+  flex-shrink: 0;
+  width: 110px;
   aspect-ratio: 2 / 3;
-  margin: 0 auto 16px;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow: hidden;
-  background: var(--ion-color-light);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -23,6 +34,7 @@ ion-card {
   object-fit: cover;
 }
 
+// même icône que les livres sans couverture de la page auteur
 .sans-image
 {
   width: 45%;
@@ -32,13 +44,39 @@ ion-card {
   mask: url("../../assets/image-indisponible.png") center / contain no-repeat;
 }
 
-ion-card-header
+.infos
 {
-  text-align: center;
+  min-width: 0;
 }
 
-ion-card-title
+.infos .type
 {
-  font-weight: 700;
-  color: var(--ion-text-color);
+  background: var(--ion-color-tertiary);
+}
+
+.auteurs
+{
+  margin: 6px 0 0;
+  color: var(--ion-color-dark);
+}
+
+.auteurs a
+{
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  text-decoration: none;
+}
+
+.editeur
+{
+  margin: 4px 0 0;
+  font-weight: 600;
+  color: var(--ion-color-medium);
+}
+
+// garde les retours à la ligne de la base
+.resume
+{
+  white-space: pre-line;
+  line-height: 1.5;
 }

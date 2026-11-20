@@ -17,12 +17,12 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonCard,
-  IonCardTitle,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardContent,
+  IonItemDivider,
+  IonNote,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { storefrontOutline, calendarOutline, chevronForward } from 'ionicons/icons';
 import { MajusculePipe } from '../../pipes/majuscule.pipe';
 import { OuTrouverComponent } from '../../components/ou-trouver/ou-trouver.component';
 
@@ -47,11 +47,9 @@ interface LiensLivre { auteurs: AuteurLivre[]; exposants: ExposantLivre[]; evene
     IonList,
     IonItem,
     IonLabel,
-    IonCardTitle,
-    IonCardHeader,
-    IonCardSubtitle,
-    IonCardContent,
-    IonCard,
+    IonItemDivider,
+    IonNote,
+    IonIcon,
     RouterLink,
     MajusculePipe
   ]
@@ -78,6 +76,7 @@ export class PageLivrePage implements OnInit
   {
     this.serviceLivre = serviceLivre ;
     this.serviceLivresAuteur = serviceLivresAuteur ;
+    addIcons( { storefrontOutline, calendarOutline, chevronForward } ) ;
   }
 
   ngOnInit()

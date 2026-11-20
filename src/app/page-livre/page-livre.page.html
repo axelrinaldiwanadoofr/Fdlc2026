@@ -1,19 +1,20 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-back-button defaultHref="/liste-livres-page"></ion-back-button>
     </ion-buttons>
-    <ion-title>Fiche livre</ion-title>
+    <ion-title>{{ livre()?.titre || "Fiche livre" }}</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true" class="ion-padding">
+<ion-content>
   @if( livre(); as livre ) {
-    <ion-card>
-      <ion-card-header>
+    <div class="page fiche">
+      <!-- en-tête : couverture à gauche, titre, auteurs et éditeur à droite -->
+      <div class="entete livre">
         <div class="couverture">
           @if( couvertures(); as couvertures ) {
             @if( couvertures.length > 0 ) {
@@ -23,74 +24,86 @@
             }
           }
         </div>
-        <ion-card-title>{{ livre.titre || "Sans titre" }}</ion-card-title>
-        @if( livre.genre || livre.editeur ) {
-          <ion-card-subtitle>
-            @if( livre.genre ) { Genre : {{ livre.genre | majuscule }} }
-            @if( livre.genre && livre.editeur ) { | }
-            @if( livre.editeur ) { Éditeur : {{livre.editeur}} }
-          </ion-card-subtitle>
-        }
-      </ion-card-header>
-      <ion-card-content>
+        <div class="infos">
+          @if( livre.genre ) {
+            <span class="type">{{ livre.genre | majuscule }}</span>
+          }
+          <h1>{{ livre.titre || "Sans titre" }}</h1>
+          @if( liens().auteurs.length > 0 ) {
+            <p class="auteurs">de
+              @for( a of liens().auteurs; track a.id; let dernier = $last ) {
+                <a [routerLink]="['/page-personne', a.id]">{{a.prenom}} {{a.nom}}</a>@if( !dernier ) {, }
+              }
+            </p>
+          } @else if( livre.nom ) {
+            <p class="auteurs">de {{livre.prenom}} {{livre.nom}}</p>
+          }
+          @if( livre.editeur ) {
+            <p class="editeur">{{ livre.editeur }}</p>
+          }
+        </div>
+      </div>
 
-        <!-- Auteur(s) : un clic ouvre la page personne (la flèche indique le lien) -->
-        @if( liens().auteurs.length > 0 ) {
-          <p><strong>{{ liens().auteurs.length > 1 ? 'Auteurs' : 'Auteur' }} :</strong></p>
+      @if( livre.resume ) {
+        <ion-list>
+          <ion-item-divider color="light">
+            <ion-label>Résumé</ion-label>
+          </ion-item-divider>
+          <ion-item lines="none">
+            <ion-label class="ion-text-wrap resume">{{ livre.resume }}</ion-label>
+          </ion-item>
+        </ion-list>
+      }
+
+      <app-ou-trouver [numLieu]="standDuLivre()" titre="Où l'acheter"></app-ou-trouver>
+
+      @if( liens().exposants.length > 0 ) {
+        <!-- titre seulement si le bloc "Où l'acheter" n'est pas affiché (pas de stand) -->
+        @if( standDuLivre() == -1 ) {
           <ion-list>
-            @for( a of liens().auteurs; track a.id ) {
-              <ion-item [routerLink]="['/page-personne', a.id]" [detail]="true">
-                <ion-label>{{a.prenom}} {{a.nom}}</ion-label>
-              </ion-item>
-            }
-          </ion-list>
-        } @else if( livre.nom ) {
-          <p><strong>Auteur :</strong> {{livre.prenom}} {{livre.nom}}</p>
-        }
-
-        <!-- Exposant / stand : un clic ouvre la page exposant -->
-        @if( liens().exposants.length > 0 ) {
-          <p><strong>Exposant / Stand :</strong></p>
-          <ion-list>
-            @for( x of liens().exposants; track x.id ) {
-              <ion-item [routerLink]="['/page-exposant', x.id]" [detail]="true">
-                <ion-label>
-                  <h3>{{x.nom}}</h3>
-                  @if( x.numLieu ) { <p>Stand n° {{x.numLieu}}</p> }
-                </ion-label>
-              </ion-item>
-            }
-          </ion-list>
-        } @else if( livre.nomExposant ) {
-          <p><strong>Exposant / Stand :</strong> {{livre.nomExposant}}</p>
-        }
-        <app-ou-trouver [numLieu]="standDuLivre()" titre="Où l'acheter"></app-ou-trouver>
-
-        @if( livre.resume ) {
-          <hr>
-          <p><strong>Résumé :</strong></p>
-          <p>{{livre.resume}}</p>
-        }
-
-        <!-- Événements où le livre est présenté -->
-        @if( liens().evenements.length > 0 ) {
-          <hr>
-          <p><strong>Événements associés :</strong></p>
-          <ion-list>
-            @for( e of liens().evenements; track e.id ) {
-              <ion-item [routerLink]="['/page-evenement', e.id]" [detail]="true">
-                <ion-label class="ion-text-wrap">
-                  <h3>{{e.titre}}</h3>
-                  <p>{{ formatDate( e.debut ) }}@if( e.type ) { · {{e.type}} }</p>
-                </ion-label>
-              </ion-item>
-            }
+            <ion-item-divider color="light">
+              <ion-label>Vendu par</ion-label>
+            </ion-item-divider>
           </ion-list>
         }
+        <div class="tuiles">
+          @for( x of liens().exposants; track x.id ) {
+            <a class="tuile" [routerLink]="['/page-exposant', x.id]">
+              <ion-icon name="storefront-outline" aria-hidden="true"></ion-icon>
+              <span class="texte">
+                <strong>{{ x.nom }}</strong>
+                @if( x.numLieu ) { <span>Stand {{ x.numLieu }}</span> }
+              </span>
+              <ion-icon class="suite" name="chevron-forward" aria-hidden="true"></ion-icon>
+            </a>
+          }
+        </div>
+      }
 
-      </ion-card-content>
-    </ion-card>
+
+      <!-- événements où le livre est présenté -->
+      @if( liens().evenements.length > 0 ) {
+        <ion-list>
+          <ion-item-divider color="light">
+            <ion-label>Présenté pendant</ion-label>
+            <ion-note slot="end">{{ liens().evenements.length }}</ion-note>
+          </ion-item-divider>
+        </ion-list>
+        <div class="tuiles">
+          @for( e of liens().evenements; track e.id ) {
+            <a class="tuile" [routerLink]="['/page-evenement', e.id]">
+              <ion-icon name="calendar-outline" aria-hidden="true"></ion-icon>
+              <span class="texte">
+                <strong>{{ e.titre }}</strong>
+                <span>{{ formatDate( e.debut ) }}@if( e.type ) { | {{ e.type }} }</span>
+              </span>
+              <ion-icon class="suite" name="chevron-forward" aria-hidden="true"></ion-icon>
+            </a>
+          }
+        </div>
+      }
+    </div>
   } @else {
-    <p>{{ message() }}</p>
+    <p class="liste-vide">{{ message() }}</p>
   }
 </ion-content>
