@@ -22,8 +22,9 @@ import { CriteresProgramme } from '../../modeles/Programme';
 //   theme       : type d'événement ("GRAND ENTRETIEN"...)
 //   numLieu     : événements d'un lieu
 //   idAnimateur : événements animés par une personne
-//   idPersonne  : événements d'une personne (anime, livre présenté ou citée dans le texte)
-//   onglets     : true  = onglets « Permanents / Samedi / Dimanche » (page programme)
+//   idPersonne  : événements d'une personne (anime, livre présenté ou invitée) : page auteur, filtre « Auteur »
+//   idLivre     : événements liés à un livre (présenté ou écrit par un invité) : filtre « Livre »
+//   onglets     : true  = onglets « Samedi / Dimanche / Permanents » (page programme)
 //                 false = tout à la suite, sections vides masquées (page auteur, lieu...)
 //   lienPage    : page de détail ouverte au clic (lienPage/id), "" = non cliquable
 //   messageVide : texte affiché quand aucun événement ne correspond ("" = rien)
@@ -46,9 +47,11 @@ export class ListeEvenementsComponent {
 
   recherche = input<string>("");
   theme = input<string>("");
+  type = input<string>("");
   numLieu = input<number>(-1);
   idAnimateur = input<number>(-1);
   idPersonne = input<number>(-1);
+  idLivre = input<number>(-1);
   onglets = input<boolean>(true);
   lienPage = input<string>("/page-evenement");
   messageVide = input<string>("Aucun événement");
@@ -58,9 +61,11 @@ export class ListeEvenementsComponent {
   private criteres = computed<CriteresProgramme>(() => ({
     recherche: this.recherche() ?? "",
     theme: this.theme() ?? "",
+    type: this.type() ?? "",
     numLieu: Number(this.numLieu() ?? -1),
     idAnimateur: Number(this.idAnimateur() ?? -1),
     idPersonne: Number(this.idPersonne() ?? -1),
+    idLivre: Number(this.idLivre() ?? -1),
   }));
 
   // undefined = chargement, null = erreur. Le programme affiché reste en place

@@ -1,3 +1,4 @@
+import { InvitesEvenementComponent } from '../../components/invites-evenement/invites-evenement.component';
 import { Component, OnInit, input, signal } from '@angular/core';
 
 import {
@@ -13,7 +14,7 @@ import {
 } from '@ionic/angular';
 import { RouterLink } from '@angular/router';
 import { addIcons } from 'ionicons';
-import { calendarOutline, locationOutline, micOutline, peopleOutline, bookOutline, mapOutline, chevronForward } from 'ionicons/icons';
+import { calendarOutline, locationOutline, micOutline, peopleOutline, personOutline, bookOutline, mapOutline, chevronForward } from 'ionicons/icons';
 
 import { EvenementService } from '../../services/evenement.service';
 import { Evenement } from '../../modeles/Evenement';
@@ -22,7 +23,7 @@ import { Evenement } from '../../modeles/Evenement';
   selector: 'app-page-evenement',
   templateUrl: './page-evenement.component.html',
   styleUrls: ['./page-evenement.component.scss'],
-  imports: [
+  imports: [InvitesEvenementComponent, 
     IonHeader,
     IonToolbar,
     IonButtons,
@@ -44,7 +45,7 @@ export class PageEvenementComponent implements OnInit {
   public message = signal('Choisissez un événement depuis la liste des événements.');
 
   constructor(private serviceEvenement: EvenementService) {
-    addIcons({ calendarOutline, locationOutline, micOutline, peopleOutline, bookOutline, mapOutline, chevronForward });
+    addIcons({ calendarOutline, locationOutline, micOutline, peopleOutline, personOutline, bookOutline, mapOutline, chevronForward });
   }
 
   ngOnInit(): void {

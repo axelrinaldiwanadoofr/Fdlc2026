@@ -7,68 +7,57 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- Filtres de la page, appliqués directement à la liste -->
   <div class="filtres">
-    <ion-searchbar
-      placeholder="Auteur, titre, mot-clé, livre…"
-      [value]="recherche()"
-      (ionInput)="recherche.set( $any($event).detail.value ?? '' )"
-      [debounce]="0"
-      inputmode="search"
-      aria-label="Rechercher un événement">
-    </ion-searchbar>
-
-    <div class="selections">
-      <ion-select label="Thème" labelPlacement="stacked" interface="popover" fill="solid"
-                  [value]="theme()" (ionChange)="theme.set( $event.detail.value ?? '' )">
-        <ion-select-option value="">Tous les thèmes</ion-select-option>
-        @for( t of filtres()?.themes ?? []; track t )
-        {
-          <ion-select-option [value]="t">{{ t }}</ion-select-option>
-        }
-      </ion-select>
-
-      <ion-select label="Lieu" labelPlacement="stacked" interface="popover" fill="solid"
-                  [value]="numLieu()" (ionChange)="numLieu.set( $event.detail.value ?? -1 )">
-        <ion-select-option [value]="-1">Tous les lieux</ion-select-option>
-        @for( lieu of filtres()?.lieux ?? []; track lieu.num )
-        {
-          <ion-select-option [value]="lieu.num">{{ lieu.nom }}</ion-select-option>
-        }
-      </ion-select>
-
-      <ion-select label="Animé par" labelPlacement="stacked" interface="popover" fill="solid"
-                  [value]="idAnimateur()" (ionChange)="idAnimateur.set( $event.detail.value ?? -1 )">
-        <ion-select-option [value]="-1">Tous</ion-select-option>
-        @for( animateur of filtres()?.animateurs ?? []; track animateur.id )
-        {
-          <ion-select-option [value]="animateur.id">{{ animateur.nom }}</ion-select-option>
-        }
-      </ion-select>
+    <!-- Une pastille par filtre : chacune ouvre une liste défilante avec recherche.
+         Téléphone : la rangée défile horizontalement ; ordinateur : elle passe à la ligne. -->
+    <div class="pastilles" role="group" aria-label="Filtres">
+      @for( f of filtres1 ; track f.label )
+      {
+        <app-filtre-choix
+          [label]="f.label"
+          [libelleVide]="f.libelleVide"
+          [options]="f.options()"
+          [valeur]="f.valeur()"
+          [valeurVide]="f.valeurVide"
+          (valeurChange)="f.valeur.set( $event )">
+        </app-filtre-choix>
+      }
     </div>
-
+    <div class="pastilles" role="group" aria-label="Filtres">
+      @for( f of filtres2; track f.label )
+      {
+        <app-filtre-choix
+          [label]="f.label"
+          [libelleVide]="f.libelleVide"
+          [options]="f.options()"
+          [valeur]="f.valeur()"
+          [valeurVide]="f.valeurVide"
+          (valeurChange)="f.valeur.set( $event )">
+        </app-filtre-choix>
+      }
+    </div>
+    <!-- Nombre de résultats quand un filtre est utilisé -->
     @if( filtreActif() )
     {
-      <div class="resultat">
-        <span>
+      <div class="resume">
+        <span class="resultat">
           @if( total() !== null )
           {
-            {{ total() }} événement{{ total()! > 1 ? "s" : "" }} trouvé{{ total()! > 1 ? "s" : "" }}
+            {{ total() }} événement{{ total()! > 1 ? "s" : "" }}
           }
         </span>
-        <ion-button fill="clear" size="small" (click)="effacer()">
-          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
-          Effacer les filtres
-        </ion-button>
+        <ion-button fill="clear" size="small" (click)="effacer()">Tout effacer</ion-button>
       </div>
     }
   </div>
 
   <app-liste-evenements
-    [recherche]="recherche()"
-    [theme]="theme()"
-    [numLieu]="numLieu()"
-    [idAnimateur]="idAnimateur()"
+    [theme]="$any( theme() )"
+    [type]="$any( type() )"
+    [numLieu]="nombre( numLieu() )"
+    [idAnimateur]="nombre( idAnimateur() )"
+    [idPersonne]="nombre( idAuteur() )"
+    [idLivre]="nombre( idLivre() )"
     [messageVide]="filtreActif() ? 'Aucun événement ne correspond à ces critères.' : 'Aucun événement'"
     (total)="total.set( $event )">
   </app-liste-evenements>

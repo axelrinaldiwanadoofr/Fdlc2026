@@ -1,82 +1,89 @@
 <?php
 
-// Fonctions partagées par les scripts qui renvoient des événements
-// (programme.php, evenement-id.php).
-// Toute la mise en forme (lieu, animateur, jour, heures...) est faite ici :
-// le front n'a plus qu'à afficher.
+// Fonctions partagées par les scripts du programme des événements
+// (programme.php, filtres-evenements.php, evenement-id.php).
 //
-// Jointures faites directement sur les tables (left join) : les événements sans lieu
-// (expositions, stands...) sont gardés, et seules les colonnes présentes dans
-// toutes les bases (locale et serveur) sont utilisées.
+// Les jointures sont dans les vues MySQL (src/sql/EvenementProgramme.sql) :
+//   EvenementProgramme : événement + lieu + animateur + jour / heure / toute la journée
+//   EvenementPersonne  : personnes liées à un événement (animateur, livre présenté, invité)
+//   EvenementLivre     : livres liés à un événement (présenté, livre d'un invité)
+// Ici on ne fait que des requêtes courtes sur ces vues et la mise en forme pour l'affichage.
 
 const JOURS_SEMAINE = [ "Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi" ] ;
 const MOIS_ANNEE = [ "janvier", "février", "mars", "avril", "mai", "juin", "juillet",
                      "août", "septembre", "octobre", "novembre", "décembre" ] ;
 
-// Nom complet de l'animateur ("Prénom Nom")
-const SQL_NOM_ANIMATEUR = "trim( concat( coalesce( pe.prenom, '' ), ' ', coalesce( pe.nom, '' ) ) )" ;
-
-// Début de requête : événement + lieu + animateur.
-// Dans la nouvelle base le type est dans la colonne type (typeevenement est vide).
-function sqlEvenements() : string
+function vue( string $nom ) : string
 {
-    return "select ev.id, ev.type, ev.type as typeevenement, ev.titre, ev.stitre, ev.public, ev.commentaire,"
-         . " ev.debut, ev.fin, ev.idAnimateur, ev.numLieu,"
-         . " li.nom as nomLieu, li.type as typeLieu, li.hall,"
-         . " pe.prenom as prenomAnimateur, pe.nom as nomAnimateur, pe.specialite as specialiteAnimateur,"
-         . " " . SQL_NOM_ANIMATEUR . " as animateur"
-         . " from " . Connexion::$tables["evenement"] . " as ev"
-         . " left join " . Connexion::$tables["lieu"] . " as li on li.num = ev.numLieu"
-         . " left join " . Connexion::$tables["personne"] . " as pe on pe.id = ev.idAnimateur"
-         . " where 1 " ;
+    return Connexion::$tables[$nom] ;
 }
 
-// Le festival se tient le samedi et le dimanche (dayofweek : 7 = samedi, 1 = dimanche).
-// Les événements datés d'un autre jour (ex : le Off du vendredi) sont écartés,
-// ceux sans date sont gardés.
-function sqlPendantLeFestival() : string
+// Critères de filtre communs, lus dans $_GET ("" / null = pas de filtre)
+function lireCriteres() : array
 {
-    return " and ( ev.debut is null or dayofweek( ev.debut ) in ( 7, 1 ) ) " ;
+    return [
+        "recherche"   => trim( $_GET["recherche"] ?? "" ),
+        "theme"       => trim( $_GET["theme"] ?? "" ),
+        "type"        => trim( $_GET["type"] ?? "" ),
+        "numLieu"     => filter_input( INPUT_GET, "numLieu", FILTER_VALIDATE_INT ) ?: null,
+        "idAnimateur" => filter_input( INPUT_GET, "idAnimateur", FILTER_VALIDATE_INT ) ?: null,
+        "idPersonne"  => filter_input( INPUT_GET, "idPersonne", FILTER_VALIDATE_INT ) ?: null,
+        "idLivre"     => filter_input( INPUT_GET, "idLivre", FILTER_VALIDATE_INT ) ?: null,
+    ] ;
 }
 
-// Recherche libre (accents et casse ignorés grâce à la collation de la base) :
-// titre, sous-titre, descriptif (où sont cités les auteurs invités), type, lieu,
-// animateur, titre et auteurs des livres présentés.
-// Le paramètre :recherche doit être lié avec texteLike().
-function sqlRecherche() : string
+// Conditions SQL sur la vue EvenementProgramme (alias ev) et valeurs à lier
+// pour les critères renseignés. Renvoie [ "sql" => " and ...", "valeurs" => [...] ].
+function sqlCriteres( array $criteres ) : array
 {
-    return " and ( ev.titre like :recherche or ev.stitre like :recherche or ev.commentaire like :recherche"
-         . " or ev.type like :recherche or li.nom like :recherche"
-         . " or " . SQL_NOM_ANIMATEUR . " like :recherche"
-         . " or exists ( select 1 from " . Connexion::$tables["presenter"] . " as pr"
-         . "   inner join " . Connexion::$tables["livre"] . " as lv on lv.id = pr.idLivre"
-         . "   left join " . Connexion::$tables["ecrire"] . " as ec on ec.idLivre = lv.id"
-         . "   left join " . Connexion::$tables["personne"] . " as au on au.id = ec.idPersonne"
-         . "   where pr.idEvenement = ev.id and ( lv.titre like :recherche"
-         . "   or concat( coalesce( au.prenom, '' ), ' ', coalesce( au.nom, '' ) ) like :recherche ) ) ) " ;
-}
+    $sql = "" ;
+    $valeurs = [] ;
 
-// Événements d'une personne (paramètre :idPersonne) : elle anime, un de ses livres
-// est présenté, ou elle est citée ("Prénom Nom") dans le titre ou le descriptif.
-// Il n'y a pas de table de participation : les invités ne sont connus que par le texte.
-function sqlPersonne() : string
-{
-    $personne = Connexion::$tables["personne"] ;
-    $nomCite = "concat( '%', trim( pc.prenom ), ' ', trim( pc.nom ), '%' )" ;
+    if( $criteres["recherche"] !== "" )
+    {
+        // Accents et casse ignorés grâce à la collation de la base
+        $sql .= " and ( ev.titre like :recherche or ev.stitre like :recherche or ev.commentaire like :recherche"
+              . " or ev.type like :recherche or ev.nomLieu like :recherche or ev.animateur like :recherche"
+              . " or exists ( select 1 from " . vue( "EvenementPersonne" ) . " as ep where ep.idEvenement = ev.id"
+              . "   and concat( coalesce( ep.prenom, '' ), ' ', coalesce( ep.nom, '' ) ) like :recherche )"
+              . " or exists ( select 1 from " . vue( "EvenementLivre" ) . " as el where el.idEvenement = ev.id"
+              . "   and el.titre like :recherche ) ) " ;
+        $valeurs["recherche"] = "%" . addcslashes( $criteres["recherche"], "\\%_" ) . "%" ;
+    }
+    if( $criteres["theme"] !== "" )
+    {
+        $sql .= " and ev.theme = :theme " ;
+        $valeurs["theme"] = $criteres["theme"] ;
+    }
+    if( $criteres["type"] !== "" )
+    {
+        $sql .= " and ev.type = :type " ;
+        $valeurs["type"] = $criteres["type"] ;
+    }
+    if( $criteres["numLieu"] )
+    {
+        $sql .= " and ev.numLieu = :numLieu " ;
+        $valeurs["numLieu"] = $criteres["numLieu"] ;
+    }
+    if( $criteres["idAnimateur"] )
+    {
+        $sql .= " and ev.idAnimateur = :idAnimateur " ;
+        $valeurs["idAnimateur"] = $criteres["idAnimateur"] ;
+    }
+    if( $criteres["idPersonne"] )
+    {
+        $sql .= " and exists ( select 1 from " . vue( "EvenementPersonne" ) . " as ep"
+              . " where ep.idEvenement = ev.id and ep.idPersonne = :idPersonne ) " ;
+        $valeurs["idPersonne"] = $criteres["idPersonne"] ;
+    }
+    if( $criteres["idLivre"] )
+    {
+        $sql .= " and exists ( select 1 from " . vue( "EvenementLivre" ) . " as el"
+              . " where el.idEvenement = ev.id and el.idLivre = :idLivre ) " ;
+        $valeurs["idLivre"] = $criteres["idLivre"] ;
+    }
 
-    return " and ( ev.idAnimateur = :idPersonne"
-         . " or exists ( select 1 from " . Connexion::$tables["presenter"] . " as pr"
-         . "   inner join " . Connexion::$tables["ecrire"] . " as ec on ec.idLivre = pr.idLivre"
-         . "   where pr.idEvenement = ev.id and ec.idPersonne = :idPersonne )"
-         . " or exists ( select 1 from " . $personne . " as pc"
-         . "   where pc.id = :idPersonne and trim( coalesce( pc.nom, '' ) ) <> ''"
-         . "   and ( ev.titre like " . $nomCite . " or ev.stitre like " . $nomCite . " or ev.commentaire like " . $nomCite . " ) ) ) " ;
-}
-
-// Échappe % et _ pour un like
-function texteLike( string $texte ) : string
-{
-    return "%" . addcslashes( trim( $texte ), "\\%_" ) . "%" ;
+    return [ "sql" => $sql, "valeurs" => $valeurs ] ;
 }
 
 function lireDate( ?string $datetime ) : ?DateTime
@@ -92,11 +99,10 @@ function heure( DateTime $date ) : string
     return (int)$date->format( "G" ) . "h" . $date->format( "i" ) ;
 }
 
-// Ajoute les champs d'affichage à une ligne de la requête :
-//   jourdebut ("2026-11-21"), heuredebut ("10:30") : mêmes champs que tous-les-evenements.php
-//   nomJour ("Samedi"), dateJour ("21 novembre"),
-//   touteLaJournee (début à 00:00 : stands, expositions...), heure ("10h30"),
-//   heureFin (seulement si la fin tombe le même jour après le début)
+// Mise en forme d'une ligne de la vue EvenementProgramme pour l'affichage :
+// types (nombres, booléens), typeevenement (compatibilité avec le modèle Evenement),
+// nomJour ("Samedi"), dateJour ("21 novembre"), heure ("10h30", "" si toute la journée),
+// heureFin (seulement si la fin tombe le même jour après le début)
 function formaterEvenement( array $ligne ) : array
 {
     $debut = lireDate( $ligne["debut"] ?? null ) ;
@@ -106,17 +112,17 @@ function formaterEvenement( array $ligne ) : array
     $ligne["idAnimateur"] = ( $ligne["idAnimateur"] ?? null ) === null ? -1 : (int)$ligne["idAnimateur"] ;
     $ligne["numLieu"] = ( $ligne["numLieu"] ?? null ) === null ? -1 : (int)$ligne["numLieu"] ;
     $ligne["hall"] = ( $ligne["hall"] ?? null ) === null ? null : (int)$ligne["hall"] ;
-    foreach( [ "type", "typeevenement", "titre", "stitre", "public", "commentaire", "nomLieu", "typeLieu",
-               "prenomAnimateur", "nomAnimateur", "specialiteAnimateur", "animateur" ] as $champ )
+    foreach( [ "type", "titre", "stitre", "public", "commentaire", "nomLieu", "typeLieu",
+               "prenomAnimateur", "nomAnimateur", "specialiteAnimateur", "animateur", "jourdebut", "heuredebut" ] as $champ )
     {
         $ligne[$champ] = trim( $ligne[$champ] ?? "" ) ;
     }
+    $ligne["typeevenement"] = $ligne["type"] ;
+    $ligne["touteLaJournee"] = (bool)( $ligne["touteLaJournee"] ?? false ) ;
+    unset( $ligne["pendantFestival"] ) ;
 
-    $ligne["jourdebut"] = $debut ? $debut->format( "Y-m-d" ) : "" ;
-    $ligne["heuredebut"] = $debut ? $debut->format( "H:i" ) : "" ;
     $ligne["nomJour"] = $debut ? JOURS_SEMAINE[ (int)$debut->format( "w" ) ] : "" ;
     $ligne["dateJour"] = $debut ? (int)$debut->format( "j" ) . " " . MOIS_ANNEE[ (int)$debut->format( "n" ) - 1 ] : "" ;
-    $ligne["touteLaJournee"] = $debut !== null && $debut->format( "H:i" ) === "00:00" ;
     $ligne["heure"] = ( $debut && !$ligne["touteLaJournee"] ) ? heure( $debut ) : "" ;
     $ligne["heureFin"] = ( $debut && $fin && $fin > $debut && $fin->format( "Y-m-d" ) === $debut->format( "Y-m-d" ) )
                        ? heure( $fin ) : "" ;

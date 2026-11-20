@@ -41,16 +41,21 @@ export interface Programme
 export interface CriteresProgramme
 {
     recherche: string ;          // auteur, titre, mot du descriptif, lieu, livre...
-    theme: string ;              // type d'événement
+    theme: string ;              // theme d'événement
+    type: string ;               // type d'événement (filtre « Type »)
     numLieu: number ;
     idAnimateur: number ;
-    idPersonne: number ;         // événements d'une personne (anime, livre présenté, citée)
+    idPersonne: number ;         // personne liée : anime, livre présenté ou invitée (filtre « Auteur »)
+    idLivre: number ;            // livre lié : présenté ou écrit par un invité (filtre « Livre »)
 }
 
 // Choix proposés par les filtres (php/evenement/filtres-evenements.php)
 export interface FiltresProgramme
 {
     themes: string[] ;
+    types: string[] ;
     lieux: { num: number, nom: string }[] ;
     animateurs: { id: number, nom: string }[] ;
+    auteurs: { id: number, nom: string }[] ;
+    livres: { id: number, titre: string }[] ;
 }

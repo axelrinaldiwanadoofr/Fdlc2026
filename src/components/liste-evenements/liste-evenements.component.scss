@@ -208,6 +208,17 @@
   color: var(--couleur);
 }
 
+.theme {
+  display: inline-block;
+  margin: 0 0 6px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: rgb(246, 226, 51);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: blue;
+}
+
 .titre {
   margin: 0;
   font-size: 1rem;

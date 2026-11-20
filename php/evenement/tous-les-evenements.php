@@ -2,128 +2,65 @@
 require_once __DIR__ . "/../cache.php" ;
 cacheDebut() ;
 
-require_once "../Connexion.php" ;
-
-header( "Content-Type: application/json; charset=utf-8" ) ;
-
-// Liste des événements, triés par date de début
-// Paramètres GET optionnels (cumulés avec AND) :
-//   titre        : partie du titre
-//   debut        : début de la date/heure de début (ex : "2026-11-14")
-//   nomAnimateur : partie du nom de l'animateur
-//   titreLivre   : partie du titre d'un livre présenté pendant l'événement
-//   numLieu      : numéro du lieu où se déroule l'événement
-try
-{
-    $bd = Connexion::getInstance() ;
-
-    // dans la nouvelle base le type est dans la colonne type (typeevenement est vide)
-    $sql = "select 
-        id, 
-        type as typeevenement, 
-        titre, 
-        stitre,
-        public,
-        commentaire,
-        debut, 
-        date_format(debut, '%H:%i') as heuredebut,    
-        date_format(debut, '%Y-%m-%d') as jourdebut, 
-        idAnimateur, 
-        nomAnimateur,
-        prenomAnimateur,
-        specialiteAnimateur,
-        numLieu,
-        nomLieu,
-        theme
-        from " . Connexion::$tables["EvenementLieuAnimateur"] . " where 1 " ;
-
-    if( isset($_GET["titre"])) $sql .= " and titre like :titre " ;
-
-    if( isset($_GET["debut"])) $sql .= " and debut >= :debut " ;
-
-    if( isset($_GET["jourdebut"])) $sql .= " and date_format(debut, '%Y-%m-%d') = :jourdebut " ;
-
-    if( isset($_GET["heuredebut"])) $sql .= " and date_format(debut, '%H:%i') = :heuredebut " ;
-
-    if( isset($_GET["numLieu"])) $sql .= " and numLieu = :numLieu " ;
-
-    if( isset($_GET["nomAnimateur"]))
-    {
-        $sql .= " and  nomAnimateur like :nomAnimateur  " ;
-    }
-
-    $sql .= " order by debut, titre" ;
-
-    $cursor = $bd->prepare( $sql ) ;
-
-    if( isset($_GET["titre"])) $cursor->bindValue( ":titre", "%" . $_GET["titre"] . "%", PDO::PARAM_STR ) ;
-    if( isset($_GET["debut"])) $cursor->bindValue( ":debut", $_GET["debut"], PDO::PARAM_STR ) ;
-    if( isset($_GET["jourdebut"])) $cursor->bindValue( ":jourdebut", $_GET["jourdebut"], PDO::PARAM_STR ) ;
-    if( isset($_GET["heuredebut"])) $cursor->bindValue( ":heuredebut", $_GET["heuredebut"], PDO::PARAM_STR ) ;
-    if( isset($_GET["numLieu"])) $cursor->bindValue( ":numLieu", $_GET["numLieu"], PDO::PARAM_INT ) ;
-    if( isset($_GET["nomAnimateur"])) $cursor->bindValue( ":nomAnimateur", "%" . $_GET["nomAnimateur"] . "%", PDO::PARAM_STR ) ;
-
-    $cursor->execute() ;
-
-    echo json_encode( $cursor->fetchAll( PDO::FETCH_ASSOC ), JSON_UNESCAPED_UNICODE ) ;
-}
-catch( Exception $erreur )
-{
-    http_response_code( 500 ) ;
-    error_log( $erreur->getMessage() ) ;
-    echo json_encode( ["erreur" => "Probleme d'acces à la BD"], JSON_UNESCAPED_UNICODE ) ;
-}
-
-
-/**
- * GET /php/evenement/tous-les-evenements.php
- * Renvoie tous les événements au format JSON (tableau, y compris si vide).
- * Colonnes compatibles avec le modèle Evenement : id, titre, type,
- * debut, fin, commentaire, idLieu, idAnimateur, lieu, animateur.
- */
-/*
+// API de liste d'evenements - recherche combinee (AND).
+require_once __DIR__ . '/../Connexion.php';
 header('Content-Type: application/json; charset=utf-8');
-
-if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    header('Allow: GET');
-    http_response_code(405);
-    echo json_encode(['erreur' => 'Méthode non autorisée'], JSON_UNESCAPED_UNICODE);
-    exit;
-}
-
-// Le projet utilise Connexion.php après configuration du serveur.
-// Dans le ZIP master, seul Connexion_local.php est présent.
-$fichierConnexion = __DIR__ . '/../Connexion.php';
-if (!is_file($fichierConnexion)) {
-    $fichierConnexion = __DIR__ . '/../Connexion_local.php';
-}
-require_once $fichierConnexion;
 
 try {
     $bd = Connexion::getInstance();
     $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // SQL basé sur les noms réels de colonnes de fdlc.sql (pas sur une vue
-    // encore attribuée à un autre membre du groupe).
-    $sql = 'SELECT e.id, e.titre, e.stitre, e.typeevenement AS type,
-                   e.typeevenement, e.public, e.debut, e.fin,
-                   e.commentaire, e.numLieu AS idLieu, e.numLieu,
-                   e.idAnimateur, l.nom AS lieu,
-                   TRIM(CONCAT_WS(" ", p.prenom, p.nom)) AS animateur
-            FROM evenement AS e
-            LEFT JOIN lieu AS l ON l.num = e.numLieu
-            LEFT JOIN personne AS p ON p.id = e.idAnimateur
-            ORDER BY e.debut ASC, e.titre ASC, e.id ASC';
+    // Respecte les noms de tables propres au serveur (fdlc_*) et les aliases officiels.
+    $tableEvenement = Connexion::$tables['evenement'] ?? 'evenement';
+    $tablePersonne = Connexion::$tables['personne'] ?? 'personne';
+    $prefixe = (strpos($tableEvenement, 'fdlc_') === 0 || strpos($tablePersonne, 'fdlc_') === 0) ? 'fdlc_' : '';
+    $vue = Connexion::$tables['EvenementLieuAnimateur'] ?? ($prefixe . 'EvenementLieuAnimateur');
+    $tablePresenter = Connexion::$tables['presenter'] ?? ($prefixe . 'presenter');
+    $tableLivre = Connexion::$tables['livre'] ?? ($prefixe . 'livre');
 
+    $sql = "SELECT ev.id, ev.type, ev.type AS typeevenement,
+                   ev.titre, ev.stitre, ev.public, ev.commentaire,
+                   ev.debut, ev.fin,
+                   DATE_FORMAT(ev.debut, '%H:%i') AS heuredebut,
+                   DATE_FORMAT(ev.debut, '%Y-%m-%d') AS jourdebut,
+                   ev.idAnimateur, ev.nomAnimateur, ev.prenomAnimateur,
+                   ev.specialiteAnimateur, ev.numLieu, ev.nomLieu, ev.theme
+            FROM `$vue` AS ev WHERE 1 = 1";
+    $parametres = [];
+
+    foreach (['titre' => 'ev.titre', 'nomAnimateur' => 'ev.nomAnimateur'] as $param => $champ) {
+        if (isset($_GET[$param]) && trim($_GET[$param]) !== '') {
+            $sql .= " AND $champ LIKE :$param";
+            $parametres[$param] = '%' . trim($_GET[$param]) . '%';
+        }
+    }
+    foreach (['debut' => 'ev.debut', 'jourdebut' => "DATE_FORMAT(ev.debut, '%Y-%m-%d')", 'heuredebut' => "DATE_FORMAT(ev.debut, '%H:%i')", 'numLieu' => 'ev.numLieu', 'type' => 'ev.type', 'theme' => 'ev.theme'] as $param => $champ) {
+        if (isset($_GET[$param]) && trim((string)$_GET[$param]) !== '' && $_GET[$param] !== '-1') {
+            $operateur = $param === 'debut' ? '>=' : '=';
+            $sql .= " AND $champ $operateur :$param";
+            $parametres[$param] = $_GET[$param];
+        }
+    }
+
+    // Eviter un JOIN qui multiplierait les evenements ayant plusieurs livres.
+    if (isset($_GET['titreLivre']) && trim($_GET['titreLivre']) !== '') {
+        $sql .= " AND EXISTS (
+                    SELECT 1 FROM `$tablePresenter` AS pr
+                    INNER JOIN `$tableLivre` AS li ON li.id = pr.idlivre
+                    WHERE pr.idevenement = ev.id AND li.titre LIKE :titreLivre
+                  )";
+        $parametres['titreLivre'] = '%' . trim($_GET['titreLivre']) . '%';
+    }
+
+    $sql .= ' ORDER BY ev.debut ASC, ev.titre ASC';
     $requete = $bd->prepare($sql);
+    foreach ($parametres as $nom => $valeur) {
+        $requete->bindValue(':' . $nom, $valeur, $nom === 'numLieu' ? PDO::PARAM_INT : PDO::PARAM_STR);
+    }
     $requete->execute();
     echo json_encode($requete->fetchAll(PDO::FETCH_ASSOC), JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
 } catch (Throwable $erreur) {
-    // Ne pas divulguer les identifiants SQL ni les détails du serveur aux utilisateurs.
     error_log('tous-les-evenements.php : ' . $erreur->getMessage());
     http_response_code(500);
-    echo json_encode(['erreur' => 'Impossible de charger les événements'], JSON_UNESCAPED_UNICODE);
+    echo json_encode(['erreur' => "Probleme d'acces a la BD"], JSON_UNESCAPED_UNICODE);
 }
-*/
-
-?>

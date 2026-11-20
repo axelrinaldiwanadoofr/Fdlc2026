@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, WritableSignal, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { catchError, of } from 'rxjs';
 import {
@@ -9,20 +9,25 @@ import {
   IonButtons,
   IonMenuButton,
   IonBackButton,
-  IonSearchbar,
-  IonSelect,
-  IonSelectOption,
   IonButton,
-  IonIcon,
 } from '@ionic/angular';
-import { addIcons } from 'ionicons';
-import { closeCircleOutline } from 'ionicons/icons';
 import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
+import { FiltreChoixComponent, OptionFiltre } from '../../components/filtre-choix/filtre-choix.component';
 import { EvenementService } from '../../services/evenement.service';
 import { FiltresProgramme } from '../../modeles/Programme';
 
+// Un filtre de la page : son nom, la valeur choisie et les choix possibles
+interface Filtre {
+  label: string;
+  libelleVide: string;
+  valeur: WritableSignal<string | number>;
+  valeurVide: string | number;
+  options: () => OptionFiltre[];
+}
+
 // Page programme : les filtres sont sur la page, le web component app-liste-evenements
 // reçoit les critères en inputs et recharge les événements à chaque changement.
+// Chaque filtre est une pastille qui ouvre une liste défilante avec sa propre recherche.
 @Component({
   selector: 'page-liste-evenements',
   templateUrl: './page-liste-evenements.page.html',
@@ -36,43 +41,62 @@ import { FiltresProgramme } from '../../modeles/Programme';
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    IonSearchbar,
-    IonSelect,
-    IonSelectOption,
     IonButton,
-    IonIcon,
     ListeEvenementsComponent,
+    FiltreChoixComponent,
   ]
 })
 export class PageListeEvenementsPage {
   private serviceEvenement = inject(EvenementService);
 
   // Filtres ("" / -1 = pas de filtre)
-  protected recherche = signal<string>("");
-  protected theme = signal<string>("");
-  protected numLieu = signal<number>(-1);
-  protected idAnimateur = signal<number>(-1);
+  protected theme = signal<string | number>("");
+  protected type = signal<string | number>("");
+  protected numLieu = signal<string | number>(-1);
+  protected idAnimateur = signal<string | number>(-1);
+  protected idAuteur = signal<string | number>(-1);     // personne invitée ou dont un livre est présenté
+  protected idLivre = signal<string | number>(-1);
 
   // Nombre d'événements trouvés (renvoyé par le composant)
   protected total = signal<number | null>(null);
 
-  protected filtreActif = computed(() =>
-    this.recherche().trim() !== "" || this.theme() !== "" || this.numLieu() !== -1 || this.idAnimateur() !== -1);
-
-  // Choix des listes déroulantes
-  protected filtres = toSignal(
+  // Choix possibles (php/evenement/filtres-evenements.php)
+  private choix = toSignal(
     this.serviceEvenement.getFiltresEvenements().pipe(catchError(() => of(null))),
     { initialValue: null as FiltresProgramme | null }
   );
 
-  constructor() {
-    addIcons({ closeCircleOutline });
+  protected filtres1: Filtre[] = [
+    { 
+      label: "Theme", 
+      libelleVide: "Tous les themes", 
+      valeur: this.theme, 
+      valeurVide: "",
+      options: () => (this.choix()?.themes ?? []).map(t => ({ valeur: t, libelle: t })) },
+    { label: "Type", libelleVide: "Tous les types", valeur: this.type, valeurVide: "",
+      options: () => (this.choix()?.types ?? []).map(t => ({ valeur: t, libelle: t })) },
+    { label: "Lieu", libelleVide: "Tous les lieux", valeur: this.numLieu, valeurVide: -1,
+      options: () => (this.choix()?.lieux ?? []).map(l => ({ valeur: l.num, libelle: l.nom })) },
+  ];
+
+    protected filtres2: Filtre[] = [
+    { label: "Auteur", libelleVide: "Tous les auteurs", valeur: this.idAuteur, valeurVide: -1,
+      options: () => (this.choix()?.auteurs ?? []).map(a => ({ valeur: a.id, libelle: a.nom })) },
+    { label: "Livre", libelleVide: "Tous les livres", valeur: this.idLivre, valeurVide: -1,
+      options: () => (this.choix()?.livres ?? []).map(l => ({ valeur: l.id, libelle: l.titre })) },
+    { label: "Animé par", libelleVide: "Tous les animateurs", valeur: this.idAnimateur, valeurVide: -1,
+      options: () => (this.choix()?.animateurs ?? []).map(a => ({ valeur: a.id, libelle: a.nom })) },
+  ];
+
+  // Au moins un filtre utilisé
+  protected filtreActif = computed(() => this.filtres1.some(f => f.valeur() !== f.valeurVide) || this.filtres2.some(f => f.valeur() !== f.valeurVide));
+
+  protected nombre(valeur: string | number): number {
+    return Number(valeur);
   }
 
   protected effacer() {
-    this.recherche.set("");
-    this.theme.set("");
-    this.numLieu.set(-1);
-    this.idAnimateur.set(-1);
+    for (const f of this.filtres1) f.valeur.set(f.valeurVide);
+    for (const f of this.filtres2) f.valeur.set(f.valeurVide);
   }
 }

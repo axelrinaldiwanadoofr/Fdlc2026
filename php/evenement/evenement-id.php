@@ -8,11 +8,10 @@ require_once "evenement-commun.php" ;
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
 // Un événement complet pour la page de détail ([] si l'id n'existe pas) :
-// mêmes champs que la vue EvenementLieuAnimateur (type, nomLieu, typeLieu, hall,
-// prenomAnimateur, nomAnimateur, specialiteAnimateur...) + champs d'affichage
-// (voir formaterEvenement) + livres présentés [ { id, titre, auteurs } ].
-// Requête faite sur les tables (left join) : un événement sans lieu (exposition,
-// stand...) est aussi trouvé.
+// colonnes de la vue EvenementProgramme mises en forme (voir formaterEvenement) +
+//   invites : personnes invitées ou dont un livre est présenté [ { id, nom, specialite } ]
+//   livres  : livres liés [ { id, titre, origine } ]
+// La vue fait des left join : un événement sans lieu (exposition, stand...) est aussi trouvé.
 try
 {
     $bd = Connexion::getInstance() ;
@@ -25,27 +24,27 @@ try
         exit ;
     }
 
-    $cursor = $bd->prepare( sqlEvenements() . " and ev.id = :id" ) ;
-    $cursor->bindValue( ":id", $id, PDO::PARAM_INT ) ;
-    $cursor->execute() ;
+    $cursor = $bd->prepare( "select * from " . vue( "EvenementProgramme" ) . " where id = :id" ) ;
+    $cursor->execute( [ "id" => $id ] ) ;
 
     $data = [] ;
     foreach( $cursor->fetchAll( PDO::FETCH_ASSOC ) as $ligne )
     {
         $ev = formaterEvenement( $ligne ) ;
 
-        $livres = $bd->prepare( "select lv.id, lv.titre,"
-            . " group_concat( trim( concat( coalesce( au.prenom, '' ), ' ', coalesce( au.nom, '' ) ) ) separator ', ' ) as auteurs"
-            . " from " . Connexion::$tables["presenter"] . " as pr"
-            . " inner join " . Connexion::$tables["livre"] . " as lv on lv.id = pr.idLivre"
-            . " left join " . Connexion::$tables["ecrire"] . " as ec on ec.idLivre = lv.id"
-            . " left join " . Connexion::$tables["personne"] . " as au on au.id = ec.idPersonne"
-            . " where pr.idEvenement = :id group by lv.id, lv.titre order by lv.titre" ) ;
-        $livres->bindValue( ":id", $id, PDO::PARAM_INT ) ;
-        $livres->execute() ;
+        $invites = $bd->prepare( "select distinct idPersonne as id,"
+            . " trim( concat( coalesce( prenom, '' ), ' ', coalesce( nom, '' ) ) ) as nom, specialite"
+            . " from " . vue( "EvenementPersonne" ) . " where idEvenement = :id and estAnimateur = 0 order by nom" ) ;
+        $invites->execute( [ "id" => $id ] ) ;
+        $ev["invites"] = array_map( fn( $p ) => [ "id" => (int)$p["id"], "nom" => $p["nom"], "specialite" => $p["specialite"] ?? "" ],
+                                    $invites->fetchAll( PDO::FETCH_ASSOC ) ) ;
 
-        $ev["livres"] = array_map( fn( $l ) => [ "id" => (int)$l["id"], "titre" => $l["titre"], "auteurs" => $l["auteurs"] ?? "" ],
+        $livres = $bd->prepare( "select idLivre as id, trim( titre ) as titre, origine"
+            . " from " . vue( "EvenementLivre" ) . " where idEvenement = :id order by titre" ) ;
+        $livres->execute( [ "id" => $id ] ) ;
+        $ev["livres"] = array_map( fn( $l ) => [ "id" => (int)$l["id"], "titre" => $l["titre"], "origine" => $l["origine"] ],
                                    $livres->fetchAll( PDO::FETCH_ASSOC ) ) ;
+
         $data[] = $ev ;
     }
 
