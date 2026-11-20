@@ -33,8 +33,6 @@ Options -Indexes -MultiViews
     RewriteRule ^ index.html [L]
 </IfModule>
 
-# index.html, main.js et styles.css gardent le meme nom a chaque build,
-# le navigateur doit verifier s'ils ont change sinon il garde l'ancienne version du site
 <IfModule mod_headers.c>
     # Le site ne peut pas être affiché dans une iframe d'un autre site,
     # et le navigateur ne devine pas le type d'un fichier (photo envoyée qui contiendrait du html)
@@ -44,9 +42,20 @@ Options -Indexes -MultiViews
     Header always set Content-Security-Policy "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"
     Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
 
-    <FilesMatch "(index\.html|main\.js|styles\.css)$">
+    # index.html et sw.js gardent le même nom : le navigateur vérifie à chaque fois s'ils ont changé
+    <FilesMatch "^(index\.html|sw\.js)$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
+
+    # main-xxx.js, chunk-xxx.js... changent de nom à chaque build, le navigateur peut les garder
+    <FilesMatch "^(main|chunk|polyfills|styles)-[A-Za-z0-9_-]+\.(js|css)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# Fichiers envoyés compressés (main.js passe d'environ 1,2 Mo à 300 Ko)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
 </IfModule>
 
 # En production les erreurs PHP ne sont pas affichées (noms de tables, chemins du serveur)
