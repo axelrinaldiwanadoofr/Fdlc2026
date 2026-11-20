@@ -1,8 +1,12 @@
 # Auteur: Kevin MEYER - 16/11/2026
 
 # Seul le dossier www est publié : le reste du dépôt (.git, php, src, node_modules...)
-# ne doit pas être accessible depuis le navigateur
+# n'est pas accessible, on renvoie vers l'appli au lieu d'afficher une erreur
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteRule !^www(/|$) - [F]
+    RewriteRule ^www(/|$) - [L]
+
+    # %2 = chemin du dossier du projet sur le serveur (ex : /Fdlc2026/)
+    RewriteCond $0#%{REQUEST_URI} ^([^#]*)#(.*)\1$
+    RewriteRule ^.*$ %2www/ [R=302,L]
 </IfModule>

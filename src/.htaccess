@@ -7,13 +7,13 @@ Options -Indexes -MultiViews
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Fichiers qui ne doivent pas être servis : phpinfo, scripts sql, php dans les images
-    RewriteRule (^|/)phpinfo\.php$ - [F]
-    RewriteRule \.sql$ - [F]
-    RewriteRule ^assets/.*\.(php|phtml|phar)$ - [F]
-
-    # Ce fichier est aussi dans src : on n'y montre pas le code source
-    RewriteRule ^(app|components|services|modeles|sql|theme|environments)(/|$) - [F]
+    # Fichiers qui ne doivent pas être servis (phpinfo, scripts sql, php dans les images)
+    # et code source si ce fichier est lu dans src : on affiche l'appli à la place
+    RewriteRule (^|/)phpinfo\.php$ index.html [L]
+    RewriteRule \.sql$ index.html [L]
+    RewriteRule ^assets/.*\.(php|phtml|phar)$ index.html [L]
+    RewriteRule ^(app|components|services|modeles|sql|theme|environments)(/|$) index.html [L]
+    RewriteRule \.(ts|scss)$ index.html [L]
 
     # Le site final est en https : on y renvoie si on arrive en http
     # (pas en local, et pas si un proxy devant le serveur fait déjà le https)
@@ -24,6 +24,12 @@ Options -Indexes -MultiViews
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.html [L]
+
+    # dossier sans page d'accueil (assets, php/livre...) : l'appli plutôt que "Forbidden"
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{REQUEST_FILENAME}/index.html !-f
+    RewriteCond %{REQUEST_FILENAME}/index.php !-f
     RewriteRule ^ index.html [L]
 </IfModule>
 
