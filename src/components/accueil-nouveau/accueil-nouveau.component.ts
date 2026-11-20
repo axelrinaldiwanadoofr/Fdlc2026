@@ -59,10 +59,9 @@ export class AccueilNouveauComponent implements OnInit
     return ["Merci de votre visite", "à l'année prochaine"] ;
   }
 
-  // les 4 prochains événements du programme à partir de maintenant
+  // les 4 prochains événements du programme à partir de maintenant (date locale au format de la base)
   ngOnInit()
   {
-    // date et heure locales au format de la base : "AAAA-MM-JJ HH:MM"
     let maintenant = new Date( Date.now() - new Date().getTimezoneOffset() * 60000 ).toISOString().slice( 0, 16 ).replace( "T", " " ) ;
 
     this.serviceEvenement.getProgramme().subscribe( {

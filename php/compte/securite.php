@@ -111,7 +111,8 @@ function tableExiste( $nom )
     }
 }
 
-// Création des tables qui manquent au premier lancement
+// Création des tables qui manquent au premier lancement et des rôles de départ,
+// les permissions ajoutées depuis sont données aux administrateurs
 function creeTables()
 {
     $tables = [
@@ -140,7 +141,6 @@ function creeTables()
            ->execute( ["hash" => password_hash( MDP_ROOT_DEFAUT, PASSWORD_DEFAULT )] ) ;
     }
 
-    // rôles de départ
     if( $bd->query( "select count(*) from " . table( "role" ) )->fetchColumn() == 0 )
     {
         $tout = codesPermissions() ;
@@ -150,7 +150,6 @@ function creeTables()
         creeRole( "Bénévole", 10, "#c2569a", ["annonces.modifier", "controle.voir"] ) ;
     }
 
-    // permissions arrivées après la création des rôles : on les donne aux administrateurs
     foreach( ["accueil.modifier", "reglages.modifier"] as $code )
     {
         $bd->prepare( "insert ignore into " . table( "permission" ) . " ( idRole, code ) select id, :code from " . table( "role" ) . " where nom = 'Administrateur'" )
@@ -186,13 +185,12 @@ function rootExiste()
     }
 }
 
-// Cookie de session HttpOnly, SameSite Strict, Secure en https
+// Cookie de session HttpOnly, SameSite Strict, Secure en https, limité au dossier de l'appli (ex : /fdlc/)
 function demarreSession()
 {
     if( session_status() == PHP_SESSION_ACTIVE ) return ;
 
     session_name( "fdlc2026" ) ;
-    // cookie limité au dossier de l'appli (ex : /fdlc/), pas aux autres sites du domaine
     $script = $_SERVER["SCRIPT_NAME"] ?? "/" ;
     $position = strpos( $script, "/php/" ) ;
 
@@ -256,14 +254,13 @@ function chargeCompte( $id )
     return $compte ;
 }
 
-// Compte connecté, relu dans la base à chaque appel
+// Compte connecté, relu dans la base à chaque appel (un visiteur sans cookie n'ouvre pas de session)
 function compteConnecte()
 {
     static $compte = false ;
     if( $compte !== false ) return $compte ;
 
     $compte = null ;
-    // visiteur sans cookie : pas de session a ouvrir
     if( session_status() != PHP_SESSION_ACTIVE && !isset( $_COOKIE["fdlc2026"] ) ) return null ;
     demarreSession() ;
     if( !isset( $_SESSION["idCompte"] ) ) return null ;

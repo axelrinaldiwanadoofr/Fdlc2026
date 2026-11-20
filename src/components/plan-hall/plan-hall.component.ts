@@ -70,8 +70,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   protected plan = viewChild.required<ElementRef<HTMLElement>>( "plan" ) ;
   protected cdr: ChangeDetectorRef ;
 
-  // Lieu sur lequel on vient de cliquer (affiché en surbrillance avec un message)
-  protected lieuClique = signal<Lieu | null>( null ) ;
 
   // Bouton Situer : on montre le lieu demandé une seule fois
   private lieuxCharges: boolean = false ;
@@ -149,7 +147,8 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     this.calculeLargeurBase() ;
   }
 
-  // Plus grande largeur pour que l'image tienne en largeur et en hauteur
+  // Plus grande largeur pour que l'image tienne en largeur et en hauteur,
+  // sauf le plan général sur téléphone : il prend toute la hauteur et défile de côté
   private calculeLargeurBase()
   {
     let cadre = this.cadre().nativeElement ;
@@ -158,7 +157,6 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     let ratio = this.largeur() / this.hauteur() ;
     let largeur = Math.min( cadre.clientWidth, cadre.clientHeight * ratio, this.numHall() == 0 ? 1800 : 1100 ) ;
 
-    // le plan général est très large : sur téléphone il prend toute la hauteur et défile de côté
     if( this.numHall() == 0 && cadre.clientWidth < 700 ) largeur = cadre.clientHeight * ratio ;
     this.largeurBase.set( Math.floor( largeur ) ) ;
     this.situeLieu() ;
@@ -184,15 +182,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
       this.onHall.emit( lieu.num ) ;
       return ;
     }
-    if( this.pageExiste() ) this.router.navigate( [this.lienPage(), lieu.num] ) ;
-    else this.lieuClique.set( lieu ) ;
-  }
-
-  // Vrai si la page d'information des lieux est déclarée dans les routes
-  private pageExiste(): boolean
-  {
-    let page = this.lienPage().replace( "/", "" ) ;
-    return this.router.config.some( route => route.path?.startsWith( page + "/" ) ) ;
+    this.router.navigate( [this.lienPage(), lieu.num] ) ;
   }
 
   // ex : "Stand 222", sinon le nom du lieu

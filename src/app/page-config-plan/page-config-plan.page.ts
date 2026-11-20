@@ -111,7 +111,6 @@ export class PageConfigPlanPage
       return ;
     }
 
-    // ?hall=3&num=340 depuis la config des lieux
     let parametres = this.route.snapshot.queryParamMap ;
     if( parametres.has( "hall" ) ) this.chargeHall( Number( parametres.get( "hall" ) ), Number( parametres.get( "num" ) ?? -1 ) ) ;
     else this.chargeHall( this.hall() ) ;

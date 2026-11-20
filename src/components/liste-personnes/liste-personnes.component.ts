@@ -31,7 +31,10 @@ export class ListePersonnesComponent implements OnInit, OnChanges {
     correspond(personne.prenom + " " + personne.nom, this.recherche())));
   private criteres: string | null = null;
 
-  constructor(private servicePersonne: PersonneService) {
+  protected servicePersonne: PersonneService;
+
+  constructor(servicePersonne: PersonneService) {
+    this.servicePersonne = servicePersonne;
     effect(() => {
       if (this.personnes()) this.total.emit(this.personnesFiltrees().length);
     });

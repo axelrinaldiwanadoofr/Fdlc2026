@@ -88,7 +88,6 @@ export class ListeExposantComponent  implements OnInit, OnChanges
   // Met en forme le texte affiché dans chaque ligne de la liste
   itemText( exposant: Exposant) : string
   {
-    // $nomLieu avant $nom, sinon $nom remplace le début de $nomLieu
     let childHtml = this.childHtml() ;
     childHtml = childHtml.replaceAll("$id", exposant.id.toString() ) ;
     childHtml = childHtml.replaceAll("$nomLieu", this.texte( exposant.nomLieu ) ) ;

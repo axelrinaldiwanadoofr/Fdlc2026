@@ -12,6 +12,7 @@ function dossierReponses()
 }
 
 // Renvoie la réponse déjà en cache, sinon garde la sortie du script pour la prochaine fois
+// (les vieux fichiers sont effacés de temps en temps, sinon des adresses inventées rempliraient le disque)
 function cacheDebut()
 {
     $fichier = dossierReponses() . "/" . md5( ( $_SERVER["SCRIPT_NAME"] ?? "" ) . "?" . ( $_SERVER["QUERY_STRING"] ?? "" ) ) . ".json" ;
@@ -21,6 +22,11 @@ function cacheDebut()
         header( "Content-Type: application/json; charset=utf-8" ) ;
         readfile( $fichier ) ;
         exit ;
+    }
+
+    if( rand( 1, 200 ) == 1 )
+    {
+        foreach( glob( dossierReponses() . "/*.json" ) ?: [] as $vieux ) if( time() - @filemtime( $vieux ) > DUREE_CACHE ) @unlink( $vieux ) ;
     }
 
     ob_start( function( $sortie ) use( $fichier )

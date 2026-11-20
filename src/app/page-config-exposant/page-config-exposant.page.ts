@@ -152,7 +152,6 @@ export class PageConfigExposantPage
       return ;
     }
 
-    // ?filtre=... depuis la page de contrôle
     let filtre = this.route.snapshot.queryParamMap.get( "filtre" ) ;
     if( filtre ) this.filtre.set( filtre ) ;
 

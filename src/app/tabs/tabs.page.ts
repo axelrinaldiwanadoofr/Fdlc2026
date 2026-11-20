@@ -140,7 +140,6 @@ export class TabsPage implements AfterViewInit
         // le plan général défile de côté sur téléphone : pas de swipe dessus
         if( this.zoomActif || this.hallCourant() == 0 || Math.abs( detail.deltaX ) < 80 ) return ;
 
-        // glisser vers la gauche = hall suivant
         if( detail.deltaX < 0 ) this.afficheHall( this.hallCourant() + 1 ) ;
         else this.afficheHall( this.hallCourant() - 1 ) ;
       }
@@ -169,7 +168,7 @@ export class TabsPage implements AfterViewInit
     this.recherche.set( event.detail.value ?? "" ) ;
   }
 
-  // Lieux, exposants et personnes chargés à la première recherche seulement
+  // Lieux, exposants et personnes chargés à la première recherche seulement, sans les doublons de la base
   chargeRecherche()
   {
     if( this.rechercheChargee ) return ;
@@ -199,7 +198,6 @@ export class TabsPage implements AfterViewInit
                 elements.push( { titre: ( personne.prenom + " " + personne.nom ).trim(), detail: "Stand " + num + " | Hall " + this.hallDuLieu( num ), num: num, icone: "person-outline" } ) ;
             }
           }
-          // la base contient des doublons (même nom, même stand) : on n'en garde qu'un
           let vus = new Set<string>() ;
           this.elements.set( elements.filter( e =>
           {

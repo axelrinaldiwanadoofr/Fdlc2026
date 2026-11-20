@@ -99,7 +99,6 @@ export class ListeLivresComponent implements OnInit, OnChanges
   // Met en forme le texte affiché dans chaque ligne de la liste
   itemText( livre: Livre ): string 
   {
-    // $nomExposant avant $nom, sinon $nom remplace le début de $nomExposant
     let childHtml = this.childHtml() ;
     childHtml = childHtml.replaceAll( "$id", livre.id ? livre.id.toString() : "" ) ;
     childHtml = childHtml.replaceAll( "$titre", this.texte( livre.titre?.trim() || "Sans titre" ) ) ;

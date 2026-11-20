@@ -1,4 +1,4 @@
-import { Component, OnChanges, input, signal } from '@angular/core';
+import { Component, OnChanges, computed, input, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   IonContent,
@@ -53,6 +53,7 @@ export class PageLieuPage implements OnChanges
   protected hall = signal( 1 ) ;
   protected exposants = signal<Exposant[]>( [] ) ;
   protected nbEvenements = signal( 0 ) ;
+  protected titrePage = computed( () => this.lieu() ? this.titre( this.lieu() as Lieu ) : "Lieu n° " + this.num() ) ;
 
   constructor( serviceLieu: LieuService, serviceExposant: ExposantService )
   {
@@ -80,7 +81,6 @@ export class PageLieuPage implements OnChanges
       error: () => this.introuvable.set( true )
     }) ;
 
-    // la liste complète est en cache côté serveur, on garde les exposants du lieu
     this.serviceExposant.getTousLesExposants().subscribe( exposants =>
       this.exposants.set( exposants.filter( x => x.numLieu == num ) ) ) ;
   }
