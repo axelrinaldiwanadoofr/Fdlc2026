@@ -23,6 +23,8 @@
   <div class="colonne">
     <app-annonces></app-annonces>
 
+    <app-recherche-globale class="recherche"></app-recherche-globale>
+
     <nav class="raccourcis">
       @for( lien of liens; track lien.titre )
       {
@@ -36,6 +38,29 @@
         Partager l'appli avec vos proches
       </a>
     </nav>
+
+    @if( enCours().length > 0 )
+    {
+      <h2 class="en-direct"><span class="point" aria-hidden="true"></span>En ce moment</h2>
+      @for( evenement of enCours(); track evenement.id )
+      {
+        <a class="evenement direct" [routerLink]="['/page-evenement', evenement.id]">
+          <div class="date">
+            <span class="jour">{{ evenement.nomJour?.slice( 0, 3 ) }}.</span>
+            <span class="heure">{{evenement.heure}}</span>
+          </div>
+          <div class="infos">
+            <strong>{{evenement.titre}}</strong>
+            <span>{{evenement.type}}@if( evenement.type && evenement.nomLieu ) { | }{{evenement.nomLieu}}</span>
+            @if( evenement.animateur )
+            {
+              <span class="avec">Avec {{evenement.animateur}}</span>
+            }
+          </div>
+          <span class="fleche"><ion-icon name="chevron-forward"></ion-icon></span>
+        </a>
+      }
+    }
 
     <h2>Événements à venir</h2>
     @for( evenement of evenements(); track evenement.id )

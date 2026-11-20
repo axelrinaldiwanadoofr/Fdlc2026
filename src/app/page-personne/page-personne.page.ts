@@ -27,12 +27,14 @@ import { PersonneService } from '../../services/personne.service';
 import { ExposantService } from '../../services/exposant.service';
 import { LivresAuteurComponent } from '../../components/livres-auteur/livres-auteur.component';
 import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
+import { OuTrouverComponent } from '../../components/ou-trouver/ou-trouver.component';
 
 @Component({
   selector: 'app-page-personne',
   templateUrl: './page-personne.page.html',
   styleUrls: ['./page-personne.page.scss'],
   imports: [
+    OuTrouverComponent,
     IonContent,
     IonHeader,
     IonTitle,
@@ -70,6 +72,12 @@ export class PagePersonnePage implements OnInit
   constructor( private personneService: PersonneService, private exposantService: ExposantService )
   {
     addIcons( { storefrontOutline } ) ;
+  }
+
+  // premier stand de la personne pour le petit plan, -1 si elle n'en a pas
+  premierStand( exposants: Exposant[] ): number
+  {
+    return exposants.find( x => x.numLieu > 0 )?.numLieu ?? -1 ;
   }
 
   ngOnInit()

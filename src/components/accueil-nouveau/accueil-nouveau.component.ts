@@ -1,12 +1,13 @@
 // Auteur: Kevin MEYER - 19/11/2026
 
-import { Component, OnInit, computed, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonIcon, IonMenuButton } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import { calendarOutline, mapOutline, peopleOutline, starOutline, shareSocialOutline, chevronForward, openOutline } from 'ionicons/icons';
 
 import { AnnoncesComponent } from '../annonces/annonces.component';
+import { RechercheGlobaleComponent } from '../recherche-globale/recherche-globale.component';
 import { EvenementService } from '../../services/evenement.service';
 import { ParametreService } from '../../services/parametre.service';
 import { Evenement } from '../../modeles/Evenement';
@@ -20,14 +21,21 @@ import { Evenement } from '../../modeles/Evenement';
     IonIcon,
     IonMenuButton,
     RouterLink,
-    AnnoncesComponent
+    AnnoncesComponent,
+    RechercheGlobaleComponent
   ],
 })
-export class AccueilNouveauComponent implements OnInit
+export class AccueilNouveauComponent implements OnInit, OnDestroy
 {
   protected serviceEvenement: EvenementService ;
   protected serviceParametre: ParametreService ;
-  protected evenements = signal<Evenement[]>( [] ) ;
+  // événements à horaire du programme et heure actuelle ("AAAA-MM-JJ HH:MM", remise à jour chaque minute)
+  private tous = signal<Evenement[]>( [] ) ;
+  private maintenant = signal( this.heureActuelle() ) ;
+  private minuteur: any = null ;
+
+  protected enCours = computed( () => this.tous().filter( e => e.debut <= this.maintenant() && this.fin( e ) > this.maintenant() ) ) ;
+  protected evenements = computed( () => this.tous().filter( e => e.debut > this.maintenant() ).slice( 0, 4 ) ) ;
   protected charge = signal( false ) ;
   protected moment = computed( () => this.calculeMoment( this.serviceParametre.reglages().debut, this.serviceParametre.reglages().fin ) ) ;
 
@@ -59,24 +67,34 @@ export class AccueilNouveauComponent implements OnInit
     return ["Merci de votre visite", "à l'année prochaine"] ;
   }
 
-  // les 4 prochains événements du programme à partir de maintenant (date locale au format de la base)
   ngOnInit()
   {
-    let maintenant = new Date( Date.now() - new Date().getTimezoneOffset() * 60000 ).toISOString().slice( 0, 16 ).replace( "T", " " ) ;
-
     this.serviceEvenement.getProgramme().subscribe( {
       next: programme =>
       {
-        let prochains: Evenement[] = [] ;
-        for( let jour of programme.jours )
-          for( let creneau of jour.creneaux )
-            for( let evenement of creneau.evenements )
-              if( evenement.debut >= maintenant && prochains.length < 4 ) prochains.push( evenement ) ;
-
-        this.evenements.set( prochains ) ;
+        this.tous.set( programme.jours.flatMap( jour => jour.creneaux.flatMap( creneau => creneau.evenements ) ) ) ;
         this.charge.set( true ) ;
       },
       error: () => this.charge.set( true )
     }) ;
+    this.minuteur = setInterval( () => this.maintenant.set( this.heureActuelle() ), 60000 ) ;
+  }
+
+  ngOnDestroy()
+  {
+    clearInterval( this.minuteur ) ;
+  }
+
+  // date et heure locales au format de la base
+  private heureActuelle( date: Date = new Date() ): string
+  {
+    return new Date( date.getTime() - date.getTimezoneOffset() * 60000 ).toISOString().slice( 0, 16 ).replace( "T", " " ) ;
+  }
+
+  // la base n'a souvent pas d'heure de fin : on compte alors une heure
+  private fin( evenement: Evenement ): string
+  {
+    if( evenement.fin ) return evenement.fin ;
+    return this.heureActuelle( new Date( new Date( evenement.debut.replace( " ", "T" ) ).getTime() + 3600000 ) ) ;
   }
 }

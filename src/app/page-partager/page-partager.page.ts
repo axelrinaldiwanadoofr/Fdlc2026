@@ -44,7 +44,6 @@ export class PagePartagerPage
   // adresse de l'appli, celle du serveur où elle est installée
   protected adresse: string = document.baseURI ;
   protected adresseCourte: string = this.adresse.replace( /^https?:\/\//, "" ).replace( /\/$/, "" ) ;
-  protected partageDisponible: boolean = !!navigator.share ;
 
   // QR code : carrés noirs dessinés en un seul chemin SVG, avec une marge de 4 carrés
   protected modules: boolean[][] = [] ;
@@ -53,11 +52,15 @@ export class PagePartagerPage
 
   protected message = signal( "" ) ;
 
+  // image du QR code préparée à l'ouverture : sur iPhone le partage doit partir tout de suite après le toucher
+  private image: File | null = null ;
+
   constructor( serviceParametre: ParametreService )
   {
     addIcons( { shareSocialOutline, copyOutline, downloadOutline } ) ;
     this.serviceParametre = serviceParametre ;
     this.creeQrCode() ;
+    this.creeImage() ;
   }
 
   creeQrCode()
@@ -79,28 +82,48 @@ export class PagePartagerPage
     this.taille = nb + 8 ;
   }
 
-  // Ouvre le partage du téléphone (SMS, WhatsApp, mail...)
+  // Partage l'image du QR code avec le lien, sinon le lien seul, sinon on le copie (ordinateur sans partage)
   onPartager()
   {
     let titre = this.serviceParametre.reglages().titre ;
-    navigator.share( { title: titre, text: "L'appli du " + titre + " : programme, plan et auteurs", url: this.adresse } )
-      .catch( () => {} ) ;
+    let texte = "L'appli du " + titre + " : programme, plan et auteurs" ;
+    let partage: Promise<void> | null = null ;
+
+    if( this.image && navigator.canShare?.( { files: [this.image] } ) )
+      partage = navigator.share( { files: [this.image], title: titre, text: texte + " " + this.adresse } ) ;
+    else if( navigator.share )
+      partage = navigator.share( { title: titre, text: texte, url: this.adresse } ) ;
+
+    if( !partage ) this.onCopier() ;
+    else partage.catch( erreur => { if( erreur?.name != "AbortError" ) this.onCopier() ; } ) ;
   }
 
+  // Copie le lien, avec l'ancienne méthode quand le navigateur n'a pas le presse-papier moderne
   onCopier()
   {
-    if( !navigator.clipboard )
+    if( navigator.clipboard && isSecureContext )
     {
-      this.message.set( "Copie impossible sur ce navigateur" ) ;
+      navigator.clipboard.writeText( this.adresse ).then( () => this.message.set( "Lien copié" ), () => this.copieAncienne() ) ;
       return ;
     }
-    navigator.clipboard.writeText( this.adresse ).then(
-      () => this.message.set( "Lien copié" ),
-      () => this.message.set( "Copie impossible sur ce navigateur" ) ) ;
+    this.copieAncienne() ;
+  }
+
+  private copieAncienne()
+  {
+    let zone = document.createElement( "textarea" ) ;
+    zone.value = this.adresse ;
+    zone.style.position = "fixed" ;
+    zone.style.opacity = "0" ;
+    document.body.appendChild( zone ) ;
+    zone.select() ;
+    let ok = document.execCommand( "copy" ) ;
+    zone.remove() ;
+    this.message.set( ok ? "Lien copié" : "Copie impossible, le lien est écrit sous le QR code" ) ;
   }
 
   // Image PNG de 1000 px environ, nette à l'impression
-  onTelecharger()
+  private creeImage()
   {
     let echelle = Math.floor( 1000 / this.taille ) ;
     let canvas = document.createElement( "canvas" ) ;
@@ -115,9 +138,20 @@ export class PagePartagerPage
       for( let colonne = 0 ; colonne < this.modules.length ; colonne++ )
         if( this.modules[ligne][colonne] ) contexte.fillRect( ( colonne + 4 ) * echelle, ( ligne + 4 ) * echelle, echelle, echelle ) ;
 
+    canvas.toBlob( blob =>
+    {
+      if( blob ) this.image = new File( [blob], "qr-code-festival-du-livre.png", { type: "image/png" } ) ;
+    }, "image/png" ) ;
+  }
+
+  onTelecharger()
+  {
+    if( !this.image ) return ;
+    let adresse = URL.createObjectURL( this.image ) ;
     let lien = document.createElement( "a" ) ;
-    lien.href = canvas.toDataURL( "image/png" ) ;
-    lien.download = "qr-code-festival-du-livre.png" ;
+    lien.href = adresse ;
+    lien.download = this.image.name ;
     lien.click() ;
+    setTimeout( () => URL.revokeObjectURL( adresse ), 1000 ) ;
   }
 }

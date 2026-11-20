@@ -64,6 +64,7 @@
         } @else if( livre.nomExposant ) {
           <p><strong>Exposant / Stand :</strong> {{livre.nomExposant}}</p>
         }
+        <app-ou-trouver [numLieu]="standDuLivre()" titre="Où l'acheter"></app-ou-trouver>
 
         @if( livre.resume ) {
           <hr>

@@ -1,0 +1,37 @@
+<!-- Auteur: Kevin MEYER - 20/11/2026 -->
+<ion-searchbar
+  placeholder="Auteur, livre, exposant, stand..."
+  [value]="recherche()"
+  (ionInput)="onRecherche( $event )"
+  (ionFocus)="charge()"
+  [debounce]="150"
+  inputmode="search"
+  aria-label="Chercher dans tout le festival">
+</ion-searchbar>
+
+@if( recherche().trim().length >= 2 )
+{
+  <div class="resultats">
+    @for( groupe of groupes(); track groupe.titre )
+    {
+      <h3>{{ groupe.titre }}</h3>
+      @for( r of groupe.resultats; track $index )
+      {
+        <a [routerLink]="r.lien">
+          <ion-icon [name]="groupe.icone" aria-hidden="true"></ion-icon>
+          <span class="texte">
+            <strong>{{ r.titre }}</strong>
+            @if( r.detail )
+            {
+              <span>{{ r.detail }}</span>
+            }
+          </span>
+        </a>
+      }
+    }
+    @empty
+    {
+      <p class="vide">{{ pret() ? "Rien trouvé pour cette recherche" : "Chargement..." }}</p>
+    }
+  </div>
+}

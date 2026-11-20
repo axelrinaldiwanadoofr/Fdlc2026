@@ -24,20 +24,17 @@
     </div>
 
     <div class="boutons">
-      @if( partageDisponible )
-      {
-        <ion-button expand="block" (click)="onPartager()">
-          <ion-icon slot="start" name="share-social-outline"></ion-icon>
-          Envoyer le lien
-        </ion-button>
-      }
+      <ion-button expand="block" (click)="onPartager()">
+        <ion-icon slot="start" name="share-social-outline"></ion-icon>
+        Partager le QR code
+      </ion-button>
       <ion-button expand="block" fill="outline" (click)="onCopier()">
         <ion-icon slot="start" name="copy-outline"></ion-icon>
         Copier le lien
       </ion-button>
       <ion-button expand="block" fill="clear" (click)="onTelecharger()">
         <ion-icon slot="start" name="download-outline"></ion-icon>
-        Télécharger le QR code
+        Enregistrer l'image
       </ion-button>
     </div>
   </div>
