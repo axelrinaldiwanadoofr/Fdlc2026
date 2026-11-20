@@ -148,7 +148,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
   }
 
   // Plus grande largeur pour que l'image tienne en largeur et en hauteur,
-  // sauf le plan général sur téléphone : il prend toute la hauteur et défile de côté
+  // sauf le plan général sur téléphone : environ deux halls à l'écran et on fait défiler de côté
   private calculeLargeurBase()
   {
     let cadre = this.cadre().nativeElement ;
@@ -157,7 +157,7 @@ export class PlanHallComponent  implements OnChanges, AfterViewInit, OnDestroy
     let ratio = this.largeur() / this.hauteur() ;
     let largeur = Math.min( cadre.clientWidth, cadre.clientHeight * ratio, this.numHall() == 0 ? 1800 : 1100 ) ;
 
-    if( this.numHall() == 0 && cadre.clientWidth < 700 ) largeur = cadre.clientHeight * ratio ;
+    if( this.numHall() == 0 && cadre.clientWidth < 700 ) largeur = Math.min( cadre.clientHeight * ratio, cadre.clientWidth * 2.2 ) ;
     this.largeurBase.set( Math.floor( largeur ) ) ;
     this.situeLieu() ;
   }

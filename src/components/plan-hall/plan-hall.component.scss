@@ -11,10 +11,11 @@
 
 .cadre
 {
+    // flex : le plan est centré dans les deux sens quand il est plus petit que l'écran
+    display: flex;
     flex: 1;
     min-height: 0;
     overflow: auto;
-    // le navigateur garde le défilement, le zoom à deux doigts est géré par le composant
     touch-action: pan-x pan-y;
 }
 
@@ -26,6 +27,7 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
+    flex-shrink: 0;
     margin: auto;
 }
 
