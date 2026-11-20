@@ -118,6 +118,7 @@
   <a class="carte" [class.cliquable]="lienPage() != ''" [routerLink]="lien(evenement)" [attr.data-couleur]="couleurType(evenement.type)">
     <div class="contenu">
       @if( evenement.type ) { <p class="type">{{ evenement.type }}</p> }
+      @if( evenement.theme ) { <p class="theme"> {{ evenement.theme }}</p> }
       <h3 class="titre">{{ evenement.titre }}</h3>
       @if( evenement.stitre ) { <p class="sous-titre">{{ evenement.stitre }}</p> }
       <p class="meta">

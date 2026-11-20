@@ -11,7 +11,7 @@
     <!-- Une pastille par filtre : chacune ouvre une liste défilante avec recherche.
          Téléphone : la rangée défile horizontalement ; ordinateur : elle passe à la ligne. -->
     <div class="pastilles" role="group" aria-label="Filtres">
-      @for( f of filtres; track f.label )
+      @for( f of filtres1 ; track f.label )
       {
         <app-filtre-choix
           [label]="f.label"
@@ -23,7 +23,19 @@
         </app-filtre-choix>
       }
     </div>
-
+    <div class="pastilles" role="group" aria-label="Filtres">
+      @for( f of filtres2; track f.label )
+      {
+        <app-filtre-choix
+          [label]="f.label"
+          [libelleVide]="f.libelleVide"
+          [options]="f.options()"
+          [valeur]="f.valeur()"
+          [valeurVide]="f.valeurVide"
+          (valeurChange)="f.valeur.set( $event )">
+        </app-filtre-choix>
+      }
+    </div>
     <!-- Nombre de résultats quand un filtre est utilisé -->
     @if( filtreActif() )
     {
@@ -41,6 +53,7 @@
 
   <app-liste-evenements
     [theme]="$any( theme() )"
+    [type]="$any( type() )"
     [numLieu]="nombre( numLieu() )"
     [idAnimateur]="nombre( idAnimateur() )"
     [idPersonne]="nombre( idAuteur() )"

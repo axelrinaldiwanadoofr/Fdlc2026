@@ -85,7 +85,7 @@
       <!-- Invités (vue EvenementPersonne) : cités dans le descriptif ou auteurs d'un livre présenté -->
       @if (e.invites && e.invites.length > 0) {
         <section>
-          <h2>Invités</h2>
+          <h2>Auteurs</h2>
           <ul class="livres">
             @for (invite of e.invites; track invite.id) {
               <li>

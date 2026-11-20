@@ -41,7 +41,8 @@ export interface Programme
 export interface CriteresProgramme
 {
     recherche: string ;          // auteur, titre, mot du descriptif, lieu, livre...
-    theme: string ;              // type d'événement
+    theme: string ;              // theme d'événement
+    type: string ;               // type d'événement (filtre « Type »)
     numLieu: number ;
     idAnimateur: number ;
     idPersonne: number ;         // personne liée : anime, livre présenté ou invitée (filtre « Auteur »)
@@ -52,6 +53,7 @@ export interface CriteresProgramme
 export interface FiltresProgramme
 {
     themes: string[] ;
+    types: string[] ;
     lieux: { num: number, nom: string }[] ;
     animateurs: { id: number, nom: string }[] ;
     auteurs: { id: number, nom: string }[] ;

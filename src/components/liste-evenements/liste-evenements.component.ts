@@ -47,6 +47,7 @@ export class ListeEvenementsComponent {
 
   recherche = input<string>("");
   theme = input<string>("");
+  type = input<string>("");
   numLieu = input<number>(-1);
   idAnimateur = input<number>(-1);
   idPersonne = input<number>(-1);
@@ -60,6 +61,7 @@ export class ListeEvenementsComponent {
   private criteres = computed<CriteresProgramme>(() => ({
     recherche: this.recherche() ?? "",
     theme: this.theme() ?? "",
+    type: this.type() ?? "",
     numLieu: Number(this.numLieu() ?? -1),
     idAnimateur: Number(this.idAnimateur() ?? -1),
     idPersonne: Number(this.idPersonne() ?? -1),

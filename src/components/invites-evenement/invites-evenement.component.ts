@@ -10,29 +10,32 @@ import { Personne } from '../../modeles/Personne';
   standalone: true,
   imports: [IonList, IonItem, RouterLink],
   template: `
-    <section class="invites-evenement" aria-label="Invites de l'evenement">
-      <h2>Invités</h2>
-      @if (chargement()) {
-        <p class="indication">Chargement des invités…</p>
-      } @else if (erreur()) {
-        <p class="indication">Invités indisponibles actuellement.</p>
-      } @else if (personnes().length > 0) {
-        <ion-list class="liste-invites">
-          @for (personne of personnes(); track personne.id) {
-            <ion-item [routerLink]="['/page-personne', personne.id]" detail="true">
-              <div class="invite-ligne">
-                <strong>{{ personne.prenom }} {{ personne.nom }}</strong>
-                @if (personne.specialite) {
-                  <span>{{ personne.specialite }}</span>
-                }
-              </div>
-            </ion-item>
-          }
-        </ion-list>
-      } @else {
-        <p class="indication">Aucun invité renseigné pour cet événement.</p>
-      }
-    </section>
+    @if (personnes().length > 0)
+    {
+      <section class="invites-evenement" aria-label="Invites de l'evenement">
+        <h2>Invités</h2>
+        @if (chargement()) {
+          <p class="indication">Chargement des invités…</p>
+        } @else if (erreur()) {
+          <p class="indication">Invités indisponibles actuellement.</p>
+        } @else if (personnes().length > 0) {
+          <ion-list class="liste-invites">
+            @for (personne of personnes(); track personne.id) {
+              <ion-item [routerLink]="['/page-personne', personne.id]" detail="true">
+                <div class="invite-ligne">
+                  <strong>{{ personne.prenom }} {{ personne.nom }}</strong>
+                  @if (personne.specialite) {
+                    <span>{{ personne.specialite }}</span>
+                  }
+                </div>
+              </ion-item>
+            }
+          </ion-list>
+        } @else {
+          <p class="indication">Aucun invité renseigné pour cet événement.</p>
+        }
+      </section>
+    }
   `,
   styles: [`
     :host { display: block; padding: 0 20px 28px; }

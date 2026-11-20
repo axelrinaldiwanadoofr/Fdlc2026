@@ -24,6 +24,7 @@ function lireCriteres() : array
     return [
         "recherche"   => trim( $_GET["recherche"] ?? "" ),
         "theme"       => trim( $_GET["theme"] ?? "" ),
+        "type"        => trim( $_GET["type"] ?? "" ),
         "numLieu"     => filter_input( INPUT_GET, "numLieu", FILTER_VALIDATE_INT ) ?: null,
         "idAnimateur" => filter_input( INPUT_GET, "idAnimateur", FILTER_VALIDATE_INT ) ?: null,
         "idPersonne"  => filter_input( INPUT_GET, "idPersonne", FILTER_VALIDATE_INT ) ?: null,
@@ -51,8 +52,13 @@ function sqlCriteres( array $criteres ) : array
     }
     if( $criteres["theme"] !== "" )
     {
-        $sql .= " and ev.type = :theme " ;
+        $sql .= " and ev.theme = :theme " ;
         $valeurs["theme"] = $criteres["theme"] ;
+    }
+    if( $criteres["type"] !== "" )
+    {
+        $sql .= " and ev.type = :type " ;
+        $valeurs["type"] = $criteres["type"] ;
     }
     if( $criteres["numLieu"] )
     {

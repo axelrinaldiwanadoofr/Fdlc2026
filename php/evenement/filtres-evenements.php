@@ -8,7 +8,8 @@ header( "Content-Type: application/json; charset=utf-8" ) ;
 // Choix proposés par les filtres de la page des événements, calculés sur tout le
 // programme du festival (vues EvenementProgramme, EvenementPersonne, EvenementLivre) :
 // {
-//   themes:     [ "GRAND ENTRETIEN", ... ],
+//   themes:    [ "L", "J", ... ],
+//   types:     [ "GRAND ENTRETIEN", ... ],
 //   lieux:      [ { num, nom } ],
 //   animateurs: [ { id, nom } ],
 //   auteurs:    [ { id, nom } ],   // personnes invitées ou dont un livre est présenté
@@ -21,8 +22,11 @@ try
     $programme = vue( "EvenementProgramme" ) ;
     $festival = " from " . $programme . " as ev where ev.pendantFestival " ;
 
-    $themes = $bd->query( "select distinct ev.type " . $festival . " and trim( coalesce( ev.type, '' ) ) <> '' order by ev.type" )
+    $themes = $bd->query( "select distinct ev.theme " . $festival . " and trim( coalesce( ev.theme, '' ) ) <> '' order by ev.theme" )
                  ->fetchAll( PDO::FETCH_COLUMN ) ;
+
+    $types = $bd->query( "select distinct ev.type " . $festival . " and trim( coalesce( ev.type, '' ) ) <> '' order by ev.type" )
+                ->fetchAll( PDO::FETCH_COLUMN ) ;
 
     $lieux = $bd->query( "select distinct ev.numLieu as num, ev.nomLieu as nom " . $festival
                        . " and ev.numLieu is not null order by ev.nomLieu" )->fetchAll( PDO::FETCH_ASSOC ) ;
@@ -46,6 +50,7 @@ try
 
     echo json_encode( [
         "themes" => $themes,
+        "types" => $types,
         "lieux" => array_map( fn( $l ) => [ "num" => (int)$l["num"], "nom" => $l["nom"] ], $lieux ),
         "animateurs" => $liste( $animateurs, "nom" ),
         "auteurs" => $liste( $auteurs, "nom" ),

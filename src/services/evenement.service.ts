@@ -65,6 +65,7 @@ export class EvenementService {
     const recherche = (criteres.recherche ?? "").trim();
     if (recherche !== "") params = params.set("recherche", recherche);
     if ((criteres.theme ?? "") !== "") params = params.set("theme", criteres.theme!);
+    if ((criteres.type ?? "") !== "") params = params.set("type", criteres.type!);
     if ((criteres.numLieu ?? -1) !== -1) params = params.set("numLieu", criteres.numLieu!);
     if ((criteres.idAnimateur ?? -1) !== -1) params = params.set("idAnimateur", criteres.idAnimateur!);
     if ((criteres.idPersonne ?? -1) !== -1) params = params.set("idPersonne", criteres.idPersonne!);

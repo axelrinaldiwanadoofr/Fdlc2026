@@ -51,6 +51,7 @@ export class PageListeEvenementsPage {
 
   // Filtres ("" / -1 = pas de filtre)
   protected theme = signal<string | number>("");
+  protected type = signal<string | number>("");
   protected numLieu = signal<string | number>(-1);
   protected idAnimateur = signal<string | number>(-1);
   protected idAuteur = signal<string | number>(-1);     // personne invitée ou dont un livre est présenté
@@ -65,11 +66,20 @@ export class PageListeEvenementsPage {
     { initialValue: null as FiltresProgramme | null }
   );
 
-  protected filtres: Filtre[] = [
-    { label: "Type", libelleVide: "Tous les types", valeur: this.theme, valeurVide: "",
+  protected filtres1: Filtre[] = [
+    { 
+      label: "Theme", 
+      libelleVide: "Tous les themes", 
+      valeur: this.theme, 
+      valeurVide: "",
       options: () => (this.choix()?.themes ?? []).map(t => ({ valeur: t, libelle: t })) },
+    { label: "Type", libelleVide: "Tous les types", valeur: this.type, valeurVide: "",
+      options: () => (this.choix()?.types ?? []).map(t => ({ valeur: t, libelle: t })) },
     { label: "Lieu", libelleVide: "Tous les lieux", valeur: this.numLieu, valeurVide: -1,
       options: () => (this.choix()?.lieux ?? []).map(l => ({ valeur: l.num, libelle: l.nom })) },
+  ];
+
+    protected filtres2: Filtre[] = [
     { label: "Auteur", libelleVide: "Tous les auteurs", valeur: this.idAuteur, valeurVide: -1,
       options: () => (this.choix()?.auteurs ?? []).map(a => ({ valeur: a.id, libelle: a.nom })) },
     { label: "Livre", libelleVide: "Tous les livres", valeur: this.idLivre, valeurVide: -1,
@@ -79,13 +89,14 @@ export class PageListeEvenementsPage {
   ];
 
   // Au moins un filtre utilisé
-  protected filtreActif = computed(() => this.filtres.some(f => f.valeur() !== f.valeurVide));
+  protected filtreActif = computed(() => this.filtres1.some(f => f.valeur() !== f.valeurVide) || this.filtres2.some(f => f.valeur() !== f.valeurVide));
 
   protected nombre(valeur: string | number): number {
     return Number(valeur);
   }
 
   protected effacer() {
-    for (const f of this.filtres) f.valeur.set(f.valeurVide);
+    for (const f of this.filtres1) f.valeur.set(f.valeurVide);
+    for (const f of this.filtres2) f.valeur.set(f.valeurVide);
   }
 }
