@@ -1,8 +1,20 @@
 <!-- Auteur: Kevin MEYER - 16/11/2026 -->
-@for( annonce of annonces(); track annonce.id )
+@for( annonce of visibles(); track annonce.id )
 {
-  <div class="annonce" [class]="'annonce-' + annonce.couleur">
-    <ion-icon name="megaphone-outline"></ion-icon>
-    <span>{{annonce.texte}}</span>
+  <div class="annonce" [class]="'annonce annonce-' + annonce.couleur" [attr.role]="annonce.couleur == 'danger' ? 'alert' : 'status'">
+    <span class="icone"><ion-icon [name]="niveau( annonce ).icone" aria-hidden="true"></ion-icon></span>
+    <div class="contenu">
+      <span class="niveau">
+        {{ niveau( annonce ).nom }}
+        @if( jusqua( annonce ) )
+        {
+          <span class="jusqua">| jusqu'à {{ jusqua( annonce ) }}</span>
+        }
+      </span>
+      <p>{{ annonce.texte }}</p>
+    </div>
+    <button class="fermer" (click)="onFermer( annonce )" aria-label="Masquer cette annonce">
+      <ion-icon name="close" aria-hidden="true"></ion-icon>
+    </button>
   </div>
 }
