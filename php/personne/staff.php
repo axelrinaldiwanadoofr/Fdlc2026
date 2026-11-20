@@ -2,15 +2,22 @@
 
 // Auteur: Kevin MEYER - 19/11/2026
 
-// Colonne staff de la table specialite : créée au premier appel,
-// avec les spécialités qui étaient marquées staff dans le code
-function colonneStaff( $bd )
-{
-    $table = Connexion::$tables["specialite"] ;
-    if( $bd->query( "show columns from " . $table . " like 'staff'" )->fetch() ) return ;
+require_once __DIR__ . "/../compte/securite.php" ;
+require_once __DIR__ . "/../parametre/reglage.php" ;
 
-    $bd->exec( "alter table " . $table . " add staff tinyint(1) not null default 0" ) ;
-    $bd->exec( "update " . $table . " set staff = 1 where specialite in ( 'animateur', 'modérateur', 'présentateur', 'organisateur', 'bénévole' )" ) ;
+// Spécialités marquées STAFF, gardées dans la table parametre (clé staff) pour ne pas toucher à la table specialite
+function specialitesStaff()
+{
+    $liste = reglage( "staff", "animateur|modérateur|présentateur|organisateur|bénévole" ) ;
+    return array_values( array_filter( explode( "|", $liste ) ) ) ;
+}
+
+function enregistreStaff( $liste )
+{
+    $bd = bd() ;
+    if( !tableExiste( "parametre" ) ) $bd->exec( "create table " . table( "parametre" ) . " ( cle varchar(50) not null primary key, valeur text not null ) engine=InnoDB" ) ;
+    $bd->prepare( "replace into " . table( "parametre" ) . " ( cle, valeur ) values ( 'staff', :valeur )" )
+       ->execute( ["valeur" => "|" . implode( "|", $liste )] ) ;
 }
 
 ?>

@@ -42,7 +42,8 @@ try
     $bd = bd() ;
 
     if( !tableExiste( "parametre" ) ) $bd->exec( "create table " . table( "parametre" ) . " ( cle varchar(50) not null primary key, valeur text not null ) engine=InnoDB" ) ;
-    else if( !isset( $valeurs["accueil"] ) ) $bd->exec( "alter table " . table( "parametre" ) . " modify valeur text not null" ) ;
+    else if( stripos( $bd->query( "show columns from " . table( "parametre" ) . " like 'valeur'" )->fetch()["Type"], "text" ) === false )
+        $bd->exec( "alter table " . table( "parametre" ) . " modify valeur text not null" ) ;
 
     $cursor = $bd->prepare( "replace into " . table( "parametre" ) . " ( cle, valeur ) values ( :cle, :valeur )" ) ;
     foreach( $valeurs as $cle => $valeur ) $cursor->execute( ["cle" => $cle, "valeur" => trim( $valeur )] ) ;
