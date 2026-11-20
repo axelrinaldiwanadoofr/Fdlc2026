@@ -69,8 +69,13 @@ export class PagePersonnePage implements OnInit
   // Stands où la personne est présente avec ses créneaux
   protected exposants: Observable<Exposant[]> | null = null ;
 
-  constructor( private personneService: PersonneService, private exposantService: ExposantService )
+  protected personneService: PersonneService ;
+  protected exposantService: ExposantService ;
+
+  constructor( personneService: PersonneService, exposantService: ExposantService )
   {
+    this.personneService = personneService ;
+    this.exposantService = exposantService ;
     addIcons( { storefrontOutline } ) ;
   }
 

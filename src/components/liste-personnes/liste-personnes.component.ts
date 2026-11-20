@@ -13,7 +13,7 @@ import { correspond, simplifie } from '../../outils/recherche';
   imports: [IonList, IonItem, IonLabel, RouterLink],
 })
 export class ListePersonnesComponent implements OnInit, OnChanges {
-  childHtml = input<string>("$civilite <strong>$prenom $nom</strong> — $specialite");
+  childHtml = input<string>("$civilite <strong>$prenom $nom</strong> | $specialite");
   lienPage = input<string>("/page-personne");
   nom = input<string>("");
   // Personnes présentes chez un exposant du lieu (-1 = pas de filtre)

@@ -170,7 +170,7 @@ export class PageConfigPlanPage
     this.zone.set( { x1: zone.x1, y1: zone.y1, x2: p.x, y2: p.y } ) ;
   }
 
-  onPointerUp( event: PointerEvent )
+  onPointerUp()
   {
     this.dessinEnCours = false ;
   }

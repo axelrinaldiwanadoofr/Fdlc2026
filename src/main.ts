@@ -18,4 +18,4 @@ bootstrapApplication(AppComponent, {
 });
 
 // garde le site et les données du festival pour quand le réseau du salon sature (sw.js)
-if( "serviceWorker" in navigator && !isDevMode() ) navigator.serviceWorker.register( "sw.js" ) ;
+if( "serviceWorker" in navigator && !isDevMode() ) navigator.serviceWorker.register( "sw.js" ).catch( () => {} ) ;

@@ -15,7 +15,7 @@
   @if( !lieu() )
   {
     <ion-toolbar>
-      <ion-segment [value]="hall()" (ionChange)="hall.set( +$any($event.detail.value) )">
+      <ion-segment [value]="hall()" (ionChange)="hall.set( +( $event.detail.value ?? 1 ) )">
         <ion-segment-button [value]="0">
           <ion-label>Tous</ion-label>
         </ion-segment-button>

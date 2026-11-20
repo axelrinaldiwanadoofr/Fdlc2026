@@ -71,11 +71,13 @@ export class PageLivrePage implements OnInit
 
   protected serviceLivre: LivreService ;
   protected serviceLivresAuteur: LivresAuteurService ;
+  protected http: HttpClient ;
 
-  constructor( serviceLivre: LivreService, serviceLivresAuteur: LivresAuteurService, private http: HttpClient )
+  constructor( serviceLivre: LivreService, serviceLivresAuteur: LivresAuteurService, http: HttpClient )
   {
     this.serviceLivre = serviceLivre ;
     this.serviceLivresAuteur = serviceLivresAuteur ;
+    this.http = http ;
     addIcons( { storefrontOutline, calendarOutline, chevronForward } ) ;
   }
 

@@ -16,7 +16,7 @@
   @if( !personne() )
   {
     <ion-toolbar>
-      <ion-segment [value]="filtre()" (ionChange)="filtre.set( $any($event.detail.value) )">
+      <ion-segment [value]="filtre()" (ionChange)="filtre.set( '' + $event.detail.value )">
         <ion-segment-button value="tous">
           <ion-label>Toutes</ion-label>
         </ion-segment-button>
