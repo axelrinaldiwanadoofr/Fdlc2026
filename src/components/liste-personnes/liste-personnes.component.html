@@ -1,7 +1,10 @@
 <ion-list>
-  @for (personne of listePersonnes | async; track personne.id) {
+  @for (personne of personnesFiltrees(); track personne.id) {
     <ion-item [routerLink]="[lienPage(), personne.id]">
       <ion-label class="ion-text-wrap"><div [innerHTML]="itemText(personne)"></div></ion-label>
     </ion-item>
   }
 </ion-list>
+@if (personnes() && personnesFiltrees().length == 0 && messageVide()) {
+  <p class="liste-vide">{{ messageVide() }}</p>
+}

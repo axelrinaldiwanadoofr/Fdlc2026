@@ -2,6 +2,9 @@
 
 // Auteur: Kevin MEYER - 16/11/2026
 
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
+
 require_once "../Connexion.php" ;
 require_once "staff.php" ;
 
@@ -11,16 +14,13 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    // ?staff=1 : seulement les spécialités qui ont l'étiquette STAFF
-    $where = "" ;
-    if( isset( $_GET["staff"] ) )
-    {
-        colonneStaff( $bd ) ;
-        $where = " where staff = 1" ;
-    }
+    $cursor = $bd->query( "select specialite from " . Connexion::$tables["specialite"] . " order by specialite" ) ;
+    $specialites = $cursor->fetchAll( PDO::FETCH_COLUMN ) ;
 
-    $cursor = $bd->query( "select specialite from " . Connexion::$tables["specialite"] . $where . " order by specialite" ) ;
-    echo json_encode( $cursor->fetchAll( PDO::FETCH_COLUMN ), JSON_UNESCAPED_UNICODE ) ;
+    // ?staff=1 : seulement les spécialités qui ont l'étiquette STAFF
+    if( isset( $_GET["staff"] ) ) $specialites = array_values( array_intersect( $specialites, specialitesStaff() ) ) ;
+
+    echo json_encode( $specialites, JSON_UNESCAPED_UNICODE ) ;
 }
 catch( Exception $erreur )
 {

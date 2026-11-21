@@ -4,6 +4,7 @@
 
 require_once "../Connexion.php" ;
 require_once "../compte/securite.php" ;
+require_once "../colonnes.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -28,6 +29,7 @@ try
     $bd->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION ) ;
 
     $table = Connexion::$tables["lieu"] ;
+    $avecLibelle = colonneExiste( $bd, $table, "libelle" ) ;
 
     if( $nouveau )
     {
@@ -42,11 +44,12 @@ try
             exit ;
         }
 
-        $sql = "insert into " . $table . " ( num, nom, libelle, hall, type ) values ( :num, :nom, :libelle, :hall, :type )" ;
+        $sql = $avecLibelle ? "insert into " . $table . " ( num, nom, libelle, hall, type ) values ( :num, :nom, :libelle, :hall, :type )"
+                            : "insert into " . $table . " ( num, nom, hall, type ) values ( :num, :nom, :hall, :type )" ;
     }
     else
     {
-        $sql = "update " . $table . " set nom = :nom, libelle = :libelle, hall = :hall, type = :type where num = :num" ;
+        $sql = "update " . $table . " set nom = :nom, " . ( $avecLibelle ? "libelle = :libelle, " : "" ) . "hall = :hall, type = :type where num = :num" ;
     }
 
     // sans nom on met le numero comme pour les autres stands
@@ -56,7 +59,7 @@ try
     $cursor = $bd->prepare( $sql ) ;
     $cursor->bindValue( ":num", $num, PDO::PARAM_INT ) ;
     $cursor->bindValue( ":nom", $nom ) ;
-    $cursor->bindValue( ":libelle", trim( $lieu["libelle"] ?? "" ) ) ;
+    if( $avecLibelle ) $cursor->bindValue( ":libelle", trim( $lieu["libelle"] ?? "" ) ) ;
     $cursor->bindValue( ":hall", $hall, PDO::PARAM_INT ) ;
     $cursor->bindValue( ":type", $lieu["type"] ) ;
     $cursor->execute() ;

@@ -6,6 +6,7 @@ export class Exposant
     public nomLieu: string = "" ;
     public hall: number = -1 ;
     public libelleExposant: string = "" ;
+    public libelle: string = "" ;
     public type: string = "" ; // Type d'exposant (ex: "Auteur", "Maison d'édition", etc.)
 
     // Remplis seulement par la page de config des exposants

@@ -31,6 +31,7 @@ import { addOutline } from 'ionicons/icons';
 import { ConfigService } from '../../services/config.service';
 import { LieuService } from '../../services/lieu.service';
 import { Lieu } from '../../modeles/Lieu';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Page de config pour créer les lieux avant de les placer sur les plans
 @Component({
@@ -58,7 +59,8 @@ import { Lieu } from '../../modeles/Lieu';
     IonNote,
     IonToast,
     IonAlert,
-    FormsModule
+    FormsModule,
+    MajusculePipe
   ]
 })
 export class PageConfigLieuPage

@@ -1,71 +1,67 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Liste des livres</ion-title>
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/"></ion-back-button>
-    </ion-buttons>    
+    </ion-buttons>
+    <ion-title>Livres</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
-    </ion-buttons>    
+    </ion-buttons>
   </ion-toolbar>
-
-  <ion-accordion-group id="liste-livres-page-accordion">
-    <ion-accordion value="rechercher">
-      <ion-item slot="header" color="light">
-        <ion-label>Rechercher</ion-label>
-      </ion-item>
-      <div class="ion-padding" slot="content">
-        <ion-list>
-          <ion-item>
-            <app-titre-livre-combo
-              label="Titre:"
-              (onTitreSelected)="onTitreSelected($event)">
-            </app-titre-livre-combo>
-          </ion-item>
-          <ion-item>
-            <app-nom-personne-combo 
-              label="Auteur:"
-              (onPersonneSelected)="onAuteurSelected($event)">
-            </app-nom-personne-combo>
-          </ion-item>
-          <!-- pas de genres dans la base pour l'instant
-          <ion-item>
-            <app-genre-combo
-              label="Genre:"
-              (onGenreSelected)="onGenreSelected($event)">
-            </app-genre-combo>
-          </ion-item>
-          -->
-          <ion-item>
-            <app-nom-exposant-combo
-              label="Exposant:"
-              (onExposantSelected)="onExposantSelected($event)">
-            </app-nom-exposant-combo>
-          </ion-item>
-          <ion-item lines="none" class="boutons-actions">
-            <ion-button color="primary" (click)="onFiltrer()">Filtrer</ion-button>
-            <ion-button fill="outline" color="medium" (click)="onReinitialiser()">Réinitialiser</ion-button>
-          </ion-item>
-        </ion-list>
-      </div>
-    </ion-accordion>  
-  </ion-accordion-group>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Liste des livres</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <!-- Filtres de la page, appliqués directement à la liste -->
+  <div class="filtres">
+    <ion-searchbar
+      placeholder="Titre, auteur ou éditeur"
+      [value]="recherche()"
+      (ionInput)="onRecherche( $event )"
+      [debounce]="0"
+      inputmode="search"
+      aria-label="Rechercher un livre">
+    </ion-searchbar>
 
-  <app-liste-livres 
-    id="listeLivres" 
-    childHtml="<strong>$titre</strong>"
+    <div class="selections deux">
+      <ion-select label="Auteur" labelPlacement="stacked" interface="popover" fill="solid"
+                  [value]="auteur()" (ionChange)="auteur.set( $event.detail.value ?? '' )">
+        <ion-select-option value="">Tous les auteurs</ion-select-option>
+        @for( a of auteurs(); track a )
+        {
+          <ion-select-option [value]="a">{{ a }}</ion-select-option>
+        }
+      </ion-select>
+
+      <ion-select label="Éditeur" labelPlacement="stacked" interface="popover" fill="solid"
+                  [value]="editeur()" (ionChange)="editeur.set( $event.detail.value ?? '' )">
+        <ion-select-option value="">Tous les éditeurs</ion-select-option>
+        @for( e of editeurs(); track e )
+        {
+          <ion-select-option [value]="e">{{ e }}</ion-select-option>
+        }
+      </ion-select>
+    </div>
+
+    @if( filtreActif() )
+    {
+      <div class="resultat">
+        <span>{{ total() }} livre{{ total() > 1 ? "s" : "" }} trouvé{{ total() > 1 ? "s" : "" }}</span>
+        <ion-button fill="clear" size="small" (click)="effacer()">
+          <ion-icon slot="start" name="close-circle-outline"></ion-icon>
+          Effacer les filtres
+        </ion-button>
+      </div>
+    }
+  </div>
+
+  <app-liste-livres
+    childHtml="<strong>$titre</strong><br><small>$prenom $nom</small>"
     lienPage="/page-livre"
-    [titreLivre]="titre"
-    [nomAuteur]="nomAuteur"
-    [genre]="genre"
-    [nomExposant]="nomExposant">
+    [recherche]="recherche()"
+    [auteur]="auteur()"
+    [editeur]="editeur()"
+    messageVide="Aucun livre ne correspond à ces critères."
+    (total)="total.set( $event )"
+    (charge)="onCharge( $event )">
   </app-liste-livres>
 </ion-content>

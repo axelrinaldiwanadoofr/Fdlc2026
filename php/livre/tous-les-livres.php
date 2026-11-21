@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 // Connexion à la base de données
 require_once "../Connexion.php";

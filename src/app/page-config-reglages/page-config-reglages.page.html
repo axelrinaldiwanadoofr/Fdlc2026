@@ -1,0 +1,133 @@
+<!-- Auteur: Kevin MEYER - 19/11/2026 -->
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/config"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Réglages du festival</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="solid" color="primary" (click)="onEnregistrer()" aria-label="Enregistrer"><ion-icon slot="start" name="save-outline"></ion-icon><span class="texte-bouton">Enregistrer</span></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if( valeurs(); as v )
+  {
+    <div class="page">
+      <h2>Le festival</h2>
+      <ion-list>
+        <ion-item>
+          <ion-input label="Nom du festival *" labelPlacement="stacked" [(ngModel)]="v.titre" maxlength="200"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input type="date" label="Premier jour *" labelPlacement="stacked" [(ngModel)]="v.debut"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input type="date" label="Dernier jour *" labelPlacement="stacked" [(ngModel)]="v.fin"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input label="Lieu" labelPlacement="stacked" [(ngModel)]="v.lieu" maxlength="200"></ion-input>
+        </ion-item>
+        <ion-item lines="none">
+          <ion-note>Affiché sur l'accueil et dans le menu : {{ serviceParametre.texteDates( v.debut, v.fin ) }}</ion-note>
+        </ion-item>
+      </ion-list>
+
+      <h2>Affiche</h2>
+      <div class="images">
+        <div class="image affiche">
+          <img [src]="apercu( 'affiche' )" alt="Affiche actuelle">
+          <div class="actions">
+            <ion-button size="small" fill="outline" (click)="choixAffiche.click()" [disabled]="envoi() != ''">
+              {{ envoi() == "affiche" ? "Envoi..." : "Changer" }}
+            </ion-button>
+            @if( v.affiche )
+            {
+              <ion-button size="small" fill="clear" color="medium" (click)="onOrigine( 'affiche' )">Image d'origine</ion-button>
+            }
+          </div>
+          <input #choixAffiche type="file" accept="image/jpeg,image/png,image/webp" hidden (change)="onFichier( 'affiche', $event )">
+        </div>
+      </div>
+
+      <h2>Plans des halls</h2>
+      <p class="aide">Le contenu s'affiche sous le nom du hall sur la page du plan. Un nouveau plan doit garder le même cadrage que l'ancien, sinon les stands placés ne tombent plus au bon endroit.</p>
+      <div class="images">
+        <div class="image general">
+          <img [src]="apercu( 'plan0' )" alt="Plan général du salon">
+          <strong>Plan général</strong>
+          <div class="actions">
+            <ion-button size="small" fill="outline" (click)="choixGeneral.click()" [disabled]="envoi() != ''">
+              {{ envoi() == "plan0" ? "Envoi..." : "Changer" }}
+            </ion-button>
+            @if( v.plan0 )
+            {
+              <ion-button size="small" fill="clear" color="medium" (click)="onOrigine( 'plan0' )">Origine</ion-button>
+            }
+          </div>
+          <input #choixGeneral type="file" accept="image/jpeg,image/png,image/webp" hidden (change)="onFichier( 'plan0', $event )">
+        </div>
+        @for( hall of halls; track hall )
+        {
+          <div class="image">
+            <img [src]="apercu( 'plan' + hall )" [alt]="'Plan du hall ' + hall">
+            <strong>Hall {{hall}}</strong>
+            <input class="contenu" [(ngModel)]="v['nomHall' + hall]" maxlength="40" placeholder="Contenu (ex : Éditeurs)" [attr.aria-label]="'Contenu du hall ' + hall">
+            <div class="actions">
+              <ion-button size="small" fill="outline" (click)="choixPlan.click()" [disabled]="envoi() != ''">
+                {{ envoi() == "plan" + hall ? "Envoi..." : "Changer" }}
+              </ion-button>
+              @if( v["plan" + hall] )
+              {
+                <ion-button size="small" fill="clear" color="medium" (click)="onOrigine( 'plan' + hall )">Origine</ion-button>
+              }
+            </div>
+            <input #choixPlan type="file" accept="image/jpeg,image/png,image/webp" hidden (change)="onFichier( 'plan' + hall, $event )">
+          </div>
+        }
+      </div>
+
+      <h2>Page À propos</h2>
+      <ion-list>
+        <ion-item>
+          <ion-input label="Professeur encadrant" labelPlacement="stacked" [(ngModel)]="v.professeur" maxlength="200"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea label="Étudiants (un par ligne)" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="v.etudiants" maxlength="3000"></ion-textarea>
+        </ion-item>
+      </ion-list>
+
+      <h2>Liens et contact</h2>
+      <ion-list>
+        <ion-item>
+          <ion-input type="url" label="Site du lycée" labelPlacement="stacked" [(ngModel)]="v.lienLycee" placeholder="https://..."></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-input type="url" label="Site officiel du festival" labelPlacement="stacked" [(ngModel)]="v.siteFestival" placeholder="https://... (vide = pas de lien)"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-textarea label="Contact pour les données personnelles" labelPlacement="stacked" [autoGrow]="true" [(ngModel)]="v.contact" maxlength="1000"
+                        placeholder="ex : l'organisation du festival, contact@..., 03 89 ..."></ion-textarea>
+        </ion-item>
+      </ion-list>
+
+      @if( erreur() != "" )
+      {
+        <ion-note color="danger" class="erreur">{{erreur()}}</ion-note>
+      }
+
+      <div class="boutons">
+        <ion-button fill="clear" color="medium" (click)="onAnnuler()">Annuler les changements</ion-button>
+        <ion-button (click)="onEnregistrer()">Enregistrer</ion-button>
+      </div>
+    </div>
+  }
+
+  <ion-toast
+    [isOpen]="message() !== ''"
+    [message]="message()"
+    [duration]="2000"
+    (didDismiss)="message.set('')">
+  </ion-toast>
+</ion-content>

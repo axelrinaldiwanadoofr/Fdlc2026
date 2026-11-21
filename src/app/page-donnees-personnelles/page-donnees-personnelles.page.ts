@@ -16,6 +16,8 @@ import {
 } from '@ionic/angular';
 
 // Page RGPD : quelles données l'application garde et pourquoi
+import { ParametreService } from '../../services/parametre.service';
+
 @Component({
   selector: 'app-page-donnees-personnelles',
   templateUrl: './page-donnees-personnelles.page.html',
@@ -36,4 +38,10 @@ import {
 })
 export class PageDonneesPersonnellesPage
 {
+  protected serviceParametre: ParametreService ;
+
+  constructor( serviceParametre: ParametreService )
+  {
+    this.serviceParametre = serviceParametre ;
+  }
 }

@@ -73,7 +73,7 @@
           {
             <ion-item button [detail]="false" (click)="onChoisirPersonne( p )">
               <ion-label>{{p.prenom}} {{p.nom}}</ion-label>
-              <ion-note slot="end">{{p.specialite}}</ion-note>
+              <ion-note slot="end">{{ p.specialite | majuscule }}</ion-note>
             </ion-item>
           }
         </ion-list>

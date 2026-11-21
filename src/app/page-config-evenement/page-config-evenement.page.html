@@ -210,6 +210,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer l'événement ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="evenement()?.titre + ' sera supprimé avec ses livres présentés'"
     [buttons]="boutonsSupprimer">
   </ion-alert>

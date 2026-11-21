@@ -1,5 +1,4 @@
-import { Component, viewChild } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, signal } from '@angular/core';
 import {
   IonContent,
   IonHeader,
@@ -8,25 +7,23 @@ import {
   IonButtons,
   IonMenuButton,
   IonBackButton,
-  IonAccordion,
-  IonAccordionGroup,
-  IonList,
-  IonItem,
-  IonLabel,
+  IonSearchbar,
+  IonSelect,
+  IonSelectOption,
   IonButton,
-  IonInput,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { closeCircleOutline } from 'ionicons/icons';
 import { AppListeLieuxComponent } from '../../components/app-liste-lieux/app-liste-lieux.component';
-import { NomLieuComboComponent } from '../../components/nom-lieu-combo/nom-lieu-combo.component';
-import { NomExposantComboComponent } from '../../components/nom-exposant-combo/nom-exposant-combo.component';
-import { NomPersonneComboComponent } from '../../components/nom-personne-combo/nom-personne-combo.component';
+import { Lieu } from '../../modeles/Lieu';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 @Component({
   selector: 'app-page-liste-lieux',
   templateUrl: './page-liste-lieux.page.html',
   styleUrls: ['./page-liste-lieux.page.scss'],
   imports: [
-    FormsModule,
     IonContent,
     IonHeader,
     IonTitle,
@@ -34,62 +31,58 @@ import { NomPersonneComboComponent } from '../../components/nom-personne-combo/n
     IonButtons,
     IonMenuButton,
     IonBackButton,
-    IonAccordion,
-    IonAccordionGroup,
-    IonList,
-    IonItem,
-    IonLabel,
+    IonSearchbar,
+    IonSelect,
+    IonSelectOption,
     IonButton,
-    IonInput,
+    IonIcon,
     AppListeLieuxComponent,
-    NomLieuComboComponent,
-    NomExposantComboComponent,
-    NomPersonneComboComponent
+    MajusculePipe
   ],
 })
 export class PageListeLieuxPage
 {
-  // Recupère les références des web component de filtration
-  protected nomLieuCombo = viewChild(NomLieuComboComponent);
-  protected nomExposantCombo = viewChild(NomExposantComboComponent);
-  protected nomPersonneCombo = viewChild(NomPersonneComboComponent);
+  // Filtres ("" / -1 = pas de filtre)
+  protected recherche = signal( "" ) ;
+  protected type = signal( "" ) ;
+  protected hall = signal( -1 ) ;
 
-  // Valeurs récupérées des web component de filtration
-  public flt_nom: string = "" ;
-  public flt_nomExposant: string = "" ;
-  public flt_nomPersonne: string = "" ;
-  public flt_titreEvenement: string = "" ;
+  // Choix des listes déroulantes, pris dans les lieux chargés
+  protected types = signal<string[]>( [] ) ;
+  protected halls = signal<number[]>( [] ) ;
 
-  // Critères de recherche transmis à la liste des lieux
-  public nom: string = "" ;
-  public nomExposant: string = "" ;
-  public nomPersonne: string = "" ;
-  public titreEvenement: string = "" ;
+  // Nombre de lieux trouvés (renvoyé par la liste)
+  protected total = signal( 0 ) ;
 
-  onLieuSelected( nom: string )
+  protected filtreActif = computed( () => this.recherche().trim() != "" || this.type() != "" || this.hall() != -1 ) ;
+
+  constructor()
   {
-    this.flt_nom = nom ;
+    addIcons( { closeCircleOutline } ) ;
   }
 
-  onExposantSelected( nom: string )
+  onRecherche( event: any )
   {
-    this.flt_nomExposant = nom ;
+    this.recherche.set( event.detail.value ?? "" ) ;
   }
 
-  onPersonneSelected( nom: string )
+  onCharge( lieux: Lieu[] )
   {
-    this.flt_nomPersonne = nom ;
+    let types = new Set<string>() ;
+    let halls = new Set<number>() ;
+    for( let lieu of lieux )
+    {
+      if( lieu.type ) types.add( lieu.type ) ;
+      if( lieu.hall > 0 ) halls.add( lieu.hall ) ;
+    }
+    this.types.set( Array.from( types ).sort( ( a, b ) => a.localeCompare( b ) ) ) ;
+    this.halls.set( Array.from( halls ).sort( ( a, b ) => a - b ) ) ;
   }
 
-  onFiltrer()
+  effacer()
   {
-    this.nom = this.flt_nom.trim() ;
-    this.nomExposant = this.flt_nomExposant.trim() ;
-    this.nomPersonne = this.flt_nomPersonne.trim() ;
-    this.titreEvenement = this.flt_titreEvenement.trim() ;
-    // Masque les listes de recherche
-    this.nomLieuCombo()?.masqueListe() ;
-    this.nomExposantCombo()?.masqueListe() ;
-    this.nomPersonneCombo()?.masqueListe() ;
+    this.recherche.set( "" ) ;
+    this.type.set( "" ) ;
+    this.hall.set( -1 ) ;
   }
 }

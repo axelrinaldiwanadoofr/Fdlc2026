@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 // Renvoie au format JSON la liste des types de lieu (table typelieu)
 // Paramètre GET optionnel : type => début du type recherché (recherche avec like)

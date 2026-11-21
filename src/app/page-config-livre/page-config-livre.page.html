@@ -15,7 +15,7 @@
   @if( !livre() )
   {
     <ion-toolbar>
-      <ion-segment [value]="filtre()" (ionChange)="filtre.set( $any($event.detail.value) )">
+      <ion-segment [value]="filtre()" (ionChange)="filtre.set( '' + $event.detail.value )">
         <ion-segment-button value="tous">
           <ion-label>Tous</ion-label>
         </ion-segment-button>
@@ -160,7 +160,7 @@
         <ion-item button (click)="onModifier( l )">
           <ion-label class="ion-text-wrap">
             <h2>{{l.titre || "(sans titre)"}}</h2>
-            <p>{{ l.nom || "Sans auteur" }} | {{ l.editeur || "Sans éditeur" }}{{ l.genre ? " | " + l.genre : "" }}</p>
+            <p>{{ l.nom || "Sans auteur" }} | {{ l.editeur || "Sans éditeur" }}{{ l.genre ? " | " + ( l.genre | majuscule ) : "" }}</p>
           </ion-label>
         </ion-item>
       }
@@ -177,6 +177,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer le livre ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="livre()?.titre + ' sera retiré de ses auteurs et des événements'"
     [buttons]="boutonsSupprimer">
   </ion-alert>

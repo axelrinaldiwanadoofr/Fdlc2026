@@ -104,6 +104,14 @@ export const routes: Routes = [
     loadComponent: () => import('./page-config-evenement/page-config-evenement.page').then(m => m.PageConfigEvenementPage)
   },
   {
+    path: 'partager',
+    loadComponent: () => import('./page-partager/page-partager.page').then( m => m.PagePartagerPage)
+  },
+  {
+    path: 'config-reglages',
+    loadComponent: () => import('./page-config-reglages/page-config-reglages.page').then( m => m.PageConfigReglagesPage)
+  },
+  {
     path: 'page-planning-personnel',
     loadComponent: () => import('./page-planning-personnel/page-planning-personnel.page').then(m => m.PagePlanningPersonnelPage)
   },

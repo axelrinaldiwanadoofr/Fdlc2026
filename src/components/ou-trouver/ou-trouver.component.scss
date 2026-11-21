@@ -1,0 +1,24 @@
+// Auteur: Kevin MEYER - 20/11/2026
+
+// le composant du plan prend toute la hauteur de sa boîte
+.mini-plan
+{
+    height: 260px;
+    margin: 8px 16px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.actions
+{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px 4px;
+}
+
+.actions ion-button
+{
+    margin: 0;
+}

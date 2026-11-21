@@ -2,18 +2,22 @@
 # MultiViews enlevé sinon /page-personne/3 renvoie vers le fichier page-personne.page-xxx.js
 Options -Indexes -MultiViews
 
-# Les adresses de l'appli (/config, /plans/2...) ne sont pas des fichiers,
-# on renvoie vers index.html et c'est Angular qui affiche la bonne page
+# Les pages de l'appli sont en #/ (/fdlc/#/plans), une adresse qui n'est pas un fichier
+# vient d'un ancien lien : on renvoie vers l'accueil de l'appli
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    # Fichiers qui ne doivent pas être servis : phpinfo, scripts sql, php dans les images
-    RewriteRule (^|/)phpinfo\.php$ - [F]
-    RewriteRule \.sql$ - [F]
-    RewriteRule ^assets/.*\.(php|phtml|phar)$ - [F]
+    # dossier de l'appli (ex : /fdlc/), le même fichier marche en local et en ligne
+    RewriteCond $0#%{REQUEST_URI} ^([^#]*)#(.*)\1$
+    RewriteRule ^.*$ - [E=DOSSIER:%2]
 
-    # Ce fichier est aussi dans src : on n'y montre pas le code source
-    RewriteRule ^(app|components|services|modeles|sql|theme|environments)(/|$) - [F]
+    # Fichiers qui ne doivent pas être servis (phpinfo, scripts sql, php dans les images)
+    # et code source si ce fichier est lu dans src : on affiche l'appli à la place
+    RewriteRule (^|/)phpinfo\.php$ %{ENV:DOSSIER} [R=302,L]
+    RewriteRule \.sql$ %{ENV:DOSSIER} [R=302,L]
+    RewriteRule ^assets/.*\.(php|phtml|phar)$ %{ENV:DOSSIER} [R=302,L]
+    RewriteRule ^(app|components|services|modeles|sql|theme|environments)(/|$) %{ENV:DOSSIER} [R=302,L]
+    RewriteRule \.(ts|scss)$ %{ENV:DOSSIER} [R=302,L]
 
     # Le site final est en https : on y renvoie si on arrive en http
     # (pas en local, et pas si un proxy devant le serveur fait déjà le https)
@@ -24,11 +28,15 @@ Options -Indexes -MultiViews
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^ index.html [L]
+    RewriteRule ^ %{ENV:DOSSIER} [R=302,L]
+
+    # dossier sans page d'accueil (assets, php/livre...) : l'appli plutôt que "Forbidden"
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteCond %{REQUEST_FILENAME}/index.html !-f
+    RewriteCond %{REQUEST_FILENAME}/index.php !-f
+    RewriteRule ^ %{ENV:DOSSIER} [R=302,L]
 </IfModule>
 
-# index.html, main.js et styles.css gardent le meme nom a chaque build,
-# le navigateur doit verifier s'ils ont change sinon il garde l'ancienne version du site
 <IfModule mod_headers.c>
     # Le site ne peut pas être affiché dans une iframe d'un autre site,
     # et le navigateur ne devine pas le type d'un fichier (photo envoyée qui contiendrait du html)
@@ -38,9 +46,20 @@ Options -Indexes -MultiViews
     Header always set Content-Security-Policy "object-src 'none'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'"
     Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
 
-    <FilesMatch "(index\.html|main\.js|styles\.css)$">
+    # index.html et sw.js gardent le même nom : le navigateur vérifie à chaque fois s'ils ont changé
+    <FilesMatch "^(index\.html|sw\.js)$">
         Header set Cache-Control "no-cache"
     </FilesMatch>
+
+    # main-xxx.js, chunk-xxx.js... changent de nom à chaque build, le navigateur peut les garder
+    <FilesMatch "^(main|chunk|polyfills|styles)-[A-Za-z0-9_-]+\.(js|css)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+</IfModule>
+
+# Fichiers envoyés compressés (main.js passe d'environ 1,2 Mo à 300 Ko)
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
 </IfModule>
 
 # En production les erreurs PHP ne sont pas affichées (noms de tables, chemins du serveur)

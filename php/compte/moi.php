@@ -7,7 +7,6 @@ require_once "securite.php" ;
 // Compte connecté, null sinon
 try
 {
-    if( !rootExiste() ) creeTables() ;
     $compte = compteConnecte() ;
 
     repond( ["compte" => $compte ? compteAppli( $compte ) : null] ) ;

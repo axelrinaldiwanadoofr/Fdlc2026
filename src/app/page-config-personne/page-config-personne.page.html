@@ -16,7 +16,7 @@
   @if( !personne() )
   {
     <ion-toolbar>
-      <ion-segment [value]="filtre()" (ionChange)="filtre.set( $any($event.detail.value) )">
+      <ion-segment [value]="filtre()" (ionChange)="filtre.set( '' + $event.detail.value )">
         <ion-segment-button value="tous">
           <ion-label>Toutes</ion-label>
         </ion-segment-button>
@@ -82,7 +82,7 @@
         <ion-select label="Spécialité" labelPlacement="stacked" interface="popover" [(ngModel)]="p.specialite">
           @for( specialite of specialites(); track specialite )
           {
-            <ion-select-option [value]="specialite">{{specialite}}</ion-select-option>
+            <ion-select-option [value]="specialite">{{ specialite | majuscule }}</ion-select-option>
           }
         </ion-select>
         @if( rolesStaff().includes( p.specialite ) )
@@ -255,7 +255,7 @@
               {
                 <span class="staff">staff</span>
               }
-              {{p.specialite}}{{ p.type == "J" ? " | jeunesse" : "" }}{{ p.stands ? " | stand " + p.stands : "" }}
+              {{ p.specialite | majuscule }}{{ p.type == "J" ? " | jeunesse" : "" }}{{ p.stands ? " | stand " + p.stands : "" }}
             </p>
           </ion-label>
         </ion-item>
@@ -286,12 +286,12 @@
           {
             <ion-item>
               <ion-label>
-                <h2>{{specialite}}</h2>
+                <h2>{{ specialite | majuscule }}</h2>
                 <p>{{ nbAvecRole( specialite ) }} personne(s)</p>
               </ion-label>
               <ion-toggle slot="end" class="interrupteur" [checked]="rolesStaff().includes( specialite )"
                           (ionChange)="onChangeStaff( specialite, $event.detail.checked )">Staff</ion-toggle>
-              <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="majRole( specialite, true )">
+              <ion-button slot="end" fill="clear" color="medium" [disabled]="nbAvecRole( specialite ) > 0" (click)="specialiteASupprimer.set( specialite )" aria-label="Supprimer la spécialité">
                 <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
               </ion-button>
             </ion-item>
@@ -313,6 +313,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer la personne ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="personne()?.prenom + ' ' + personne()?.nom + ' sera retiré(e) des stands et de ses livres'"
     [buttons]="boutonsSupprimer">
   </ion-alert>
@@ -323,4 +325,14 @@
     [duration]="2000"
     (didDismiss)="message.set('')">
   </ion-toast>
+  <ion-alert
+    [isOpen]="specialiteASupprimer() != ''"
+    (didDismiss)="specialiteASupprimer.set('')"
+    header="Supprimer la spécialité ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
+    [message]="'La spécialité ' + specialiteASupprimer() + ' ne sera plus proposée.'"
+    [buttons]="boutonsSupprimerSpecialite">
+  </ion-alert>
+
 </ion-content>

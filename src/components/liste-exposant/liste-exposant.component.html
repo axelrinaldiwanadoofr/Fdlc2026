@@ -1,9 +1,12 @@
 <ion-list>
-  <!--<ion-item>{{nomPrenomPersonne()}}</ion-item>-->
-  @for( exposant of listeExposants | async;  track exposant.id )
+  @for( exposant of exposantsFiltres(); track exposant.id )
   {
     <ion-item [routerLink]="[lienPage(), exposant.id]">
       <ion-label class="ion-text-wrap"><div [innerHTML]="itemText(exposant)"></div></ion-label>
     </ion-item>
   }
 </ion-list>
+@if( exposants() && exposantsFiltres().length == 0 && messageVide() )
+{
+  <p class="liste-vide">{{ messageVide() }}</p>
+}

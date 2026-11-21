@@ -213,6 +213,15 @@ ion-menu ion-list.menu ion-item.actif
   font-weight: 700;
 }
 
+/* trait léger entre les groupes de pages du menu */
+ion-menu ion-list.menu ion-menu-toggle.groupe
+{
+  display: block;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ion-border-color);
+}
+
 /* Bas du menu : infos du festival et crédit du lycée */
 ion-footer.pied-menu
 {
@@ -278,4 +287,265 @@ ion-toolbar ion-title.ios
   {
     margin: 0;
   }
+}
+
+/* Filtres en haut des listes (programme, exposants, personnes, lieux, livres) */
+.filtres
+{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 8px 16px 4px;
+}
+
+.filtres ion-searchbar
+{
+  padding: 0;
+  margin-bottom: 8px;
+}
+
+.filtres .selections
+{
+  display: grid;
+  grid-template-columns: repeat( 3, minmax( 0, 1fr ) );
+  gap: 8px;
+}
+
+.filtres .selections.deux
+{
+  grid-template-columns: repeat( 2, minmax( 0, 1fr ) );
+}
+
+.filtres .selections.une
+{
+  grid-template-columns: minmax( 0, 1fr );
+}
+
+.filtres .selections ion-select
+{
+  min-width: 0;
+  --background: #fff;
+  --border-width: 0;
+  --border-radius: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* en mode iOS le select n'a pas de fond rempli : on lui donne la même marge intérieure */
+.filtres .selections ion-select.ios
+{
+  --padding-start: 14px;
+  --padding-end: 12px;
+}
+
+.filtres .resultat
+{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 0.9rem;
+  color: var(--ion-text-color-step-400, #666);
+}
+
+.liste-vide
+{
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--ion-text-color-step-400, #666);
+}
+
+@media (max-width: 600px)
+{
+  .filtres .selections
+  {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .filtres .selections ion-select:last-child:nth-child(odd)
+  {
+    grid-column: 1 / -1;
+  }
+}
+
+/* Fenêtre de confirmation avant une suppression */
+ion-alert.alerte-suppression .alert-sub-title
+{
+  margin-top: 6px;
+  color: var(--ion-color-danger);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+ion-alert.alerte-suppression button.alert-button-role-destructive
+{
+  color: var(--ion-color-danger);
+  font-weight: 700;
+}
+
+/* Apparition douce des listes, cartes et tuiles quand elles arrivent à l'écran */
+@keyframes apparition
+{
+  from { opacity: 0; }
+}
+
+ion-router-outlet ion-content ion-item, ion-router-outlet ion-content ion-item-divider,
+.liste-vide, .accueil .evenement, .entete, .tuile, .carte
+{
+  animation: apparition 0.15s ease-out both;
+}
+
+/* rien ne bouge pour les personnes qui ont coupé les animations sur leur téléphone */
+@media (prefers-reduced-motion: reduce)
+{
+  *, *::before, *::after
+  {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Bandeau quand le téléphone n'a plus de réseau */
+.hors-ligne
+{
+  position: fixed;
+  z-index: 1000;
+  left: 50%;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  margin: 0;
+  padding: 8px 14px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--ion-color-dark);
+  color: #fff;
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Fiches d'un lieu et d'un exposant : en-tête, mini plan, tuiles */
+.fiche .entete
+{
+    padding: 16px 16px 8px;
+}
+
+.fiche .type
+{
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.fiche .entete h1
+{
+    margin: 10px 0 0;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: var(--ion-color-dark);
+}
+
+.fiche .libelle
+{
+    margin: 4px 0 0;
+    color: var(--ion-color-dark);
+}
+
+.fiche .emplacement
+{
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 6px 0 0;
+    font-weight: 600;
+    color: var(--ion-color-medium);
+}
+
+.fiche .emplacement ion-icon
+{
+    color: var(--ion-color-primary);
+}
+
+// le composant du plan prend toute la hauteur de sa boîte
+.fiche .mini-plan
+{
+    height: 300px;
+    margin: 8px 16px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #fff;
+}
+
+.fiche .actions
+{
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px 4px;
+}
+
+.fiche .actions ion-button
+{
+    margin: 0;
+}
+
+.fiche .tuiles
+{
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax( 240px, 1fr ) );
+    gap: 8px;
+    padding: 4px 16px 8px;
+}
+
+// mêmes tuiles que les raccourcis de l'accueil
+.fiche .tuile
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 56px;
+    padding: 8px 12px;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--ion-color-dark);
+    text-decoration: none;
+}
+
+.fiche .tuile > ion-icon
+{
+    flex-shrink: 0;
+    font-size: 22px;
+    color: var(--ion-color-primary);
+}
+
+.fiche .tuile .texte
+{
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.fiche .tuile strong
+{
+    font-size: 14px;
+}
+
+.fiche .tuile .texte span
+{
+    font-size: 12px;
+    color: var(--ion-color-medium);
+}
+
+.fiche .tuile .suite
+{
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--ion-color-medium);
 }

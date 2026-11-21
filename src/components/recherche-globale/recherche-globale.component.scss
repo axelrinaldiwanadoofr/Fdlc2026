@@ -1,0 +1,65 @@
+// Auteur: Kevin MEYER - 20/11/2026
+
+ion-searchbar
+{
+    padding: 0;
+}
+
+.resultats
+{
+    margin-top: 8px;
+    padding: 4px 0;
+    border-radius: 16px;
+    background: #fff;
+}
+
+h3
+{
+    margin: 10px 14px 4px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ion-color-medium);
+}
+
+a
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px;
+    color: var(--ion-color-dark);
+    text-decoration: none;
+}
+
+a ion-icon
+{
+    flex-shrink: 0;
+    font-size: 20px;
+    color: var(--ion-color-primary);
+}
+
+.texte
+{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.texte strong
+{
+    font-size: 14px;
+}
+
+.texte span
+{
+    font-size: 12px;
+    color: var(--ion-color-medium);
+}
+
+.vide
+{
+    margin: 0;
+    padding: 14px;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+}

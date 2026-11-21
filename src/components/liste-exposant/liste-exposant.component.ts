@@ -1,9 +1,8 @@
-import { Component, OnInit, OnChanges, input } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+import { Component, OnInit, OnChanges, computed, effect, input, output, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import {Observable} from "rxjs" ;
 import { ExposantService } from '../../services/exposant.service';
 import {Exposant} from "../../modeles/Exposant" ;
+import { correspond } from '../../outils/recherche';
 import { 
   IonList,
   IonItem,
@@ -18,7 +17,6 @@ import {
     IonList,
     IonItem,
     IonLabel,
-    AsyncPipe,
     RouterLink
   ],
 })
@@ -30,33 +28,66 @@ export class ListeExposantComponent  implements OnInit, OnChanges
   // Route de la page à appeler quand on clique sur une ligne de la liste
   lienPage = input<string>( "/page-exposant" ) ;
 
-  // Critères de filtration
+  // Critères de filtration envoyés au serveur
   nomPersonne = input<string>( "" ) ;
   nomLieu = input<string>( "" ) ;
 
-  protected listeExposants: Observable<Array<Exposant>> | null = null ;
+  // Filtres appliqués sur la liste déjà chargée (page Liste des exposants)
+  recherche = input<string>( "" ) ;
+  type = input<string>( "" ) ;
+  espace = input<string>( "" ) ;
+  messageVide = input<string>( "" ) ;
+
+  // Nombre d'exposants affichés, et liste complète une fois chargée
+  total = output<number>() ;
+  charge = output<Exposant[]>() ;
+
   protected serviceExposant: ExposantService ;
+  protected exposants = signal<Exposant[] | null>( null ) ;
+  private criteres: string | null = null ;
+
+  protected exposantsFiltres = computed( () => ( this.exposants() ?? [] ).filter( exposant =>
+    ( this.type() == "" || this.serviceExposant.nomType( exposant.type ) == this.type() ) &&
+    ( this.espace() == "" || exposant.nomLieu == this.espace() ) &&
+    correspond( exposant.nom + " " + exposant.numLieu + " " + exposant.nomLieu, this.recherche() ) ) ) ;
 
   constructor( serviceExposant: ExposantService ) 
   { 
     this.serviceExposant = serviceExposant ;
+    effect( () =>
+    {
+      if( this.exposants() ) this.total.emit( this.exposantsFiltres().length ) ;
+    }) ;
   }
 
   ngOnInit() 
   {
-    this.listeExposants = this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu() ) ;
+    this.chargeListe() ;
   }
 
   // Rafraichit la liste quand les parametres d'input sont modifiés 
   ngOnChanges()
   {
-    this.listeExposants = this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu() ) ;
+    this.chargeListe() ;
+  }
+
+  // Ne redemande la liste au serveur que si ses critères ont changé
+  chargeListe()
+  {
+    let criteres = this.nomPersonne() + "|" + this.nomLieu() ;
+    if( criteres == this.criteres ) return ;
+    this.criteres = criteres ;
+
+    this.serviceExposant.getTousLesExposants( this.nomPersonne(), this.nomLieu() ).subscribe( exposants =>
+    {
+      this.exposants.set( exposants ) ;
+      this.charge.emit( exposants ) ;
+    }) ;
   }
 
   // Met en forme le texte affiché dans chaque ligne de la liste
   itemText( exposant: Exposant) : string
   {
-    // $nomLieu avant $nom, sinon $nom remplace le début de $nomLieu
     let childHtml = this.childHtml() ;
     childHtml = childHtml.replaceAll("$id", exposant.id.toString() ) ;
     childHtml = childHtml.replaceAll("$nomLieu", this.texte( exposant.nomLieu ) ) ;

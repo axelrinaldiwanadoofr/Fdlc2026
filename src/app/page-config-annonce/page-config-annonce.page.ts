@@ -1,6 +1,6 @@
 // Auteur: Kevin MEYER - 16/11/2026
 
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -29,6 +29,7 @@ import { addOutline } from 'ionicons/icons';
 
 import { ConfigService } from '../../services/config.service';
 import { AnnonceService } from '../../services/annonce.service';
+import { ParametreService } from '../../services/parametre.service';
 import { Annonce } from '../../modeles/Annonce';
 
 // Page de config des annonces affichées sur l'accueil
@@ -63,6 +64,7 @@ export class PageConfigAnnoncePage
 {
   protected serviceConfig: ConfigService ;
   protected serviceAnnonce: AnnonceService ;
+  protected serviceParametre: ParametreService ;
   protected router: Router ;
 
   protected annonces = signal<Array<Annonce>>( [] ) ;
@@ -78,17 +80,22 @@ export class PageConfigAnnoncePage
     { text: "Supprimer", role: "destructive", handler: () => this.onSupprimer() }
   ] ;
 
+  // les annonces ne peuvent être datées que pendant le festival
+  protected dateMin = computed( () => this.serviceParametre.reglages().debut + "T00:00" ) ;
+  protected dateMax = computed( () => this.serviceParametre.reglages().fin + "T23:59" ) ;
+
   protected couleurs = [
     { valeur: "primary", nom: "Information" },
     { valeur: "warning", nom: "Important" },
     { valeur: "danger", nom: "Urgent" }
   ] ;
 
-  constructor( serviceConfig: ConfigService, serviceAnnonce: AnnonceService, router: Router )
+  constructor( serviceConfig: ConfigService, serviceAnnonce: AnnonceService, serviceParametre: ParametreService, router: Router )
   {
     addIcons( { addOutline } ) ;
     this.serviceConfig = serviceConfig ;
     this.serviceAnnonce = serviceAnnonce ;
+    this.serviceParametre = serviceParametre ;
     this.router = router ;
   }
 
@@ -142,6 +149,13 @@ export class PageConfigAnnoncePage
     if( annonce.texte.trim() == "" )
     {
       this.erreur.set( "Le texte est obligatoire" ) ;
+      return ;
+    }
+
+    if( ( annonce.debut && ( annonce.debut < this.dateMin() || annonce.debut > this.dateMax() ) ) ||
+        ( annonce.fin && ( annonce.fin < this.dateMin() || annonce.fin > this.dateMax() ) ) )
+    {
+      this.erreur.set( "Les dates doivent être pendant le festival (" + this.serviceParametre.dates() + ")" ) ;
       return ;
     }
 

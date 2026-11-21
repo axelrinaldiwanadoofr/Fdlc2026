@@ -9,7 +9,7 @@
   @if( serviceConfig.connecte() )
   {
     <ion-toolbar>
-      <ion-segment [value]="hall()" (ionChange)="chargeHall( +$any($event.detail.value) )">
+      <ion-segment [value]="hall()" (ionChange)="chargeHall( +( $event.detail.value ?? 1 ) )">
         @for( h of halls; track h )
         {
           <ion-segment-button [value]="h">
@@ -49,7 +49,7 @@
     </p>
 
     <div class="plan">
-      <img [src]="'assets/plans/hall' + hall() + '.png'" draggable="false" (load)="onImageChargee($event)">
+      <img [src]="serviceParametre.plan( hall() )" draggable="false" (load)="onImageChargee($event)">
 
       @if( largeur() > 0 )
       {
@@ -57,7 +57,7 @@
              [class.dessin]="numChoisi >= 0"
              (pointerdown)="onPointerDown($event)"
              (pointermove)="onPointerMove($event)"
-             (pointerup)="onPointerUp($event)">
+             (pointerup)="onPointerUp()">
 
           @for( lieu of lieux(); track lieu.num )
           {
@@ -87,6 +87,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer la zone ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="'La zone du lieu ' + numChoisi + ' ne sera plus affichée sur le plan.'"
     [buttons]="boutonsSupprimer">
   </ion-alert>

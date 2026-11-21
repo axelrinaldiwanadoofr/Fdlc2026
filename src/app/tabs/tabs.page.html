@@ -1,33 +1,106 @@
-<ion-tabs (ionTabsDidChange)="onTabChange( $event )">
-  @for( hall of halls; track hall )
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Plan du salon</ion-title>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <div class="outils">
+    <div class="ligne-recherche">
+      <ion-searchbar
+        placeholder="Exposant, auteur ou n° de stand"
+        [value]="recherche()"
+        (ionInput)="onRecherche( $event )"
+        (ionFocus)="chargeRecherche()"
+        [debounce]="0"
+        inputmode="search"
+        aria-label="Chercher sur le plan">
+      </ion-searchbar>
+      <ion-button fill="outline" (click)="legendeOuverte.set( true )" aria-label="Légende du plan">
+        <ion-icon slot="start" name="help-circle-outline"></ion-icon>
+        <span class="texte-bouton">Légende</span>
+      </ion-button>
+    </div>
+
+    <nav class="halls" aria-label="Choix du hall">
+      <button [class.actif]="hallCourant() == 0" (click)="afficheHall( 0 )">
+        <strong>Tout le salon</strong>
+        <span>Vue d'ensemble</span>
+      </button>
+      @for( hall of halls; track hall )
+      {
+        <button [class.actif]="hall == hallCourant()" (click)="afficheHall( hall )">
+          <strong>Hall {{hall}}</strong>
+          @if( serviceParametre.reglages()["nomHall" + hall] )
+          {
+            <span>{{ serviceParametre.reglages()["nomHall" + hall] }}</span>
+          }
+        </button>
+      }
+    </nav>
+  </div>
+</ion-header>
+
+<ion-content [scrollY]="false">
+  @if( recherche().trim() != "" )
   {
-    <ion-tab [tab]="'hall' + hall">
-      <ion-header [translucent]="true">
+    <div class="resultats">
+      @for( resultat of resultats(); track $index )
+      {
+        <button (click)="onChoix( resultat )">
+          <ion-icon [name]="resultat.icone" aria-hidden="true"></ion-icon>
+          <span class="texte">
+            <strong>{{resultat.titre}}</strong>
+            <span>{{resultat.detail}}</span>
+          </span>
+        </button>
+      }
+      @empty
+      {
+        <p class="vide">{{ elements().length == 0 ? "Chargement..." : "Rien trouvé sur le plan" }}</p>
+      }
+    </div>
+  }
+
+  <app-plan-hall
+    [numHall]="hallCourant()"
+    [numLieu]="numLieuAffiche()"
+    (onZoom)="zoomActif = $event"
+    (onHall)="afficheHall( $event )"></app-plan-hall>
+
+  <ion-modal [isOpen]="legendeOuverte()" (didDismiss)="legendeOuverte.set( false )" [initialBreakpoint]="0.75" [breakpoints]="[0, 0.75, 1]">
+    <ng-template>
+      <ion-header>
         <ion-toolbar>
-          <ion-buttons slot="start">
-            <ion-back-button defaultHref="/"></ion-back-button>
-          </ion-buttons>
-          <ion-title>Plan du hall {{hall}}</ion-title>
+          <ion-title>Légende</ion-title>
           <ion-buttons slot="end">
-            <ion-menu-button></ion-menu-button>
+            <ion-button (click)="legendeOuverte.set( false )">Fermer</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
-      <ion-content>
-        <app-plan-hall
-          [numHall]="hall"
-          [numLieu]="numLieu()"
-          (onZoom)="zoomActif = $event"></app-plan-hall>
+      <ion-content class="ion-padding">
+        <div class="legende">
+          <div class="element">
+            <span class="stand"></span>
+            <span>Stand, touchez-le pour voir qui y expose</span>
+          </div>
+          @for( picto of pictos; track picto.nom )
+          {
+            <div class="element">
+              <span class="picto"><ion-icon [name]="picto.icone"></ion-icon></span>
+              <span>{{picto.nom}}</span>
+            </div>
+          }
+          <div class="element">
+            <span class="fleche"><ion-icon name="swap-horizontal-outline"></ion-icon></span>
+            <span>Passage vers un autre hall</span>
+          </div>
+        </div>
       </ion-content>
-    </ion-tab>
-  }
-
-  <ion-tab-bar slot="bottom">
-    @for( hall of halls; track hall )
-    {
-      <ion-tab-button [tab]="'hall' + hall">
-        <ion-label>Hall {{hall}}</ion-label>
-      </ion-tab-button>
-    }
-  </ion-tab-bar>
-</ion-tabs>
+    </ng-template>
+  </ion-modal>
+</ion-content>

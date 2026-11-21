@@ -4,6 +4,7 @@
 
 require_once "../Connexion.php" ;
 require_once "../compte/securite.php" ;
+require_once "../parametre/reglage.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -25,6 +26,18 @@ function dateBd( $date )
     if( empty( $date ) ) return null ;
     return substr( str_replace( "T", " ", $date ), 0, 19 ) ;
 }
+
+// les dates d'affichage restent pendant le festival (page Réglages)
+$debutFestival = reglage( "debut", "2026-11-21" ) . " 00:00:00" ;
+$finFestival = reglage( "fin", "2026-11-22" ) . " 23:59:59" ;
+$debut = dateBd( $annonce["debut"] ?? "" ) ;
+$fin = dateBd( $annonce["fin"] ?? "" ) ;
+
+if( ( $debut && ( $debut < $debutFestival || $debut > $finFestival ) ) || ( $fin && ( $fin < $debutFestival || $fin > $finFestival ) ) )
+{
+    refuse( "Les dates doivent être pendant le festival", 400 ) ;
+}
+if( $debut && $fin && $fin <= $debut ) refuse( "La fin doit être après le début", 400 ) ;
 
 try
 {
@@ -48,8 +61,8 @@ try
     if( $id > 0 ) $cursor->bindValue( ":id", $id, PDO::PARAM_INT ) ;
     $cursor->bindValue( ":texte", trim( $annonce["texte"] ) ) ;
     $cursor->bindValue( ":couleur", in_array( $annonce["couleur"] ?? "", ["primary", "warning", "danger"] ) ? $annonce["couleur"] : "primary" ) ;
-    $cursor->bindValue( ":debut", dateBd( $annonce["debut"] ?? "" ) ) ;
-    $cursor->bindValue( ":fin", dateBd( $annonce["fin"] ?? "" ) ) ;
+    $cursor->bindValue( ":debut", $debut ) ;
+    $cursor->bindValue( ":fin", $fin ) ;
     $cursor->bindValue( ":active", empty( $annonce["active"] ) ? 0 : 1, PDO::PARAM_INT ) ;
     $cursor->execute() ;
 

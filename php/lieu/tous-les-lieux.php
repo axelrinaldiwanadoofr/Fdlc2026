@@ -1,6 +1,9 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 require_once "../Connexion.php" ;
+require_once "../colonnes.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -8,11 +11,13 @@ try
 {
     $bd = Connexion::getInstance() ;
 
-    $sql = "select distinct l.num, l.nom, l.libelle, l.hall, l.type, l.x1, l.y1, l.x2, l.y2 from " . Connexion::$tables["lieu"] . " as l where 1 " ;
+    $avecLibelle = colonneExiste( $bd, Connexion::$tables["lieu"], "libelle" ) ;
+
+    $sql = "select distinct l.num, l.nom, " . ( $avecLibelle ? "l.libelle" : "'' as libelle" ) . ", l.hall, l.type, l.x1, l.y1, l.x2, l.y2 from " . Connexion::$tables["lieu"] . " as l where 1 " ;
 
     if( isset($_GET["nom"]))
     {
-        $sql .= " and ( l.nom like :nom or l.libelle like :libelle or l.num like :num ) " ;
+        $sql .= " and ( l.nom like :nom or l.num like :num" . ( $avecLibelle ? " or l.libelle like :libelle" : "" ) . " ) " ;
     }
 
     if( isset($_GET["type"]))
@@ -56,7 +61,7 @@ try
     if( isset($_GET["nom"]))
     {
         $cursor->bindValue( ":nom", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
-        $cursor->bindValue( ":libelle", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
+        if( $avecLibelle ) $cursor->bindValue( ":libelle", "%" . $_GET["nom"] . "%", PDO::PARAM_STR ) ;
         $cursor->bindValue( ":num", $_GET["nom"] . "%", PDO::PARAM_STR ) ;
     }
 

@@ -27,6 +27,7 @@ import { PersonneService } from '../../services/personne.service';
 import { Compte } from '../../modeles/Compte';
 import { Personne } from '../../modeles/Personne';
 import { AccesCompteComponent } from '../../components/acces-compte/acces-compte.component';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Page des comptes : qui peut se connecter à la config, avec quel rôle
 @Component({
@@ -49,7 +50,8 @@ import { AccesCompteComponent } from '../../components/acces-compte/acces-compte
     IonSearchbar,
     IonModal,
     IonNote,
-    AccesCompteComponent
+    AccesCompteComponent,
+    MajusculePipe
   ]
 })
 export class PageConfigComptesPage

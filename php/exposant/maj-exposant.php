@@ -4,6 +4,7 @@
 
 require_once "../Connexion.php" ;
 require_once "../compte/securite.php" ;
+require_once "../colonnes.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;
 
@@ -27,15 +28,22 @@ try
     $table = Connexion::$tables["exposant"] ;
     $id = (int)( $exposant["id"] ?? -1 ) ;
 
+    // libellé et type seulement si la base a ces colonnes
+    $colonnes = ["nom", "numLieu"] ;
+    if( colonneExiste( $bd, $table, "libelle" ) ) $colonnes[] = "libelle" ;
+    if( colonneExiste( $bd, $table, "type" ) ) $colonnes[] = "type" ;
+
     if( $id <= 0 )
     {
         // la colonne id n'est pas en auto_increment
         $id = (int)$bd->query( "select coalesce( max( id ), 0 ) + 1 from " . $table )->fetchColumn() ;
-        $sql = "insert into " . $table . " ( id, nom, libelle, type, numLieu ) values ( :id, :nom, :libelle, :type, :numLieu )" ;
+        $sql = "insert into " . $table . " ( id, " . implode( ", ", $colonnes ) . " ) values ( :id, :" . implode( ", :", $colonnes ) . " )" ;
     }
     else
     {
-        $sql = "update " . $table . " set nom = :nom, libelle = :libelle, type = :type, numLieu = :numLieu where id = :id" ;
+        $modifs = [] ;
+        foreach( $colonnes as $colonne ) $modifs[] = $colonne . " = :" . $colonne ;
+        $sql = "update " . $table . " set " . implode( ", ", $modifs ) . " where id = :id" ;
     }
 
     // -1 = sans stand
@@ -44,8 +52,8 @@ try
     $cursor = $bd->prepare( $sql ) ;
     $cursor->bindValue( ":id", $id, PDO::PARAM_INT ) ;
     $cursor->bindValue( ":nom", trim( $exposant["nom"] ) ) ;
-    $cursor->bindValue( ":libelle", trim( $exposant["libelleExposant"] ?? "" ) ) ;
-    $cursor->bindValue( ":type", trim( $exposant["type"] ?? "" ) ) ;
+    if( in_array( "libelle", $colonnes ) ) $cursor->bindValue( ":libelle", trim( $exposant["libelleExposant"] ?? "" ) ) ;
+    if( in_array( "type", $colonnes ) ) $cursor->bindValue( ":type", trim( $exposant["type"] ?? "" ) ) ;
     $cursor->bindValue( ":numLieu", $numLieu > 0 ? $numLieu : null, $numLieu > 0 ? PDO::PARAM_INT : PDO::PARAM_NULL ) ;
     $cursor->execute() ;
 

@@ -79,6 +79,11 @@ export class EvenementService {
     return this.http.get<FiltresProgramme>("php/evenement/filtres-evenements.php");
   }
 
+  // Titres de tous les événements (liste de choix des titres)
+  getTitresEvenements(): Observable<string[]> {
+    return this.http.get<string[]>("php/evenement/titres-evenements.php");
+  }
+
   getEvenementById(id: number = -1): Observable<Evenement[]> {
     let first = true;
     let url = "php/evenement/evenement-id.php";

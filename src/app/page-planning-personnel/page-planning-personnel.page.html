@@ -30,9 +30,11 @@
           </ion-item>
           <ion-item>
             <ion-select label="Jour :" interface="popover" [(ngModel)]="flt_jour">
-              <ion-select-option value="">Les deux jours</ion-select-option>
-              <ion-select-option value="2026-11-21">Samedi 21</ion-select-option>
-              <ion-select-option value="2026-11-22">Dimanche 22</ion-select-option>
+              <ion-select-option value="">Tous les jours</ion-select-option>
+              @for( jour of serviceParametre.jours(); track jour.date )
+              {
+                <ion-select-option [value]="jour.date">{{jour.nom}}</ion-select-option>
+              }
             </ion-select>
           </ion-item>
           <ion-item>
@@ -84,6 +86,8 @@
   [isOpen]="alerteVider()"
   (didDismiss)="alerteVider.set(false)"
   header="Vider le planning ?"
+  subHeader="ATTENTION : cette action est définitive"
+  cssClass="alerte-suppression"
   message="Toutes les étapes seront supprimées."
   [buttons]="boutonsVider">
 </ion-alert>

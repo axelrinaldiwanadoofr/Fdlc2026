@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
 
 // Autoriser l'application Ionic locale à accéder aux données
 header("Access-Control-Allow-Origin: http://localhost:8100");

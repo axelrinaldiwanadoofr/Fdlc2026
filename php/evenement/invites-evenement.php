@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
+
 // Invités spécifiques d'un événement, via la table invite.
 // GET : id (identifiant de l'événement)
 header('Content-Type: application/json; charset=utf-8');

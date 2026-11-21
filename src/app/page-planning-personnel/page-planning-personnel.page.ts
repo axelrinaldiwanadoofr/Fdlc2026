@@ -26,6 +26,7 @@ import {
 
 import { ListeEtapesComponent } from '../../components/liste-etapes/liste-etapes.component';
 import { Etape } from '../../modeles/Etape';
+import { ParametreService } from '../../services/parametre.service';
 
 @Component({
   selector: 'app-page-planning-personnel',
@@ -82,8 +83,11 @@ export class PagePlanningPersonnelPage
     { text: "Vider", role: "destructive", handler: () => this.videPlanning() }
   ] ;
 
-  constructor()
+  protected serviceParametre: ParametreService ;
+
+  constructor( serviceParametre: ParametreService )
   {
+    this.serviceParametre = serviceParametre ;
   }
 
   // Appelé par Ionic a chaque fois qu'on revient sur la page,

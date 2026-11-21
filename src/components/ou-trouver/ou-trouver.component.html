@@ -1,0 +1,20 @@
+<!-- Auteur: Kevin MEYER - 20/11/2026 -->
+@if( numLieu() > 0 )
+{
+  <ion-list>
+    <ion-item-divider color="light">
+      <ion-label>{{ titre() }}</ion-label>
+      <ion-note slot="end">Stand {{ numLieu() }} | Hall {{ hall() }}</ion-note>
+    </ion-item-divider>
+  </ion-list>
+  <div class="mini-plan">
+    <app-plan-hall [numHall]="hall()" [numLieu]="numLieu()" [compact]="true"></app-plan-hall>
+  </div>
+  <div class="actions">
+    <ion-button fill="outline" [routerLink]="['/plans', hall()]" [queryParams]="{ numLieu: numLieu() }">
+      <ion-icon slot="start" name="map-outline"></ion-icon>
+      Ouvrir le plan
+    </ion-button>
+    <ion-button fill="clear" [routerLink]="['/page-lieu', numLieu()]">Voir le stand</ion-button>
+  </div>
+}

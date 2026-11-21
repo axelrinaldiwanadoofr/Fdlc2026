@@ -4,6 +4,7 @@ import {HttpClient} from "@angular/common/http" ;
 import {Observable} from "rxjs" ;
 import {Exposant} from "../modeles/Exposant" ;
 import {PersonneStand} from "../modeles/PersonneStand" ;
+import {simplifie} from "../outils/recherche" ;
 
 @Injectable( {
     providedIn: "root" 
@@ -40,6 +41,16 @@ export class ExposantService
         
     }
 
+    // Type affiché dans les filtres : "editeur" et "éditeur", "libraire" et "librairie" sont le même
+    nomType( type: string ): string
+    {
+        let simple = simplifie( type ) ;
+        if( simple == "" ) return "Autre" ;
+        if( simple.startsWith( "edit" ) ) return "Éditeur" ;
+        if( simple.startsWith( "librair" ) ) return "Librairie" ;
+        return type.trim().charAt( 0 ).toUpperCase() + type.trim().slice( 1 ).toLowerCase() ;
+    }
+
     getExposantById( id: number = -1 ): Observable<Exposant[]>
     {
         let first = true ;
@@ -61,6 +72,18 @@ export class ExposantService
     }
 
     // Autres exposants qui partagent le stand
+    // Livres publiés par l'exposant, avec leurs auteurs
+    getLivresExposant( id: number ): Observable<any[]>
+    {
+        return this.http.get<any[]>( "php/exposant/livres-exposant.php?id=" + id ) ;
+    }
+
+    // Personnes présentes sur un lieu, tous exposants confondus
+    getPersonnesLieu( num: number ): Observable<PersonneStand[]>
+    {
+        return this.http.get<PersonneStand[]>( "php/exposant/personnes-exposant.php?num=" + num ) ;
+    }
+
     getExposantsStand( id: number ): Observable<Exposant[]>
     {
         return this.http.get<Exposant[]>( "php/exposant/exposants-stand.php?id=" + id ) ;

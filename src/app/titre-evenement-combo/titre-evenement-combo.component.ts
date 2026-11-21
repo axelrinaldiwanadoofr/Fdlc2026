@@ -1,5 +1,5 @@
 
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, signal } from '@angular/core';
 import { IonItem, IonSelect, IonSelectOption, IonSearchbar } from '@ionic/angular';
 import { EvenementService } from '../../services/evenement.service';
 
@@ -14,12 +14,12 @@ export class TitreEvenementComboComponent implements OnInit {
 
   @Input() titre: string = '';
 
-  titresEvenements: string[] = [];
+  titresEvenements = signal<string[]>([]);
 
   recherche: string = '';
 
   get titresFiltres(): string[] {
-    return this.titresEvenements.filter(titre =>
+    return this.titresEvenements().filter(titre =>
       titre.toLowerCase().includes(this.recherche.toLowerCase())
     );
   }
@@ -35,7 +35,7 @@ export class TitreEvenementComboComponent implements OnInit {
   ngOnInit() {
     this.evenementService.getTitresEvenements().subscribe({
       next: (titres) => {
-        this.titresEvenements = titres;
+        this.titresEvenements.set(titres);
       },
       error: (erreur) => {
         console.error('Erreur lors du chargement des événements :', erreur);

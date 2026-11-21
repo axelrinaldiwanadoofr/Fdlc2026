@@ -2,6 +2,9 @@
 
 // Auteur: Kevin MEYER - 09/11/2026
 
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
+
 require_once "../Connexion.php" ;
 
 header( "Content-Type: application/json; charset=utf-8" ) ;

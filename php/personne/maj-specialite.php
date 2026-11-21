@@ -30,9 +30,9 @@ try
 
     if( isset( $donnees["staff"] ) )
     {
-        colonneStaff( $bd ) ;
-        $bd->prepare( "update " . $table . " set staff = :staff where specialite = :specialite" )
-           ->execute( ["staff" => empty( $donnees["staff"] ) ? 0 : 1, "specialite" => $specialite] ) ;
+        $liste = array_diff( specialitesStaff(), [$specialite] ) ;
+        if( !empty( $donnees["staff"] ) ) $liste[] = $specialite ;
+        enregistreStaff( $liste ) ;
     }
     else if( !empty( $donnees["supprimer"] ) )
     {
@@ -47,6 +47,7 @@ try
         }
 
         $bd->prepare( "delete from " . $table . " where specialite = :specialite" )->execute( ["specialite" => $specialite] ) ;
+        enregistreStaff( array_diff( specialitesStaff(), [$specialite] ) ) ;
     }
     else
     {

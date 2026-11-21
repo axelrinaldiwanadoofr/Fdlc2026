@@ -2,6 +2,9 @@
 
 // Auteur: Kevin MEYER - 16/11/2026
 
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
+
 require_once "../Connexion.php" ;
 require_once "../compte/securite.php" ;
 

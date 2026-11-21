@@ -1,7 +1,7 @@
 import { Component, OnInit, input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { addIcons } from 'ionicons';
 import { storefrontOutline } from 'ionicons/icons';
 
@@ -27,12 +27,14 @@ import { PersonneService } from '../../services/personne.service';
 import { ExposantService } from '../../services/exposant.service';
 import { LivresAuteurComponent } from '../../components/livres-auteur/livres-auteur.component';
 import { ListeEvenementsComponent } from '../../components/liste-evenements/liste-evenements.component';
+import { OuTrouverComponent } from '../../components/ou-trouver/ou-trouver.component';
 
 @Component({
   selector: 'app-page-personne',
   templateUrl: './page-personne.page.html',
   styleUrls: ['./page-personne.page.scss'],
   imports: [
+    OuTrouverComponent,
     IonContent,
     IonHeader,
     IonTitle,
@@ -61,22 +63,35 @@ export class PagePersonnePage implements OnInit
 
   // la photo n'a pas pu être chargée
   protected photoErreur = signal( false ) ;
+  // la personne n'existe pas (ancien lien, personne supprimée)
+  protected introuvable = signal( false ) ;
   // Nombre d'événements de la personne (renvoyé par app-liste-evenements), section masquée si 0
   protected nbEvenements = signal( 0 ) ;
 
   // Stands où la personne est présente avec ses créneaux
   protected exposants: Observable<Exposant[]> | null = null ;
 
-  constructor( private personneService: PersonneService, private exposantService: ExposantService )
+  protected personneService: PersonneService ;
+  protected exposantService: ExposantService ;
+
+  constructor( personneService: PersonneService, exposantService: ExposantService )
   {
+    this.personneService = personneService ;
+    this.exposantService = exposantService ;
     addIcons( { storefrontOutline } ) ;
+  }
+
+  // premier stand de la personne pour le petit plan, -1 si elle n'en a pas
+  premierStand( exposants: Exposant[] ): number
+  {
+    return exposants.find( x => x.numLieu > 0 )?.numLieu ?? -1 ;
   }
 
   ngOnInit()
   {
     if( this.id() > -1 )
     {
-      this.personne = this.personneService.getPersonneById( this.id() ) ;
+      this.personne = this.personneService.getPersonneById( this.id() ).pipe( tap( p => this.introuvable.set( !p ) ) ) ;
       this.exposants = this.exposantService.getExposantsByPersonne( this.id() ) ;
     }
   }

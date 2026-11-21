@@ -1,1 +1,217 @@
+// Auteur: Kevin MEYER - 19/11/2026
 
+.outils
+{
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4px 12px 8px;
+}
+
+.ligne-recherche
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ligne-recherche ion-searchbar
+{
+    padding: 0;
+}
+
+.ligne-recherche ion-button
+{
+    flex-shrink: 0;
+    margin: 0;
+    height: 40px;
+}
+
+// pastilles des halls, défilent sur les petits écrans
+.halls
+{
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.halls button
+{
+    // mêmes tuiles que les raccourcis de l'accueil
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1 0 auto;
+    min-width: 72px;
+    min-height: 48px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 14px;
+    background: #fff;
+    color: var(--ion-color-dark);
+    font: inherit;
+    font-weight: 600;
+    text-align: center;
+    cursor: pointer;
+}
+
+.halls strong
+{
+    font-size: 14px;
+    line-height: 1.2;
+}
+
+.halls span
+{
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--ion-color-medium);
+    white-space: nowrap;
+}
+
+.halls button.actif
+{
+    background: var(--ion-color-primary);
+    color: #fff;
+}
+
+.halls button.actif span
+{
+    color: rgba(255, 255, 255, 0.8);
+}
+
+// résultats de recherche par dessus le plan
+.resultats
+{
+    position: absolute;
+    z-index: 10;
+    top: 0;
+    left: 50%;
+    width: calc(100% - 24px);
+    max-width: 776px;
+    max-height: 60%;
+    overflow-y: auto;
+    transform: translateX(-50%);
+    border: 1px solid var(--ion-border-color);
+    border-radius: 16px;
+    background: #fff;
+}
+
+.resultats button
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    border-bottom: 1px solid var(--ion-border-color);
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.resultats button:last-child
+{
+    border-bottom: none;
+}
+
+.resultats ion-icon
+{
+    flex-shrink: 0;
+    font-size: 20px;
+    color: var(--ion-color-primary);
+}
+
+.resultats .texte
+{
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.resultats strong
+{
+    font-size: 14px;
+    color: var(--ion-color-dark);
+}
+
+.resultats .texte span
+{
+    font-size: 12px;
+    color: var(--ion-color-medium);
+}
+
+.resultats .vide
+{
+    margin: 0;
+    padding: 14px;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+}
+
+.legende
+{
+    display: grid;
+    grid-template-columns: repeat( auto-fill, minmax( 220px, 1fr ) );
+    gap: 12px 16px;
+}
+
+.legende .element
+{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+}
+
+.legende .picto, .legende .fleche, .legende .stand
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+}
+
+// mêmes couleurs que les pictos des plans
+.legende .picto
+{
+    border-radius: 50%;
+    background: #2e8b6a;
+    color: #fff;
+    font-size: 18px;
+}
+
+.legende .fleche
+{
+    color: #444;
+    font-size: 26px;
+}
+
+.legende .stand
+{
+    width: 34px;
+    height: 26px;
+    border-radius: 3px;
+    background: #4b5bb5;
+}
+
+// sur téléphone le bouton Légende ne garde que son icône
+@media (max-width: 599px)
+{
+    .ligne-recherche .texte-bouton
+    {
+        display: none;
+    }
+
+    .ligne-recherche ion-icon[slot="start"]
+    {
+        margin: 0;
+    }
+}

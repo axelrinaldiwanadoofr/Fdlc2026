@@ -1,0 +1,55 @@
+// Auteur: Kevin MEYER - 19/11/2026
+
+.partage
+{
+    max-width: 420px;
+    margin: 8px auto;
+}
+
+.carte
+{
+    padding: 24px 20px 20px;
+    border-radius: 20px;
+    background: #fff;
+    border: 1px solid var(--ion-border-color);
+    text-align: center;
+}
+
+h1
+{
+    margin: 0 0 6px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ion-color-primary);
+}
+
+p
+{
+    margin: 0;
+    font-size: 14px;
+    color: var(--ion-color-medium);
+}
+
+.qr
+{
+    display: block;
+    width: 100%;
+    max-width: 280px;
+    margin: 18px auto 10px;
+    shape-rendering: crispEdges;
+}
+
+.adresse
+{
+    font-weight: 600;
+    color: var(--ion-color-dark);
+    word-break: break-all;
+}
+
+.boutons
+{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 16px;
+}

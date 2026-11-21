@@ -26,6 +26,7 @@ import { addIcons } from 'ionicons';
 import { saveOutline, trashOutline } from 'ionicons/icons';
 
 import { LieuService } from '../../services/lieu.service';
+import { ParametreService } from '../../services/parametre.service';
 import { ConfigService } from '../../services/config.service';
 import { Lieu } from '../../modeles/Lieu';
 
@@ -89,10 +90,13 @@ export class PageConfigPlanPage
 
   protected nbZones = computed( () => this.lieux().filter( l => l.x1 != null ).length ) ;
 
-  constructor( serviceLieu: LieuService, serviceConfig: ConfigService, router: Router, route: ActivatedRoute )
+  protected serviceParametre: ParametreService ;
+
+  constructor( serviceLieu: LieuService, serviceConfig: ConfigService, serviceParametre: ParametreService, router: Router, route: ActivatedRoute )
   {
     addIcons( { saveOutline, trashOutline } ) ;
     this.serviceLieu = serviceLieu ;
+    this.serviceParametre = serviceParametre ;
     this.serviceConfig = serviceConfig ;
     this.router = router ;
     this.route = route ;
@@ -107,7 +111,6 @@ export class PageConfigPlanPage
       return ;
     }
 
-    // ?hall=3&num=340 depuis la config des lieux
     let parametres = this.route.snapshot.queryParamMap ;
     if( parametres.has( "hall" ) ) this.chargeHall( Number( parametres.get( "hall" ) ), Number( parametres.get( "num" ) ?? -1 ) ) ;
     else this.chargeHall( this.hall() ) ;
@@ -167,7 +170,7 @@ export class PageConfigPlanPage
     this.zone.set( { x1: zone.x1, y1: zone.y1, x2: p.x, y2: p.y } ) ;
   }
 
-  onPointerUp( event: PointerEvent )
+  onPointerUp()
   {
     this.dessinEnCours = false ;
   }

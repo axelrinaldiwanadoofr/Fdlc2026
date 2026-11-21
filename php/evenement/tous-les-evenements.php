@@ -1,4 +1,7 @@
 <?php
+require_once __DIR__ . "/../cache.php" ;
+cacheDebut() ;
+
 // API de liste d'evenements - recherche combinee (AND).
 require_once __DIR__ . '/../Connexion.php';
 header('Content-Type: application/json; charset=utf-8');

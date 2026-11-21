@@ -3,6 +3,7 @@
 :host
 {
     // le cadre prend toute la hauteur restante et défile dans les deux sens
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -10,10 +11,11 @@
 
 .cadre
 {
+    // flex : le plan est centré dans les deux sens quand il est plus petit que l'écran
+    display: flex;
     flex: 1;
     min-height: 0;
     overflow: auto;
-    // le navigateur garde le défilement, le zoom à deux doigts est géré par le composant
     touch-action: pan-x pan-y;
 }
 
@@ -25,6 +27,7 @@
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
+    flex-shrink: 0;
     margin: auto;
 }
 
@@ -45,7 +48,10 @@
 
 .zone
 {
+    // contour léger : on voit que les stands se touchent
     fill: transparent;
+    stroke: rgba(224, 138, 44, 0.7);
+    stroke-width: 3;
     cursor: pointer;
 }
 
@@ -58,13 +64,6 @@
 {
     fill: rgba(224, 138, 44, 0.25);
     stroke: #e08a2c;
-    stroke-width: 6;
-}
-
-.zone.clique
-{
-    fill: rgba(43, 57, 144, 0.3);
-    stroke: #2b3990;
     stroke-width: 6;
 }
 
@@ -105,16 +104,72 @@
 
 .boutons-zoom
 {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 2px;
+    flex-direction: column;
+    border: 1px solid var(--ion-border-color);
+    border-radius: 14px;
+    background: #fff;
+    overflow: hidden;
 }
 
-.boutons-zoom span
+.boutons-zoom button
 {
-    margin-right: 6px;
-    font-size: 0.85em;
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: none;
+    background: none;
+    color: var(--ion-color-primary);
+    font-size: 22px;
+    cursor: pointer;
+}
+
+.boutons-zoom button + button
+{
+    border-top: 1px solid var(--ion-border-color);
+}
+
+.boutons-zoom button:disabled
+{
     color: var(--ion-color-medium);
+    opacity: 0.4;
+    cursor: default;
+}
+
+.aide
+{
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    margin: 0;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(28, 31, 58, 0.75);
+    color: #fff;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+// sur le plan général l'entrée est en bas : l'aide passe en haut
+.aide.haut
+{
+    top: 12px;
+    bottom: auto;
+}
+
+// fondu quand on change de hall
+.plan
+{
+    transition: opacity 0.2s ease-out;
+}
+
+.plan.cache
+{
+    opacity: 0;
+    transition: none;
 }

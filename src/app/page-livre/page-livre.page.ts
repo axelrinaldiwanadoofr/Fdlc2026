@@ -1,4 +1,4 @@
-import { Component, OnInit, input, signal } from '@angular/core';
+import { Component, OnInit, computed, input, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterLink } from '@angular/router';
 
@@ -17,12 +17,14 @@ import {
   IonList,
   IonItem,
   IonLabel,
-  IonCard,
-  IonCardTitle,
-  IonCardHeader,
-  IonCardSubtitle,
-  IonCardContent,
+  IonItemDivider,
+  IonNote,
+  IonIcon,
 } from '@ionic/angular';
+import { addIcons } from 'ionicons';
+import { storefrontOutline, calendarOutline, chevronForward } from 'ionicons/icons';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
+import { OuTrouverComponent } from '../../components/ou-trouver/ou-trouver.component';
 
 interface AuteurLivre { id: number; prenom: string; nom: string; }
 interface ExposantLivre { id: number; nom: string; numLieu: number | null; }
@@ -34,6 +36,7 @@ interface LiensLivre { auteurs: AuteurLivre[]; exposants: ExposantLivre[]; evene
   templateUrl: './page-livre.page.html',
   styleUrls: ['./page-livre.page.scss'],
   imports: [
+    OuTrouverComponent,
     IonContent,
     IonHeader,
     IonTitle,
@@ -44,12 +47,11 @@ interface LiensLivre { auteurs: AuteurLivre[]; exposants: ExposantLivre[]; evene
     IonList,
     IonItem,
     IonLabel,
-    IonCardTitle,
-    IonCardHeader,
-    IonCardSubtitle,
-    IonCardContent,
-    IonCard,
-    RouterLink
+    IonItemDivider,
+    IonNote,
+    IonIcon,
+    RouterLink,
+    MajusculePipe
   ]
 })
 export class PageLivrePage implements OnInit
@@ -61,16 +63,22 @@ export class PageLivrePage implements OnInit
   // Auteurs, exposants et événements liés au livre
   public liens = signal<LiensLivre>( { auteurs: [], exposants: [], evenements: [] } ) ;
 
+  // stand de l'éditeur (ou d'un exposant du livre) pour le petit plan, -1 sinon
+  public standDuLivre = computed( () => this.liens().exposants.find( x => ( x.numLieu ?? 0 ) > 0 )?.numLieu ?? -1 ) ;
+
   // Couvertures trouvées à la BnF (null pendant la recherche)
   public couvertures = signal<string[] | null>( null ) ;
 
   protected serviceLivre: LivreService ;
   protected serviceLivresAuteur: LivresAuteurService ;
+  protected http: HttpClient ;
 
-  constructor( serviceLivre: LivreService, serviceLivresAuteur: LivresAuteurService, private http: HttpClient )
+  constructor( serviceLivre: LivreService, serviceLivresAuteur: LivresAuteurService, http: HttpClient )
   {
     this.serviceLivre = serviceLivre ;
     this.serviceLivresAuteur = serviceLivresAuteur ;
+    this.http = http ;
+    addIcons( { storefrontOutline, calendarOutline, chevronForward } ) ;
   }
 
   ngOnInit()

@@ -44,6 +44,7 @@ import { PresenceStand } from '../../modeles/PresenceStand';
 import { Exposant } from '../../modeles/Exposant';
 import { Livre } from '../../modeles/Livre';
 import { AccesCompteComponent } from '../../components/acces-compte/acces-compte.component';
+import { MajusculePipe } from '../../pipes/majuscule.pipe';
 
 // Page de config des personnes : infos, photo, présence sur les stands et livres
 @Component({
@@ -79,7 +80,8 @@ import { AccesCompteComponent } from '../../components/acces-compte/acces-compte
     IonToast,
     IonAlert,
     FormsModule,
-    AccesCompteComponent
+    AccesCompteComponent,
+    MajusculePipe
   ]
 })
 export class PageConfigPersonnePage
@@ -131,6 +133,13 @@ export class PageConfigPersonnePage
   // Fenetres de choix d'un stand, des livres et gestion des spécialités
   protected modalRoles = signal(false) ;
   protected nouveauRole: string = "" ;
+
+  // spécialité à supprimer, en attente de confirmation
+  protected specialiteASupprimer = signal( "" ) ;
+  protected boutonsSupprimerSpecialite = [
+    { text: "Annuler", role: "cancel" },
+    { text: "Supprimer", role: "destructive", handler: () => this.majRole( this.specialiteASupprimer(), true ) }
+  ] ;
   protected modalStand = signal(false) ;
   protected modalLivres = signal(false) ;
   protected rechercheModal = signal("") ;
@@ -180,7 +189,6 @@ export class PageConfigPersonnePage
       return ;
     }
 
-    // ?filtre=... depuis la page de contrôle
     let filtre = this.route.snapshot.queryParamMap.get( "filtre" ) ;
     if( filtre ) this.filtre.set( filtre ) ;
 

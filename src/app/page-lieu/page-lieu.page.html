@@ -1,45 +1,88 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Lieu n° {{num()}}</ion-title>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/"></ion-back-button>
+      <ion-back-button defaultHref="/page-liste-lieux"></ion-back-button>
     </ion-buttons>
+    <ion-title>{{ titrePage() }}</ion-title>
     <ion-buttons slot="end">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  @for( lieu of lieux | async; track lieu.num ) {
-    <ion-card>
-      <ion-card-header>
-        <ion-card-title>{{ lieu.nom }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p>N° {{ lieu.num }}</p>
-        <p>Type : {{ lieu.type }}</p>
-      </ion-card-content>
-    </ion-card>
-    <ion-item>
-      @if( lieu.hall ) {
-        <ion-button fill="outline" [routerLink]="['/plans', lieu.hall]" [queryParams]="{ numLieu: lieu.num }">
-          <ion-icon slot="start" name="location-outline"></ion-icon>
-          Situer
+<ion-content>
+  @if( lieu(); as l )
+  {
+    <div class="page fiche">
+      <!-- en-tête : type, nom et emplacement -->
+      <div class="entete">
+        @if( l.type )
+        {
+          <span class="type" [style.background]="couleurType( l.type )">{{ l.type | majuscule }}</span>
+        }
+        <h1>{{ titre( l ) }}</h1>
+        @if( l.libelle )
+        {
+          <p class="libelle">{{ l.libelle }}</p>
+        }
+        <p class="emplacement">
+          <ion-icon name="location-outline" aria-hidden="true"></ion-icon>
+          N° {{ l.num }} | Hall {{ hall() }}
+        </p>
+      </div>
+
+      <!-- mini plan du hall avec la bulle ICI -->
+      <div class="mini-plan">
+        <app-plan-hall [numHall]="hall()" [numLieu]="l.num" [compact]="true"></app-plan-hall>
+      </div>
+      <div class="actions">
+        <ion-button fill="outline" [routerLink]="['/plans', hall()]" [queryParams]="{ numLieu: l.num }">
+          <ion-icon slot="start" name="map-outline"></ion-icon>
+          Ouvrir le plan
         </ion-button>
+        <app-ajouter-etape-button [nom]="titre( l )" [numLieu]="l.num" label="Planifier la visite"></app-ajouter-etape-button>
+      </div>
+
+      @if( exposants().length > 0 )
+      {
+        <ion-list>
+          <ion-item-divider color="light">
+            <ion-label>Exposants</ion-label>
+            <ion-note slot="end">{{ exposants().length }}</ion-note>
+          </ion-item-divider>
+        </ion-list>
+        <div class="tuiles">
+          @for( x of exposants(); track x.id )
+          {
+            <a class="tuile" [routerLink]="['/page-exposant', x.id]">
+              <ion-icon name="storefront-outline" aria-hidden="true"></ion-icon>
+              <span class="texte">
+                <strong>{{ x.nom }}</strong>
+                @if( x.type )
+                {
+                  <span>{{ serviceExposant.nomType( x.type ) }}</span>
+                }
+              </span>
+              <ion-icon class="suite" name="chevron-forward" aria-hidden="true"></ion-icon>
+            </a>
+          }
+        </div>
       }
 
-      <app-ajouter-etape-button slot="end"
-        [nom]="lieu.nom"
-        [numLieu]="lieu.num">
-      </app-ajouter-etape-button>
-    </ion-item>
-    <!-- Annexe : liste des exposants du lieu -->
-    <ion-item-divider>Exposants sur le stand</ion-item-divider>
-    <app-liste-exposant
-      [nomLieu]="lieu.nom"
-      lienPage="/page-exposant"
-      childHtml="<strong>$nom</strong>">
-    </app-liste-exposant>
+      <app-personnes-stand [numLieu]="l.num"></app-personnes-stand>
+
+      <!-- programme du lieu (salles, ateliers...), masqué s'il est vide -->
+      <ion-list [hidden]="nbEvenements() == 0">
+        <ion-item-divider color="light">
+          <ion-label>Au programme ici</ion-label>
+          <ion-note slot="end">{{ nbEvenements() }}</ion-note>
+        </ion-item-divider>
+      </ion-list>
+      <app-liste-evenements [numLieu]="l.num" [onglets]="false" messageVide="" (total)="nbEvenements.set( $event )"></app-liste-evenements>
+    </div>
+  }
+  @else if( introuvable() )
+  {
+    <p class="liste-vide">Ce lieu n'existe pas ou n'existe plus.</p>
   }
 </ion-content>

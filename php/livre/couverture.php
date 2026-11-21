@@ -32,7 +32,12 @@ $aTelecharger = !is_file( $fichier ) || ( filesize( $fichier ) == 0 && time() - 
 if( $aTelecharger )
 {
     $image = telecharge( $url ) ;
-    if( $image === false || @getimagesizefromstring( $image ) === false ) $image = "" ;
+    if( $image === false )
+    {
+        http_response_code( 503 ) ;
+        exit ;
+    }
+    if( @getimagesizefromstring( $image ) === false ) $image = "" ;
 
     // largeur 240 px max pour que la page reste légère
     if( $image != "" && function_exists( "imagecreatefromstring" ) )

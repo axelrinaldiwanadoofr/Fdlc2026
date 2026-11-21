@@ -21,25 +21,35 @@ function bnfEnPause()
 
 function telecharge( $url )
 {
+    global $bnfPatient ;
     if( bnfEnPause() ) return false ;
 
+    // un visiteur attend 5 secondes au plus qu'une autre requete se termine
     $verrou = fopen( sys_get_temp_dir() . "/fdlc2026-bnf.lock", "c" ) ;
-    flock( $verrou, LOCK_EX ) ;
+    $essais = 0 ;
+    while( !flock( $verrou, LOCK_EX | LOCK_NB ) )
+    {
+        if( empty( $bnfPatient ) && ++$essais > 20 )
+        {
+            fclose( $verrou ) ;
+            return false ;
+        }
+        usleep( 250000 ) ;
+    }
 
-    $contexte = stream_context_create( ["http" => ["timeout" => 15, "header" => "User-Agent: Festival du livre de Colmar 2026\r\n"]] ) ;
+    $contexte = stream_context_create( ["http" => ["timeout" => empty( $bnfPatient ) ? 8 : 15, "header" => "User-Agent: Festival du livre de Colmar 2026\r\n"]] ) ;
     $reponse = @file_get_contents( $url, false, $contexte ) ;
 
-    // pas de réponse : la BnF est peut-être juste lente, on réessaie une fois
-    if( $reponse === false && empty( $http_response_header ) )
+    if( $reponse === false && empty( $http_response_header ) && !empty( $bnfPatient ) )
     {
         sleep( 5 ) ;
         $reponse = @file_get_contents( $url, false, $contexte ) ;
     }
 
-    // toujours rien (pas une erreur 404 ou 500) : on est bloqué
     if( $reponse === false && empty( $http_response_header ) ) touch( sys_get_temp_dir() . "/fdlc2026-bnf-pause" ) ;
+    else if( $reponse === false ) $reponse = "" ;
+    usleep( empty( $bnfPatient ) ? 500000 : 1000000 ) ;
 
-    sleep( 1 ) ;
     flock( $verrou, LOCK_UN ) ;
     fclose( $verrou ) ;
 

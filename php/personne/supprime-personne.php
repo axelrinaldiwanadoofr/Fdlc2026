@@ -33,7 +33,8 @@ try
 
     foreach( ["ecrire" => "idPersonne", "exposer" => "idPersonne", "invite" => "idpersonne", "compte" => "idPersonne", "personne" => "id"] as $table => $champ )
     {
-        $bd->prepare( "delete from " . Connexion::$tables[$table] . " where " . $champ . " = :id" )->execute( ["id" => $id] ) ;
+        // la table invite n'existe pas dans toutes les bases
+        if( tableExiste( $table ) ) $bd->prepare( "delete from " . Connexion::$tables[$table] . " where " . $champ . " = :id" )->execute( ["id" => $id] ) ;
     }
 
     $bd->commit() ;

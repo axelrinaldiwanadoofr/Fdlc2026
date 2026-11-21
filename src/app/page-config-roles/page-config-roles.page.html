@@ -103,6 +103,8 @@
     [isOpen]="alerteSupprimer()"
     (didDismiss)="alerteSupprimer.set(false)"
     header="Supprimer le rôle ?"
+    subHeader="ATTENTION : cette action est définitive"
+    cssClass="alerte-suppression"
     [message]="role()?.nom + ' sera supprimé avec ses permissions'"
     [buttons]="boutonsSupprimer">
   </ion-alert>

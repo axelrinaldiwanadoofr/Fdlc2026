@@ -79,6 +79,7 @@
 .lycee ion-icon
 {
     flex-shrink: 0;
+    margin-left: 6px;
     font-size: 16px;
     color: var(--ion-color-medium);
 }
@@ -113,6 +114,12 @@ app-annonces
     margin: -8px -8px 8px;
 }
 
+.recherche
+{
+    display: block;
+    margin-bottom: 12px;
+}
+
 .raccourcis
 {
     display: grid;
@@ -133,6 +140,11 @@ app-annonces
     font-weight: 600;
     font-size: 14px;
     text-decoration: none;
+}
+
+.raccourcis a.large
+{
+    grid-column: 1 / -1;
 }
 
 .raccourcis ion-icon
@@ -272,4 +284,32 @@ h2
     {
         margin-top: 0;
     }
+}
+
+// bloc "En ce moment" pendant le festival
+.en-direct
+{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--ion-color-danger);
+}
+
+.en-direct .point
+{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ion-color-danger);
+    animation: battement 1.6s ease-in-out infinite;
+}
+
+@keyframes battement
+{
+    50% { opacity: 0.3; }
+}
+
+.evenement.direct
+{
+    border-left: 4px solid var(--ion-color-danger);
 }
